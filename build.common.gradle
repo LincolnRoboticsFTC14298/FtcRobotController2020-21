@@ -85,6 +85,7 @@ android {
             debuggable true
             jniDebuggable true
             renderscriptDebuggable true
+            multiDexEnabled true
             ndk {
                 abiFilters "armeabi-v7a", "arm64-v8a"
             }
@@ -106,5 +107,6 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
+    jcenter() //For EasyOpenCV
 }
 apply from: 'build.release.gradle'
