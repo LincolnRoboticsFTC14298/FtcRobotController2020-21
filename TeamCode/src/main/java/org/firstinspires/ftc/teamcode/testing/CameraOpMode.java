@@ -1,31 +1,28 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.vision.CameraRingDetection;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@TeleOp
+@TeleOp()
 public class CameraOpMode extends LinearOpMode {
 
     OpenCvInternalCamera2 phoneCam;
-    RingDetectionPipeline ringDetectionPipeline;
+    RingCountPipeline ringCountPipeline;
 
     @Override
     public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        ringDetectionPipeline = new RingDetectionPipeline(true);
-        phoneCam.setPipeline(ringDetectionPipeline);
+        ringCountPipeline = new RingCountPipeline(true);
+        phoneCam.setPipeline(ringCountPipeline);
 
         /*
          * Start streaming
@@ -45,7 +42,7 @@ public class CameraOpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("Number of Rings", ringDetectionPipeline.getNumRingsFound());
+            telemetry.addData("Number of Rings", ringCountPipeline.getNumRingsFound());
             telemetry.addData("Frame Count", phoneCam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
             telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
@@ -57,14 +54,14 @@ public class CameraOpMode extends LinearOpMode {
         }
     }
 
-    class RingDetectionPipeline extends OpenCvPipeline {
+    class RingCountPipeline extends OpenCvPipeline {
         boolean minRect = true;
         boolean viewportPaused = false;
         double AREA_THRESHOLD = 700;
         int THICKNESS = 4;
         int rings = 0;
 
-        RingDetectionPipeline(boolean minRect)
+        RingCountPipeline(boolean minRect)
         {
             this.minRect = minRect;
         }
@@ -72,7 +69,8 @@ public class CameraOpMode extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            rings = CameraRingDetection.ringCountUsingSegmentation(input, AREA_THRESHOLD, THICKNESS, minRect);
+            rings = CameraRingDetection.ringCountUsingSegmentation(input, minRect, AREA_THRESHOLD,
+                    THICKNESS, false);
             return input;
         }
 
