@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.hardware.ComponentOpMode;
 public class MainTeleOp extends ComponentOpMode {
     Robot robot = new Robot();
 
+    @Override
     public void init() {
         robot.init(hardwareMap, this);
     }

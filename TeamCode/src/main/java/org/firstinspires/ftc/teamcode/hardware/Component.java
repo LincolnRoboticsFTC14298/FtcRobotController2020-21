@@ -6,6 +6,6 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public interface Component {
     void init();
-    void periodic();
+    void teleopPeriodic();
     void end();
 }

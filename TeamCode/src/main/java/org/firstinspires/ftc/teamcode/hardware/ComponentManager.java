@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import java.util.ArrayList;
 
 public class ComponentManager {
@@ -19,7 +17,7 @@ public class ComponentManager {
 
     public void periodic() {
         for (Component component : components) {
-            component.periodic();
+            component.teleopPeriodic();
         }
     }
 

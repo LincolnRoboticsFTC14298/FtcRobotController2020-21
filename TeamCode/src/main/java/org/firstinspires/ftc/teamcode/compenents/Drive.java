@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.compenents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.hardware.Component;
@@ -28,10 +27,10 @@ public class Drive implements Component {
 
     public void init() {
         // Initialize motors //
-        frontLeft = robot.hardwareMap.get(DcMotor.class, RobotMap.frontLeft);
-        frontRight = robot.hardwareMap.get(DcMotor.class, RobotMap.frontRight);
-        backLeft = robot.hardwareMap.get(DcMotor.class, RobotMap.backLeft);
-        backRight = robot.hardwareMap.get(DcMotor.class, RobotMap.backRight);
+        frontLeft = robot.hardwareMap.get(DcMotor.class, RobotMap.FRONT_LEFT_NAME);
+        frontRight = robot.hardwareMap.get(DcMotor.class, RobotMap.FRONT_RIGHT_NAME);
+        backLeft = robot.hardwareMap.get(DcMotor.class, RobotMap.BACK_LEFT_NAME);
+        backRight = robot.hardwareMap.get(DcMotor.class, RobotMap.BACK_RIGHT_NAME);
 
         // Reverse direction
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -41,8 +40,8 @@ public class Drive implements Component {
         updateMotorPowers();
     }
 
-    public void periodic() {
-        teleop();
+    public void teleopPeriodic() {
+        teleopControl();
         updateMotorPowers();
     }
 
@@ -51,7 +50,7 @@ public class Drive implements Component {
         updateMotorPowers();
     }
 
-    public void teleop() {
+    public void teleopControl() {
         double r = robot.oi.getLeftStickRadius();
         double angle = robot.oi.getLeftStickAngle() - Math.PI / 4;
         double xRot = robot.oi.getRightX();

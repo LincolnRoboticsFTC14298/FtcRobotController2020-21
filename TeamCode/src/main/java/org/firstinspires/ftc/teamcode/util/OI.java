@@ -30,7 +30,23 @@ public class OI {
         return x;
     }
 
+    public boolean openClaw() {
+        return false;
+    }
+
+    public boolean closeClaw() {
+        return true;
+    }
+
     public boolean autoAim() {
         return gamepad1.a;
+    }
+
+    public boolean intakeOn() {
+        return true;
+    }
+
+    public boolean intakeOff() {
+        return false;
     }
 }
