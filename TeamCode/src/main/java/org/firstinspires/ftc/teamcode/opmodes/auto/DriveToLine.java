@@ -26,7 +26,7 @@ public class DriveToLine extends SubsystemOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setPower(1);
+        setPower(0);
     }
 
     @Override
