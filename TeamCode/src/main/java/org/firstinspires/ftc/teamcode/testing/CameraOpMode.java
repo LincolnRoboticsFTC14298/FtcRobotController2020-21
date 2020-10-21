@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.vision.CameraRingDetection;
+import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -21,7 +22,7 @@ public class CameraOpMode extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        ringCountPipeline = new RingCountPipeline(true);
+        ringCountPipeline = new RingCountPipeline(phoneCam,true);
         phoneCam.setPipeline(ringCountPipeline);
 
         /*
@@ -54,42 +55,5 @@ public class CameraOpMode extends LinearOpMode {
         }
     }
 
-    class RingCountPipeline extends OpenCvPipeline {
-        boolean minRect = true;
-        boolean viewportPaused = false;
-        double AREA_THRESHOLD = 700;
-        int THICKNESS = 4;
-        int rings = 0;
 
-        RingCountPipeline(boolean minRect)
-        {
-            this.minRect = minRect;
-        }
-
-
-        @Override
-        public Mat processFrame(Mat input) {
-            rings = CameraRingDetection.ringCountUsingSegmentation(input, minRect, AREA_THRESHOLD,
-                    THICKNESS, false);
-            return input;
-        }
-
-        @Override
-        public void onViewportTapped() {
-            viewportPaused = !viewportPaused;
-
-            if(viewportPaused)
-            {
-                phoneCam.pauseViewport();
-            }
-            else
-            {
-                phoneCam.resumeViewport();
-            }
-        }
-
-        public int getNumRingsFound() {
-            return rings;
-        }
-    }
 }
