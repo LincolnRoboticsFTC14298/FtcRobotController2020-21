@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import org.opencv.core.Point3;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class Field {
     // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
+    // NOTE: Maybe we should make our own Point3d?
 
     // X IS FROM BACK TO FRONT AND Y IS FROM LEFT TO RIGHT
     public static final double FIELD_WIDTH = 141.0;
@@ -15,34 +18,72 @@ public class Field {
 
     // Targets are assumed to be blue and are mirrored as necessary.
 
-    public Point3 STARTER_STACK = new Point3(-.9*TILE_WIDTH, 1.5*TILE_WIDTH, 0);
+    public Pose2d STARTER_STACK = new Pose2d(-.9*TILE_WIDTH, 1.5*TILE_WIDTH);
 
-    public enum Targets {
+    public enum Alliance {
+        BLUE,
+        RED;
+    }
+
+    public enum Target {
         // Power shot from left to right
-        POWER_SHOT_1(new Point3(3*TILE_WIDTH,0,0)),
-        POWER_SHOT_2(new Point3(3*TILE_WIDTH,0,0)),
-        POWER_SHOT_3(new Point3(3*TILE_WIDTH,0,0)),
+        OUTWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,0)),
+        MIDDLE_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,0)),
+        INWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,0)),
 
-        HIGH_GOAL(new Point3(3*TILE_WIDTH,1.5*TILE_WIDTH,0)),
-        MIDDLE_GOAL(new Point3(3*TILE_WIDTH,-1.5*TILE_WIDTH,0)), // On red side
-        LOW_GOAL(new Point3(3*TILE_WIDTH,1.5*TILE_WIDTH,0));
+        HIGH_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,0)),
+        MIDDLE_GOAL(new Vector3D(3*TILE_WIDTH,-1.5*TILE_WIDTH,0)), // On red side
+        LOW_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,0));
 
-        public final Point3 point;
+        private final Vector3D location;
 
-        private Targets(Point3 point) {
-            this.point = point;
+        Target(Vector3D location) {
+            this.location = location;
+        }
+
+        public Vector3D getLocation(Alliance alliance) {
+            if (alliance == Alliance.RED) {
+                // Mirror if red
+                return mirror(location);
+            } else {
+                return location;
+            }
+        }
+        public Pose2d getPose(Alliance alliance) {
+            Pose2d pose = new Pose2d(location.getX(), location.getY());
+            if (alliance == Alliance.RED) {
+                // Mirror if red
+                return mirror(pose);
+            } else {
+                return pose;
+            }
         }
     }
 
-    public enum TargetZones {
-        A(new Point3(0.5*TILE_WIDTH,2.5*TILE_WIDTH,0)),
-        B(new Point3(1.5*TILE_WIDTH,1.5*TILE_WIDTH,0)),
-        C(new Point3(2.5*TILE_WIDTH,2.5*TILE_WIDTH,0));
+    public enum TargetZone {
+        A(new Pose2d(0.5*TILE_WIDTH,2.5*TILE_WIDTH)),
+        B(new Pose2d(1.5*TILE_WIDTH,1.5*TILE_WIDTH)),
+        C(new Pose2d(2.5*TILE_WIDTH,2.5*TILE_WIDTH));
 
-        public final Point3 point;
+        private final Pose2d location;
 
-        private TargetZones(Point3 point) {
-            this.point = point;
+        TargetZone(Pose2d location) {
+            this.location = location;
         }
+
+        public Pose2d getLocation(Alliance alliance) {
+            if (alliance == Alliance.RED) {
+                return mirror(location);
+            } else {
+                return location;
+            }
+        }
+    }
+
+    private static Vector3D mirror(Vector3D location) {
+        return new Vector3D(location.getX(), -location.getY(), location.getZ());
+    }
+    private static Pose2d mirror(Pose2d location) {
+        return new Pose2d(location.getX(), -location.getY());
     }
 }
