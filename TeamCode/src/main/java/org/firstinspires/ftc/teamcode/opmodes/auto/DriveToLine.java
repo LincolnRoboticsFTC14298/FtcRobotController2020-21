@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.hardware.SubsystemOpMode;
+import org.firstinspires.ftc.teamcode.hardware.util.SubsystemOpMode;
 
 import static java.lang.Thread.sleep;
 
