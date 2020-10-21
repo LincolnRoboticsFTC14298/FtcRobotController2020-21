@@ -20,13 +20,13 @@ public class DriveToLine extends SubsystemOpMode {
     @Override
     public void start() {
         robot.vision.analyze();
-        robot.drive.setPower(1,1,1,1);
+        setPower(1);
         try {
             sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        robot.drive.setPower(0,0,0,0);
+        setPower(1);
     }
 
     @Override
@@ -37,5 +37,10 @@ public class DriveToLine extends SubsystemOpMode {
     @Override
     public void stop() {
         robot.subsystemManager.end();
+    }
+
+    public void setPower(double n) {
+        robot.drive.setPower(n,n,n,n);
+        robot.update();
     }
 }
