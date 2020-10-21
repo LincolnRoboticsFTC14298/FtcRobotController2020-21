@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.compenents;
+package org.firstinspires.ftc.teamcode.hardware.compenents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.hardware.Component;
-import org.firstinspires.ftc.teamcode.util.RobotMap;
+import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
+import org.firstinspires.ftc.teamcode.util.Field.Target;
+import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 
-public class Drive implements Component {
+public class Drive implements Subsystem {
     // Mecanum drive //
-    Robot robot;
+    private Robot robot;
 
     private DcMotor frontLeft;
     private DcMotor frontRight;
@@ -21,10 +22,16 @@ public class Drive implements Component {
     private double backLeftPower;
     private double backRightPower;
 
+//    private boolean autoAim = false;
+//    private boolean localControl = true;
+
+    private Target target = Target.HIGH_GOAL;
+
     public Drive(Robot robot) {
         this.robot = robot;
     }
 
+    @Override
     public void init() {
         // Initialize motors //
         frontLeft = robot.hardwareMap.get(DcMotor.class, RobotMap.FRONT_LEFT_NAME);
@@ -40,25 +47,40 @@ public class Drive implements Component {
         updateMotorPowers();
     }
 
-    public void teleopPeriodic() {
-        teleopControl();
+    @Override
+    public void update() {
         updateMotorPowers();
     }
 
+    @Override
     public void end() {
         setPower(0,0,0,0);
         updateMotorPowers();
     }
 
-    public void teleopControl() {
-        double r = robot.oi.getLeftStickRadius();
-        double angle = robot.oi.getLeftStickAngle() - Math.PI / 4;
-        double xRot = robot.oi.getRightX();
-        double fl = r * Math.cos(angle) + xRot;
-        double fr = r * Math.sin(angle) - xRot;
-        double bl = r * Math.sin(angle) + xRot;
-        double br = r * Math.cos(angle) - xRot;
+    public void teleopControl(double radius, double angle, double rotation, boolean localControl, boolean autoAim) {
+        // In frame of refrence of the robot
+        angle -= Math.PI / 4; // Strafing angle
+        if (localControl) {
+            angle -= Math.PI / 2 +  Math.toRadians(robot.positionLocalizer.getHeading());
+        }
+        if (autoAim) {
+            rotation = getAutoAimRotation(); // Rotation amount for auto
+        }
+
+        double fl = radius * Math.cos(angle) + rotation;
+        double fr = radius * Math.sin(angle) - rotation;
+        double bl = radius * Math.sin(angle) + rotation;
+        double br = radius * Math.cos(angle) - rotation;
         setPower(fl, fr, bl, br);
+    }
+
+    public void setTarget(Target target) {
+        this.target = target;
+    }
+
+    private double getAutoAimRotation() {
+        return 0;
     }
 
     public void setPower(double fl, double fr, double bl, double br) {
@@ -67,6 +89,12 @@ public class Drive implements Component {
         frontRightPower = fr;
         backLeftPower = bl;
         backRightPower = br;
+    }
+    public void setMode(DcMotor.RunMode mode) {
+        frontLeft.setMode(mode);
+        frontRight.setMode(mode);
+        backLeft.setMode(mode);
+        backRight.setMode(mode);
     }
 
     private void updateMotorPowers() {
@@ -78,12 +106,5 @@ public class Drive implements Component {
                 "%.6f fl   %.6f fr   %.6f bl   %.6f br",
                 frontLeft.getPower(), frontRight.getPower(),
                 backLeft.getPower(), backRight.getPower());
-    }
-
-    public void setMode(DcMotor.RunMode mode) {
-        frontLeft.setMode(mode);
-        frontRight.setMode(mode);
-        backLeft.setMode(mode);
-        backRight.setMode(mode);
     }
 }

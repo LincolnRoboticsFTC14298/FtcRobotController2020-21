@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.compenents;
+package org.firstinspires.ftc.teamcode.hardware.compenents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.hardware.Component;
-import org.firstinspires.ftc.teamcode.util.RobotMap;
+import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
+import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 
-public class Intake implements Component {
+public class Intake implements Subsystem {
     Robot robot;
 
     DcMotor motor;
@@ -23,11 +23,11 @@ public class Intake implements Component {
     }
 
     @Override
-    public void teleopPeriodic() {
-        if (robot.oi.intakeOn()) {
+    public void update() {
+        if (robot.OperatorInterface.isIntakeOn()) {
             turnOn();
         }
-        if (robot.oi.intakeOff()) {
+        else {
             turnOff();
         }
         updateIntake();
