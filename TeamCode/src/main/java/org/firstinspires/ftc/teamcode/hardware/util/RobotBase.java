@@ -17,7 +17,7 @@ public abstract class RobotBase {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
     }
-    public abstract void teleopUpdate(); // Only for teleop
+    // public abstract void teleopUpdate(); // Only for teleop
     public abstract void update();
     public abstract void end();
 }

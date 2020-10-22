@@ -44,6 +44,7 @@ public class Robot extends RobotBase {
         telemetry.update();
     }
 
+    /*
     @Override
     public void teleopUpdate() {
 
@@ -57,6 +58,7 @@ public class Robot extends RobotBase {
         // Shooter
 
     }
+     */
 
     @Override
     public void update() {
