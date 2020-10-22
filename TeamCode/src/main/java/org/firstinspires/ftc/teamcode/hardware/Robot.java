@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.compenents.Arm;
 import org.firstinspires.ftc.teamcode.hardware.compenents.Drive;
@@ -45,8 +46,6 @@ public class Robot extends RobotBase {
 
     @Override
     public void teleopUpdate() {
-        // LOGIC HERE PLEASE
-
 
         // Drive
 
@@ -71,8 +70,46 @@ public class Robot extends RobotBase {
         telemetry.update();
     }
 
+    public void powerShot() {
+        // Point to outward power shot
+        setTarget(Target.OUTWARD_POWER_SHOT);
+        pointAtTarget();
+        shoot();
+
+        setTarget(Target.MIDDLE_POWER_SHOT);
+        pointAtTarget();
+        shoot();
+
+        setTarget(Target.INWARD_POWER_SHOT);
+        pointAtTarget();
+        shoot();
+    }
+
+
+    private void pointAtTarget() {
+        drive.pointAtTarget();
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while (!drive.isAligned() || elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
+            update();
+        }
+    }
+
+    private void shoot() {
+        shooter.shoot();
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while (!shooter.doneShooting() || elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
+            update();
+        }
+    }
+
     public void setTarget(Target target) {
+        this.target = target;
         drive.setTarget(target);
         shooter.setTarget(target);
+    }
+    public void setAlliance(Alliance alliance) {
+        this.alliance = alliance;
+        drive.setAlliance(alliance);
+        shooter.setAlliance(alliance);
     }
 }
