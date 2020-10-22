@@ -20,7 +20,7 @@ public class MainTeleOp extends OpMode {
     @Override
     public void loop() {
         operatorInterface.update();
-        robot.teleopUpdate();
+//        robot.teleopUpdate();
         robot.update();
     }
 
