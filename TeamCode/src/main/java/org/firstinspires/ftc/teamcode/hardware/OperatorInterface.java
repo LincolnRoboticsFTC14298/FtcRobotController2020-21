@@ -16,9 +16,10 @@ public class OperatorInterface {
     private Gamepad gamepad2;
 
     // Use toggle when you want to use the same button for up and down
-    ToggleButton autoAimToggleButton, localControlToggleButton, liftArmToggleButton, openClawToggleButton;
+    ToggleButton autoAimToggleButton, localControlToggleButton, liftArmToggleButton, openClawToggleButton, intakeOnToggleButton;
 
-    Button highGoalButton, middleGoalButton, outwardPowerShotButton, middlePowerShotButton, inwardPowerShotButton;
+    Button highGoalButton, middleGoalButton, outwardPowerShotButton, middlePowerShotButton, inwardPowerShotButton, powerShotButton;
+    Button shootButton;
 
     // Toggles
     double latestAutoAim = 0, latestIntakeOn = 0, latestLocalControl = 0;
@@ -34,19 +35,22 @@ public class OperatorInterface {
         this.gamepad2 = gamepad2;
 
         autoAimToggleButton = new ToggleButton(gamepad1, ButtonType.a, 1);
-        localControlToggleButton = new ToggleButton(gamepad1, ButtonType.b);
+        localControlToggleButton = new ToggleButton(gamepad1, ButtonType.b, 1);
         liftArmToggleButton = new ToggleButton(gamepad1, ButtonType.x);
         openClawToggleButton = new ToggleButton(gamepad1, ButtonType.y);
+        intakeOnToggleButton = new ToggleButton(gamepad1, ButtonType.right_bumper);
 
 
         highGoalButton = new Button(gamepad2, ButtonType.a);
         middleGoalButton = new Button(gamepad2, ButtonType.b);
 
-        outwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_left);
-        middlePowerShotButton = new Button(gamepad2, ButtonType.dpad_up);
-        inwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_right);
+        powerShotButton = new Button(gamepad2, ButtonType.x);
 
+//        outwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_left);
+//        middlePowerShotButton = new Button(gamepad2, ButtonType.dpad_up);
+//        inwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_right);
 
+        shootButton = new Button(gamepad1, ButtonType.left_bumper);
     }
 
     public void update() {
@@ -64,14 +68,17 @@ public class OperatorInterface {
         }
 
         // TODO: Make pre-programmed out rotate and shot power shot
-        if (outwardPowerShotButton.isPressed()) {
-            robot.setTarget(Target.OUTWARD_POWER_SHOT);
-        }
-        if (middleGoalButton.isPressed()) {
-            robot.setTarget(Target.MIDDLE_POWER_SHOT);
-        }
-        if (inwardPowerShotButton.isPressed()) {
-            robot.setTarget(Target.INWARD_POWER_SHOT);
+//        if (outwardPowerShotButton.isPressed()) {
+//            robot.setTarget(Target.OUTWARD_POWER_SHOT);
+//        }
+//        if (middleGoalButton.isPressed()) {
+//            robot.setTarget(Target.MIDDLE_POWER_SHOT);
+//        }
+//        if (inwardPowerShotButton.isPressed()) {
+//            robot.setTarget(Target.INWARD_POWER_SHOT);
+//        }
+        if (powerShotButton.isPressed()) {
+            robot.powerShot();
         }
 
         // Arm
@@ -91,6 +98,18 @@ public class OperatorInterface {
         double angle = getLeftStickAngle();
         double rot = getRightX();
         robot.drive.teleopControl(radius, angle, rot, localControlToggleButton.on(), autoAimToggleButton.on());
+
+        // Intake
+        if (intakeOnToggleButton.on()) {
+            robot.intake.turnOn();
+        } else if (intakeOnToggleButton.off()) {
+            robot.intake.turnOff();
+        }
+
+        // Shooter
+        if (shootButton.isPressed()) {
+            robot.shooter.shoot();
+        }
     }
 
     public double getLeftStickRadius() {
