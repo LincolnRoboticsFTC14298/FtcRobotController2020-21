@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.lang.reflect.Field;
 
@@ -15,7 +16,7 @@ public class Button {
 
     private boolean debounce;
     private double debouncePeriod;
-    private double last;
+    private ElapsedTime elapsedTime = new ElapsedTime();
 
     // possible interface method
 //    public static interface IsPressed {
@@ -83,9 +84,8 @@ public class Button {
     }
 
     private boolean debouncePressed(boolean pressed) {
-        double now = System.currentTimeMillis() / 1000.0;
-        if ((now - last) > debouncePeriod && pressed) {
-            last = now;
+        if (elapsedTime.milliseconds() / 1000.0 > debouncePeriod && pressed) {
+            elapsedTime.reset();
             return true;
         } else {
             return false;
