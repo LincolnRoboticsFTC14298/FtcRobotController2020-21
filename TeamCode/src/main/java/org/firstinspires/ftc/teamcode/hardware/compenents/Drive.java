@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.hardware.compenents;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
-import org.firstinspires.ftc.teamcode.util.Field.Target;
+import org.firstinspires.ftc.teamcode.util.Field.*;
 import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 
 public class Drive implements Subsystem {
@@ -26,6 +27,9 @@ public class Drive implements Subsystem {
 //    private boolean localControl = true;
 
     private Target target = Target.HIGH_GOAL;
+    private Alliance alliance = Alliance.BLUE;
+
+    public boolean aligning = false;
 
     public Drive(Robot robot) {
         this.robot = robot;
@@ -49,6 +53,13 @@ public class Drive implements Subsystem {
 
     @Override
     public void update() {
+        if (aligning && isAligned()) {
+            aligning = false;
+            setPower(0,0,0,0);
+        }
+        if (aligning) {
+            pointAtTarget();
+        }
         updateMotorPowers();
     }
 
@@ -59,10 +70,9 @@ public class Drive implements Subsystem {
     }
 
     public void teleopControl(double radius, double angle, double rotation, boolean localControl, boolean autoAim) {
-        // In frame of refrence of the robot
         angle -= Math.PI / 4; // Strafing angle
         if (localControl) {
-            angle -= Math.PI / 2 +  Math.toRadians(robot.positionLocalizer.getHeading());
+            angle -= Math.PI / 2 +  Math.toRadians(getHeading());
         }
         if (autoAim) {
             rotation = getAutoAimRotation(); // Rotation amount for auto
@@ -75,12 +85,38 @@ public class Drive implements Subsystem {
         setPower(fl, fr, bl, br);
     }
 
-    public void setTarget(Target target) {
-        this.target = target;
+    public boolean isAligned() {
+        // In degrees
+        return getHeading() - targetHeading() < RobotMap.DRIVER_TARGET_ANGLE_MIN_ERROR;
+    }
+
+    public void pointAtTarget() {
+        aligning = true;
+        double rotation = getAutoAimRotation();
+        setPower(rotation, -rotation, rotation, -rotation);
+    }
+
+    private double targetHeading() {
+        Pose2d point = target.getPose(robot.alliance);
+        Pose2d pos = getPose();
+        double dy = point.getY() - pos.getY() - RobotMap.SHOOTER_LOCATION.getY();
+        double dx = point.getX() - pos.getX() - RobotMap.SHOOTER_LOCATION.getX(); // X is forward direction
+        double targetHeading = Math.atan2(dy, dx); // Happens to be in the heading frame
+        return Math.toDegrees(targetHeading);
     }
 
     private double getAutoAimRotation() {
-        return 0;
+        double diffHeading = Math.toRadians(getHeading() - targetHeading());
+        // TODO: CHANGE TO PID OR ROADRUNNER OR SOMETHING
+        return diffHeading*0.1;
+    }
+
+    private double getHeading() {
+        // Returns in degrees
+        return getPose().getHeading();
+    }
+    private Pose2d getPose() {
+        return robot.positionLocalizer.getPose();
     }
 
     public void setPower(double fl, double fr, double bl, double br) {
@@ -107,4 +143,9 @@ public class Drive implements Subsystem {
                 frontLeft.getPower(), frontRight.getPower(),
                 backLeft.getPower(), backRight.getPower());
     }
+
+    public void setTarget(Target target) {
+        this.target = target;
+    }
+    public void setAlliance(Alliance alliance) {this.alliance = alliance;}
 }
