@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.compenents.Arm;
-import org.firstinspires.ftc.teamcode.hardware.compenents.Drive;
-import org.firstinspires.ftc.teamcode.hardware.compenents.Intake;
-import org.firstinspires.ftc.teamcode.hardware.compenents.PositionLocalizer;
-import org.firstinspires.ftc.teamcode.hardware.compenents.RoadRunner;
-import org.firstinspires.ftc.teamcode.hardware.compenents.Shooter;
-import org.firstinspires.ftc.teamcode.hardware.compenents.Vision;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionLocalizer;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.RoadRunner;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.RobotBase;
 import org.firstinspires.ftc.teamcode.util.Field.*;
 
