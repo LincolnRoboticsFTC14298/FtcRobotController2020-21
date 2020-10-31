@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package com.example.test.vision.newp;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -16,26 +16,32 @@ import java.util.List;
 import java.util.Random;
 
 public class VisionUtil {
+    public static final double FOV = Math.toRadians(45);
     private static final Random rng = new Random(12345);
-
-
 
     public static ArrayList<MatOfPoint> findContours(Mat mask, double threshold1, double threshold2) {
         Mat cannyOutput = new Mat();
         Imgproc.Canny(mask, cannyOutput, threshold1, threshold2);
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
+        // Consider using chain approx none
         Imgproc.findContours(cannyOutput, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         return contours;
     }
 
-    public static Rect[] getBoundingRectangles(
+    public static Point rectCenter(Rect rect) {
+        double x = rect.x + rect.width / 2.0;
+        double y = rect.y + rect.height / 2.0;
+        return new Point(x, y);
+    }
+
+    public static Rect[] getBoundingRects(
             List<MatOfPoint> contours, Mat dst, boolean displayContours,
             boolean displayAllBoxes, int thickness) {
         Mat hierarchy = new Mat();
         MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
         Rect[] boundRects = new Rect[contours.size()];
-        // Find Rectangles
+        // Find Rects
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
             Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
@@ -49,22 +55,22 @@ public class VisionUtil {
         }
         if (displayAllBoxes) {
             Scalar color = genColor();
-            drawRectangles(dst, boundRects, color, thickness);
+            drawRects(dst, boundRects, color, thickness);
         }
         return boundRects;
     }
-    public static Rect[] getBoundingRectangles(List<MatOfPoint> contours) {
-        return getBoundingRectangles(contours, null, false, false, 0);
+    public static Rect[] getBoundingRects(List<MatOfPoint> contours) {
+        return getBoundingRects(contours, null, false, false, 0);
     }
 
-    public static RotatedRect[] getBoundingRotatedRectangles(
+    public static RotatedRect[] getBoundingRotatedRects(
             List<MatOfPoint> contours, Mat dst, boolean displayContours,
             boolean displayAllBoxes, int thickness) {
 
         Mat hierarchy = new Mat();
         MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
         RotatedRect[] boundRects = new RotatedRect[contours.size()];
-        // Find Rectangles
+        // Find Rects
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
             Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
@@ -78,24 +84,24 @@ public class VisionUtil {
         }
         if (displayAllBoxes) {
             Scalar color = genColor();
-            drawRotatedRectangles(dst, boundRects, color, thickness);
+            drawRotatedRects(dst, boundRects, color, thickness);
         }
         return boundRects;
     }
-    public static RotatedRect[] getBoundingRotatedRectangles(List<MatOfPoint> contours) {
-        return getBoundingRotatedRectangles(contours, null, false, false, 0);
+    public static RotatedRect[] getBoundingRotatedRects(List<MatOfPoint> contours) {
+        return getBoundingRotatedRects(contours, null, false, false, 0);
     }
 
     // Todo: may remove
     // Original
-    private static RotatedRect[] getBoundingRectangles(
+    private static RotatedRect[] getBoundingRects(
             List<MatOfPoint> contours, Mat dst, boolean minRect,
             boolean displayContours, boolean displayAllBoxes, int thickness) {
         Mat hierarchy = new Mat();
         MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
         //Rect[] boundRect = new Rect[contours.size()];
         RotatedRect[] boundRects = new RotatedRect[contours.size()];
-        // Find Rectangles
+        // Find Rects
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
             Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
@@ -112,7 +118,7 @@ public class VisionUtil {
         }
         if (displayAllBoxes) {
             Scalar color = genColor();
-            drawRotatedRectangles(dst, boundRects, color, thickness);
+            drawRotatedRects(dst, boundRects, color, thickness);
         }
         return boundRects;
     }
@@ -127,22 +133,22 @@ public class VisionUtil {
             Imgproc.drawContours(dst, contoursPolyList, i, color, thickness);
         }
     }
-    public static void drawRectangles(Mat dst, Rect[] rects, Scalar color, int thickness) {
+    public static void drawRects(Mat dst, Rect[] rects, Scalar color, int thickness) {
         for (int i = 0; i < rects.length; i++) {
             Imgproc.rectangle(dst, rects[i], color, thickness);
         }
     }
-    public static void drawRectangles(Mat dst, List<Rect> rects, Scalar color, int thickness) {
+    public static void drawRects(Mat dst, List<Rect> rects, Scalar color, int thickness) {
         for (Rect rect : rects) {
             Imgproc.rectangle(dst, rect, color, thickness);
         }
     }
-    public static void drawRotatedRectangles(Mat dst, RotatedRect[] rects, Scalar color, int thickness) {
+    public static void drawRotatedRects(Mat dst, RotatedRect[] rects, Scalar color, int thickness) {
         for (int i = 0; i < rects.length; i++) {
             drawRotatedRectangle(dst, rects[i], color, thickness);
         }
     }
-    public static void drawRotatedRectangles(Mat dst, ArrayList<RotatedRect> rects, Scalar color, int thickness) {
+    public static void drawRotatedRects(Mat dst, ArrayList<RotatedRect> rects, Scalar color, int thickness) {
         for (RotatedRect rect : rects) {
             drawRotatedRectangle(dst, rect, color, thickness);
         }
@@ -164,7 +170,7 @@ public class VisionUtil {
         return rotatedRect;
     }
 
-    private static Scalar genColor() {
+    public static Scalar genColor() {
         return new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
     }
 }
