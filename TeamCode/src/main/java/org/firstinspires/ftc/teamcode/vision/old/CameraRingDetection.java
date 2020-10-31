@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.old;
 
 import org.opencv.core.*;
 
@@ -8,6 +8,8 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.*;
 
 public class CameraRingDetection {
     // Initiating Imagecodecs
@@ -44,10 +46,10 @@ public class CameraRingDetection {
         return mask;
     }
 
-    public static int ringCountUsingArea(Mat img, boolean minRect, double[] areaThresh,
+    public static int ringCountUsingArea(Mat img, double[] areaThresh,
                                          int thickness, boolean debug) {
         //Calculate area
-        double area = ringsArea(img, minRect, thickness, debug);
+        double area = ringsArea(img, thickness, debug);
         // Display image and show ring count
         if (area > areaThresh[1]) return 4;
         else if (area > areaThresh[0]) return 1;
@@ -55,7 +57,7 @@ public class CameraRingDetection {
         else return -1;
     }
 
-    private static double ringsArea(Mat img, boolean minRect, int thickness, boolean debug) {
+    private static double ringsArea(Mat img, int thickness, boolean debug) {
         // Cropped region is for analysis
         // (x,y) is top left corner
         int x = 3 * img.width() / 10, y = 3 * img.height() / 10, w = img.width() - 2 * x, h = img.height() - 2 * y;
@@ -72,14 +74,10 @@ public class CameraRingDetection {
         croppedImg.copyTo(masked, croppedMask);
 
         // Find Contours using canny
-        Mat cannyOutput = new Mat();
-        Imgproc.Canny(croppedMask, cannyOutput, -0.5, 0.5);
-        ArrayList<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(cannyOutput, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        ArrayList<MatOfPoint> contours = findContours(croppedMask, -0.5, 0.5);
 
         // Set minRect to false if you want non rotated rect
-        RotatedRect[] boundingRect = getBoundingRect(contours, croppedImg, minRect, false, debug);
+        RotatedRect[] boundingRect = getBoundingRotatedRectangles(contours, croppedImg, debug, debug, 2);
         double largestArea = 0;
         RotatedRect largestRect = new RotatedRect();
         for (int i = 0; i < contours.size(); i++) {
@@ -93,7 +91,7 @@ public class CameraRingDetection {
 
         // Display box
         //Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-        drawRotatedRect(croppedImg, largestRect, new Scalar(0, 255, 0), thickness);
+        drawRotatedRectangle(croppedImg, largestRect, new Scalar(0, 255, 0), thickness);
 
         Imgproc.rectangle(img, rectCrop, new Scalar(0, 255, 0), thickness);
 
@@ -101,7 +99,7 @@ public class CameraRingDetection {
         return largestArea;
     }
 
-    public static int ringCountUsingSegmentation(Mat img, boolean minRect, double areaThresh,
+    public static int ringCountUsingSegmentation(Mat img, double areaThresh,
                                                  int thickness, boolean debug) {
         // Cropped region is for analysis
         // (x,y) is top left corner
@@ -120,13 +118,12 @@ public class CameraRingDetection {
 
         // If countour area > threshold, it is a ring
 
-        RotatedRect[] boundingRect = getBoundingRect(contours, croppedImg, minRect, true, debug);
+        RotatedRect[] boundingRect = getBoundingRotatedRectangles(contours, croppedImg, debug, debug, 2);
         int numRings = 0;
         ArrayList<RotatedRect> rotatedRects = new ArrayList<>();
         for (int i = 0; i < contours.size(); i++) {
             RotatedRect rect = boundingRect[i];
             double area = area(rect);
-            if (debug) System.out.println(area + " " + i);
             if (area > areaThresh) {
                 numRings++;
                 rotatedRects.add(rect);
@@ -134,14 +131,10 @@ public class CameraRingDetection {
         }
 
         // Display boxes
-        for (RotatedRect rect : boundingRect) {
-            drawRotatedRect(croppedImg, rect, new Scalar(0, 255, 0), thickness);
-        }
+        drawRotatedRectangles(croppedImg, rotatedRects, new Scalar(0, 255, 0), thickness);
 
 
         // Display where they are
-        //Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-
         Imgproc.rectangle(img, rectCrop, new Scalar(0, 0, 255), thickness);
         return numRings;
     }
@@ -251,57 +244,6 @@ public class CameraRingDetection {
         return contours;
     }
 
-    private static RotatedRect[] getBoundingRect(List<MatOfPoint> contours, Mat dst, boolean minRect,
-                                                 boolean displayContours, boolean displayAllBoxes) {
-        Mat hierarchy = new Mat();
-        MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
-        //Rect[] boundRect = new Rect[contours.size()];
-        RotatedRect[] boundRect = new RotatedRect[contours.size()];
-        // Find Rectangles
-        for (int i = 0; i < contours.size(); i++) {
-            contoursPoly[i] = new MatOfPoint2f();
-            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
-            if (minRect)
-                boundRect[i] = Imgproc.minAreaRect(new MatOfPoint2f(contours.get(i).toArray()));
-            else
-                boundRect[i] = rectToRotatedRect(Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray())));
-        }
-
-        // Display contours
-        if (displayContours || displayAllBoxes) {
-            ArrayList<MatOfPoint> contoursPolyList = new ArrayList<MatOfPoint>(contoursPoly.length);
-            for (MatOfPoint2f poly : contoursPoly) {
-                contoursPolyList.add(new MatOfPoint(poly.toArray()));
-            }
-            for (int i = 0; i < contours.size(); i++) {
-                Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-                if (displayContours) Imgproc.drawContours(dst, contoursPolyList, i, color, 2);
-                // Draw rotated rect
-                if (displayAllBoxes) {
-                    drawRotatedRect(dst, boundRect[i], color, 2);
-                }
-            }
-
-            //HighGui.imshow("Contours and/or Boxes", dst);
-        }
-        return boundRect;
-    }
-
-    private static void drawRotatedRect(Mat dst, RotatedRect rect, Scalar color, int thickness) {
-        Point[] vertices = new Point[4];
-        rect.points(vertices);
-        List<MatOfPoint> boxContours = new ArrayList<>();
-        boxContours.add(new MatOfPoint(vertices));
-        Imgproc.drawContours(dst, boxContours, 0, color, thickness);
-    }
-
-    private static RotatedRect rectToRotatedRect(Rect rect) {
-        RotatedRect rotatedRect = new RotatedRect();
-        double x = rect.x, y = rect.y, h = rect.height, w = rect.width;
-        rotatedRect.center = new Point(x + w / 2.0, y + h / 2.0);
-        rotatedRect.size = rect.size();
-        return rotatedRect;
-    }
 
     private static double area(RotatedRect rect) {
         Point[] points = new Point[4];

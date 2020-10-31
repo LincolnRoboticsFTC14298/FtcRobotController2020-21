@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.old;
 
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
@@ -6,20 +6,18 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class RingCountPipeline extends OpenCvPipeline {
     OpenCvInternalCamera2 cam;
-    boolean minRect = true;
     boolean viewportPaused = false;
     double AREA_THRESHOLD = 700;
     int THICKNESS = 4;
     int rings = 0;
 
-    public RingCountPipeline(OpenCvInternalCamera2 cam, boolean minRect) {
+    public RingCountPipeline(OpenCvInternalCamera2 cam) {
         this.cam = cam;
-        this.minRect = minRect;
     }
 
     @Override
     public Mat processFrame(Mat input) {
-        rings = CameraRingDetection.ringCountUsingSegmentation(input, minRect, AREA_THRESHOLD,
+        rings = CameraRingDetection.ringCountUsingSegmentation(input, AREA_THRESHOLD,
                 THICKNESS, false);
         return input;
     }
