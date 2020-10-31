@@ -77,7 +77,7 @@ public class CameraRingDetection {
         ArrayList<MatOfPoint> contours = findContours(croppedMask, -0.5, 0.5);
 
         // Set minRect to false if you want non rotated rect
-        RotatedRect[] boundingRect = getBoundingRotatedRectangles(contours, croppedImg, debug, debug, 2);
+        RotatedRect[] boundingRect = getBoundingRotatedRects(contours, croppedImg, debug, debug, 2);
         double largestArea = 0;
         RotatedRect largestRect = new RotatedRect();
         for (int i = 0; i < contours.size(); i++) {
@@ -118,7 +118,7 @@ public class CameraRingDetection {
 
         // If countour area > threshold, it is a ring
 
-        RotatedRect[] boundingRect = getBoundingRotatedRectangles(contours, croppedImg, debug, debug, 2);
+        RotatedRect[] boundingRect = getBoundingRotatedRects(contours, croppedImg, debug, debug, 2);
         int numRings = 0;
         ArrayList<RotatedRect> rotatedRects = new ArrayList<>();
         for (int i = 0; i < contours.size(); i++) {
@@ -131,7 +131,7 @@ public class CameraRingDetection {
         }
 
         // Display boxes
-        drawRotatedRectangles(croppedImg, rotatedRects, new Scalar(0, 255, 0), thickness);
+        drawRotatedRects(croppedImg, rotatedRects, new Scalar(0, 255, 0), thickness);
 
 
         // Display where they are

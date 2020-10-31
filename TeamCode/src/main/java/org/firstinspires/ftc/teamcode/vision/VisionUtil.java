@@ -1,7 +1,5 @@
-package com.example.test.vision.newp;
+package org.firstinspires.ftc.teamcode.vision;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;

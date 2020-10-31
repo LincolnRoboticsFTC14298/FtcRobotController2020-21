@@ -1,22 +1,30 @@
-package com.example.test.vision.newp;
+package org.firstinspires.ftc.teamcode.vision;
 
-import com.example.test.vision.newp.operators.HSVRangeFilter;
-import com.example.test.vision.newp.operators.MorphologyOperator;
-import com.example.test.vision.newp.operators.SegmentationOperator;
-import com.example.test.vision.newp.scorers.AreaScorer;
-import com.example.test.vision.newp.scorers.SolidityScorer;
-import com.example.test.vision.newp.scorers.AspectRatioScorer;
-import com.example.test.vision.newp.scorers.VisionScorer;
-import org.opencv.core.*;
+import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
+import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
+import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
+import org.firstinspires.ftc.teamcode.vision.scorers.AspectRatioScorer;
+import org.firstinspires.ftc.teamcode.vision.scorers.SolidityScorer;
+import org.firstinspires.ftc.teamcode.vision.scorers.VisionScorer;
+import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
+
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.test.vision.newp.VisionUtil.*;
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.getBoundingRects;
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
-public class RingCountPipeline {
-    Object cam;
+public class RingCountPipeline extends OpenCvPipeline {
+    private OpenCvInternalCamera2 cam;
     private boolean viewportPaused = false;
     private static final double SCORE_THRESHOLD = 3;
     private static final int THICKNESS = 4;
@@ -46,7 +54,7 @@ public class RingCountPipeline {
         ANNOTATED
     }
 
-    public RingCountPipeline(Object cam, Viewport viewport) {
+    public RingCountPipeline(OpenCvInternalCamera2 cam, Viewport viewport) {
         this.cam = cam;
         this.viewport = viewport;
 
@@ -55,7 +63,15 @@ public class RingCountPipeline {
         scorers.add(aspectRatioSCorer);
     }
 
+    public Viewport getViewport() {
+        return viewport;
+    }
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
 
+
+    @Override
     public Mat processFrame(Mat input) {
         // TODO: investigate skipping segmentation and not doing morph_close
         Mat rawImage = input.clone();
@@ -129,6 +145,12 @@ public class RingCountPipeline {
             case MASKED:
                 displayMat = masked;
                 break;
+            case DIST1:
+                displayMat = dist1;
+                break;
+            case DIST2:
+                displayMat = dist2;
+                break;
             case MARKERS:
                 displayMat = markers;
                 break;
@@ -146,6 +168,18 @@ public class RingCountPipeline {
         }
         //System.out.println(score);
         return score;
+    }
+
+    @Override
+    public void onViewportTapped() {
+        viewportPaused = !viewportPaused;
+
+        if(viewportPaused) {
+            cam.pauseViewport();
+        }
+        else {
+            cam.resumeViewport();
+        }
     }
 
     public int getNumRingsFound() {
