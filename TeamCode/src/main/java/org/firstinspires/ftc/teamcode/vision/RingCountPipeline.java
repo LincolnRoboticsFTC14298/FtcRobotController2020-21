@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
 import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
 import org.firstinspires.ftc.teamcode.vision.scorers.AspectRatioScorer;
+import org.firstinspires.ftc.teamcode.vision.scorers.ExtentScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.SolidityScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
@@ -36,8 +37,10 @@ public class RingCountPipeline extends OpenCvPipeline {
     private ArrayList<VisionScorer> scorers = new ArrayList<>();
 
     public AreaScorer areaScorer = new AreaScorer();
-    public SolidityScorer solidityScorer = new SolidityScorer();
     public AspectRatioScorer aspectRatioSCorer = new AspectRatioScorer();
+    public ExtentScorer extentScorer = new ExtentScorer();
+    public SolidityScorer solidityScorer = new SolidityScorer();
+
 
     public HSVRangeFilter hsvRangeFilter = new HSVRangeFilter();
     public MorphologyOperator morphologyOperator = new MorphologyOperator();
@@ -61,8 +64,9 @@ public class RingCountPipeline extends OpenCvPipeline {
         this.viewport = viewport;
 
         scorers.add(areaScorer);
-        scorers.add(solidityScorer);
         scorers.add(aspectRatioSCorer);
+        scorers.add(extentScorer);
+        scorers.add(solidityScorer);
     }
 
     public Viewport getViewport() {
