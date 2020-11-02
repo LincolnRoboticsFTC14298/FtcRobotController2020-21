@@ -2,27 +2,29 @@ package org.firstinspires.ftc.teamcode.hardware.util.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class ToggleButton {
-    private Button button;
+public class ToggleButton extends Button {
     private boolean toggle;
 
     public ToggleButton(Gamepad gamepad, ButtonType buttonType) {
-        button = new Button(gamepad, buttonType);
+        super(gamepad, buttonType);
     }
     public ToggleButton(Gamepad gamepad, ButtonType buttonType, double debouncePeriod) {
-        button = new Button(gamepad, buttonType, debouncePeriod);
+        super(gamepad, buttonType, debouncePeriod);
     }
 
-    private void get() {
-        if (button.isPressed()) {
+    public boolean get() {
+        if (isPressed()) {
             toggle = !toggle;
         }
+        return toggle;
     }
 
     public boolean on() {
+        get();
         return toggle;
     }
     public boolean off() {
+        get();
         return !toggle;
     }
 }
