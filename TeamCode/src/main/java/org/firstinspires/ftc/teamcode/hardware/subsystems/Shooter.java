@@ -21,7 +21,6 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
 @Config
 public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    TelemetryPacket packet;
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String MOTOR1_NAME = "motor1", MOTOR2_NAME = "motor2", LOAD_MOTOR_NAME = "loadMotor";
@@ -60,8 +59,6 @@ public class Shooter implements Subsystem {
 
     @Override
     public void init(HardwareMap hardwareMap) {
-        TelemetryPacket packet = new TelemetryPacket();
-
         // Initialize motors and servos //
         motor1 = hardwareMap.get(DcMotor.class, MOTOR1_NAME);
         motor2 = hardwareMap.get(DcMotor.class, MOTOR2_NAME);
@@ -79,14 +76,10 @@ public class Shooter implements Subsystem {
         setFlapAngle(Math.toRadians(45));
         updateMotorPowers();
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void update() {
-        packet = new TelemetryPacket();
-
         setShooterPower(SHOOTER_DEFAULT_POWER);
 
         if (!doneShooting()) {
@@ -96,21 +89,15 @@ public class Shooter implements Subsystem {
 
         updateMotorPowers();
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void stop() {
-        packet = new TelemetryPacket();
-
         setShooterPower(0);
         setLoadPower(0);
         setFlapAngle(Math.toRadians(45));
         updateMotorPowers();
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     public boolean readyToShoot() {
@@ -127,7 +114,6 @@ public class Shooter implements Subsystem {
         return shootScheduler == 0 && !isLoading();
     }
 
-
     public void aimAsync(Pose2d targetRelPose) {
         double dist = Math.hypot(targetRelPose.getY(), targetRelPose.getX());
         double height = target.getLocation(alliance).getZ();
@@ -140,7 +126,6 @@ public class Shooter implements Subsystem {
         targetAngle = angle;
         setFlapAngle(targetAngle);
     }
-
 
     public void shootAsync(Pose2d targetRelPose) {
         this.targetRelPose = targetRelPose;
@@ -162,8 +147,6 @@ public class Shooter implements Subsystem {
         }
     }
 
-
-
     ElapsedTime loadingElapse = new ElapsedTime();
     public void startLoadingRing() {
         loading = true;
@@ -179,8 +162,6 @@ public class Shooter implements Subsystem {
     public boolean isLoading() {
         return loading;
     }
-
-
 
     // Angle is in radians
     public void setFlapAngle(double angle) {
@@ -208,24 +189,29 @@ public class Shooter implements Subsystem {
         motor1.setPower(motor1Power);
         motor2.setPower(motor2Power);
         loadMotor.setPower(loadMotorPower);
+        TelemetryPacket packet = new TelemetryPacket();
         packet.put("Shooter power: ", motor1.getPower());
+        dashboard.sendTelemetryPacket(packet);
     }
     private void updateServoPositions() {
         flap.setPosition(angleToPos(flapAngle));
+        TelemetryPacket packet = new TelemetryPacket();
         packet.addLine("Flap Angle: " +  Math.toDegrees(targetAngle) + " target vs " +
                 Math.toDegrees(posToAngle(flap.getPosition())) + " actual");
+        dashboard.sendTelemetryPacket(packet);
     }
 
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-    public void setAlliance(Alliance alliance) {
-        this.alliance = alliance;
-    }
     public Target getTarget() {
         return target;
     }
-    public Alliance setAlliance() {
+    public void setTarget(Target target) {
+        this.target = target;
+    }
+
+    public Alliance getAlliance() {
         return alliance;
+    }
+    public void setAlliance(Alliance alliance) {
+        this.alliance = alliance;
     }
 }

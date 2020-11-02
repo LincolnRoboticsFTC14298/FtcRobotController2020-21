@@ -25,8 +25,6 @@ public class Vision implements Subsystem {
     public static final int height = 240;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    TelemetryPacket packet;
-
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private OpenCvInternalCamera2 phoneCam;
@@ -43,8 +41,6 @@ public class Vision implements Subsystem {
 
     @Override
     public void init(HardwareMap hardwareMap) {
-        packet = new TelemetryPacket();
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDeviceAsync(
@@ -57,27 +53,23 @@ public class Vision implements Subsystem {
                     }
                 }
         );
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void update() {
-        packet = new TelemetryPacket();
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void stop() {
-        packet = new TelemetryPacket();
         stopStreaming();
-        dashboard.sendTelemetryPacket(packet);
     }
 
     public void analyze() {
         rings = ringCountPipeline.getNumRingsFound();
         processed = true;
+        TelemetryPacket packet = new TelemetryPacket();
         packet.put("Number of Rings: ", rings);
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public void startStreaming() {
@@ -102,14 +94,18 @@ public class Vision implements Subsystem {
     }
 
     public int getNumRings() {
+        TelemetryPacket packet = new TelemetryPacket();
         if (processed && Arrays.asList(new int[]{0,1,4}).contains(rings)) {
             return rings;
         } else if (processed) {
             packet.addLine("Ring is not 0,1,4!");
+            dashboard.sendTelemetryPacket(packet);
             return 0;
         } else {
             packet.addLine("ERROR: IMAGE NOT PROCESSED");
+            dashboard.sendTelemetryPacket(packet);
             return 0;
         }
+
     }
 }

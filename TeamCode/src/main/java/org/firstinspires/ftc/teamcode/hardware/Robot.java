@@ -91,20 +91,22 @@ public class Robot extends RobotBase {
     }
 
 
+    public Target getTarget() {
+        return target;
+    }
     public void setTarget(Target target) {
         this.target = target;
         drive.setTarget(target);
         shooter.setTarget(target);
+    }
+
+    public Alliance getAlliance() {
+        return alliance;
     }
     public void setAlliance(Alliance alliance) {
         this.alliance = alliance;
         drive.setAlliance(alliance);
         shooter.setAlliance(alliance);
     }
-    public Target getTarget() {
-        return target;
-    }
-    public Alliance getAlliance() {
-        return alliance;
-    }
+
 }

@@ -318,6 +318,16 @@ public class NewDrive extends MecanumDrive implements Subsystem {
         throw new AssertionError();
     }
 
+    public void waitForIdle() {
+        while (!Thread.currentThread().isInterrupted() && isBusy()) {
+            update();
+        }
+    }
+
+    public boolean isBusy() {
+        return mode != Mode.IDLE;
+    }
+
     /*
      * Input is the forwardAmt, strafeAmt, rotation
      */
@@ -337,21 +347,6 @@ public class NewDrive extends MecanumDrive implements Subsystem {
         );
     }
 
-
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-    public void setAlliance(Alliance alliance) {
-        this.alliance = alliance;
-    }
-
-    public Target getTarget() {
-        return target;
-    }
-    public Alliance getAlliance() {
-        return alliance;
-    }
-
     public void pointAtTargetAsync() {
         turnAsync(getTargetRelHeading());
     }
@@ -367,22 +362,28 @@ public class NewDrive extends MecanumDrive implements Subsystem {
         return Math.atan2(diff.getY(), diff.getX()); // Happens to be in the heading frame
     }
     public Pose2d getTargetRelPose() {
-        // Rel pose of target in reference to center of drive
+        // Rel pose of target in reference to the shooter
         Pose2d targetPose = target.getPose(alliance);
         Pose2d pose = getPoseEstimate();
         Pose2d shooterPos = new Pose2d(pose.getX() + SHOOTER_LOCATION.getX(), pose.getY() + SHOOTER_LOCATION.getY());
         return new Pose2d(targetPose.getX() - shooterPos.getX(), targetPose.getY() - shooterPos.getY());
     }
 
-    public void waitForIdle() {
-        while (!Thread.currentThread().isInterrupted() && isBusy()) {
-            update();
-        }
+    public Target getTarget() {
+        return target;
+    }
+    public void setTarget(Target target) {
+        this.target = target;
     }
 
-    public boolean isBusy() {
-        return mode != Mode.IDLE;
+    public Alliance getAlliance() {
+        return alliance;
     }
+    public void setAlliance(Alliance alliance) {
+        this.alliance = alliance;
+    }
+
+
 
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {

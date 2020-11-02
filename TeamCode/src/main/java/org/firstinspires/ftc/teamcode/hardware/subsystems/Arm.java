@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 @Config
 public class Arm implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    TelemetryPacket packet;
-
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     public static final String CLAW_SERVO_NAME = "claw";
@@ -36,39 +34,25 @@ public class Arm implements Subsystem {
 
     @Override
     public void init(HardwareMap hardwareMap) {
-        packet = new TelemetryPacket();
-
         clawServo = hardwareMap.get(Servo.class, CLAW_SERVO_NAME);
         armServo = hardwareMap.get(Servo.class, ARM_SERVO_NAME);
 
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
         defaultArm();
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void update() {
-        packet = new TelemetryPacket();
-
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void stop() {
-        packet = new TelemetryPacket();
-
         closeClaw();
         defaultArm();
         updateServoPositions();
-
-        dashboard.sendTelemetryPacket(packet);
     }
-
-
 
     public void openClaw() {
         setClawPosition(CLAW_OPEN_POSITION);
@@ -98,7 +82,9 @@ public class Arm implements Subsystem {
         armServo.setPosition(armPosition);
         clawServo.setPosition(clawPosition);
 
+        TelemetryPacket packet = new TelemetryPacket();
         packet.put("Arm position: ", armServo.getPosition());
         packet.put("Claw position: ", clawServo.getPosition());
+        dashboard.sendTelemetryPacket(packet);
     }
 }
