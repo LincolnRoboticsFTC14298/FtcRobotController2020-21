@@ -55,8 +55,15 @@ import static org.firstinspires.ftc.teamcode.util.DriveConstants.kV;
 
 @Config
 public class NewDrive extends MecanumDrive implements Subsystem {
-    private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private FtcDashboard dashboard;
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+    private static final String LEFT_FRONT_NAME = "leftFront";
+    private static final String LEFT_REAR_NAME = "leftRear";
+    private static final String RIGHT_REAR_NAME = "rightRear";
+    private static final String RIGHT_FRONT_NAME = "rightFront";
+
+    public static double DRIVER_TARGET_ANGLE_MIN_ERROR = 1; // In degrees
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
@@ -133,10 +140,10 @@ public class NewDrive extends MecanumDrive implements Subsystem {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_NAME);
+        leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_NAME);
+        rightRear = hardwareMap.get(DcMotorEx.class, RIGHT_FRONT_NAME);
+        rightFront = hardwareMap.get(DcMotorEx.class, RIGHT_REAR_NAME);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
