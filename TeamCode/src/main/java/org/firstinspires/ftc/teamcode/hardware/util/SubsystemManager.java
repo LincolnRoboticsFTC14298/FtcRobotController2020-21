@@ -1,29 +1,31 @@
 package org.firstinspires.ftc.teamcode.hardware.util;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import java.util.ArrayList;
 
 public class SubsystemManager {
-    private ArrayList<Subsystem> components = new ArrayList<>();
+    private ArrayList<Subsystem> subsystems = new ArrayList<>();
 
-    public void add(Subsystem component) {
-        components.add(component);
+    public void add(Subsystem subsystem) {
+        subsystems.add(subsystem);
     }
 
-    public void init() {
-        for (Subsystem component : components) {
-            component.init();
+    public void init(HardwareMap hardwareMap) {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.init(hardwareMap);
         }
     }
 
     public void update() {
-        for (Subsystem component : components) {
-            component.update();
+        for (Subsystem subsystem : subsystems) {
+            subsystem.update();
         }
     }
 
-    public void end() {
-        for (Subsystem component : components) {
-            component.end();
+    public void stop() {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.stop();
         }
     }
 }
