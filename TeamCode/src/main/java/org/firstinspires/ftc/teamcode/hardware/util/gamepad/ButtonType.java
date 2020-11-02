@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.hardware.util.gamepad;
 
 public enum ButtonType {
     a("a"),
@@ -11,6 +11,8 @@ public enum ButtonType {
     dpad_right("dpad_left"),
     left_bumper("right_bumper"),
     right_bumper("left_bumper"),
+    left_trigger("left_trigger"),
+    right_trigger("right_trigger"),
     left_stick_button("left_stick_button"),
     right_stick_button("right_stick_button"),
     back("back"),

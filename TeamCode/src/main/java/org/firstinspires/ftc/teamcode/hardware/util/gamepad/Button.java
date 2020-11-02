@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.hardware.util.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -66,11 +66,16 @@ public class Button {
         this.debouncePeriod = debouncePeriod; // Default period
     }
 
+    public ButtonType getButtonType() {
+        return buttonType;
+    }
+
     public boolean isPressed() {
         boolean raw = getRaw();
         if (debounce) {
             raw = debouncePressed(raw);
         }
+
         if (raw && !released) {
             released = true;
             state = true;
@@ -95,7 +100,7 @@ public class Button {
     private boolean getRawPressed() {
         try {
             Field f = Gamepad.class.getField(buttonType.toString());
-            return(boolean) f.get(gamepad);
+            return (boolean) f.get(gamepad);
         } catch (NoSuchFieldException e) {
             //throw new IllegalStateException("Bad field name: " + button.toString(), e);
         } catch (IllegalAccessException e) {

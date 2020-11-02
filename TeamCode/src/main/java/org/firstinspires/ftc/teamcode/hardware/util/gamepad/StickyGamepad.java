@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.hardware.util.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-
-import org.firstinspires.ftc.robotcore.internal.ui.GamepadUser;
 
 public class StickyGamepad {
     // USE BUTTON CLASS INSTEAD
