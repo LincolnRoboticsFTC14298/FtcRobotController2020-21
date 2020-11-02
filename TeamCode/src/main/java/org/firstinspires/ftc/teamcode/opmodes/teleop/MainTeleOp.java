@@ -14,18 +14,17 @@ public class MainTeleOp extends OpMode {
     @Override
     public void init() {
         robot.init(this);
-        operatorInterface.init(this);
+        operatorInterface.init(gamepad1, gamepad2);
     }
 
     @Override
     public void loop() {
         operatorInterface.update();
-//        robot.teleopUpdate();
         robot.update();
     }
 
     @Override
     public void stop() {
-        robot.end();
+        robot.stop();
     }
 }

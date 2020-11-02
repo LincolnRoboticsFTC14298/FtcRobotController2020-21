@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes.auto;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.hardware.util.SubsystemOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.SubsystemOpMode;
 
 import static java.lang.Thread.sleep;
 
@@ -19,7 +19,9 @@ public class DriveToLine extends SubsystemOpMode {
 
     @Override
     public void start() {
+        robot.vision.startStreaming();
         robot.vision.analyze();
+        robot.vision.stopStreaming();
         setPower(1);
         try {
             sleep(1000);
@@ -36,11 +38,11 @@ public class DriveToLine extends SubsystemOpMode {
 
     @Override
     public void stop() {
-        robot.subsystemManager.end();
+        robot.stop();
     }
 
     public void setPower(double n) {
-        robot.drive.setPower(n,n,n,n);
+        robot.drive.setMotorPowers(n,n,n,n);
         robot.update();
     }
 }
