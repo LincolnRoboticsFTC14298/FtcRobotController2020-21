@@ -8,7 +8,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
 
-@TeleOp()
+@TeleOp(name="Camera OpMode", group="Testing")
 public class CameraOpMode extends LinearOpMode {
 
     OpenCvInternalCamera2 phoneCam;
