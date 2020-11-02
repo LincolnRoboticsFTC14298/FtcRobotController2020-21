@@ -21,6 +21,9 @@ import java.util.Arrays;
 import static org.opencv.android.Utils.matToBitmap;
 
 public class Vision implements Subsystem {
+    public static final int width = 320;
+    public static final int height = 240;
+
     FtcDashboard dashboard = FtcDashboard.getInstance();
     TelemetryPacket packet;
 
@@ -78,12 +81,15 @@ public class Vision implements Subsystem {
     }
 
     public void startStreaming() {
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
     }
     public void stopStreaming() {
         phoneCam.stopStreaming();
     }
 
+    public Viewport getViewport() {
+        return ringCountPipeline.getViewport();
+    }
     public void setViewport(Viewport viewport) {
         ringCountPipeline.setViewport(viewport);
     }
