@@ -4,61 +4,54 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionLocalizer;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.RoadRunner;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.NewDrive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.RobotBase;
-import org.firstinspires.ftc.teamcode.util.Field.*;
+import org.firstinspires.ftc.teamcode.util.Field.Alliance;
+import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 
 public class Robot extends RobotBase {
     // Subsystems
-    public Drive drive = new Drive(this);
-    public Intake intake = new Intake(this);
-    public Shooter shooter = new Shooter(this);
-    public Arm arm = new Arm(this);
-    public PositionLocalizer positionLocalizer = new PositionLocalizer(this);
-    public RoadRunner roadRunner = new RoadRunner(this);
-    public Vision vision = new Vision(this);
+    public Vision vision = new Vision();
+    public Intake intake = new Intake();
+    public Shooter shooter = new Shooter();
+    public Arm arm = new Arm();
+
+//    public static interface PositionProvider {
+//        int getX();
+//        int getY();
+//    }
+//
+//    private class ThisPositionProvider {
+//
+//    }
+
+//    public Drive drive = new Drive();
+//    public RoadRunnerDrive roadRunnerDrive = new RoadRunnerDrive(drive);
+
+    public NewDrive drive = new NewDrive();
 
     public boolean autoAim = false, localControl = true, liftArm = true;
     public Target target = Target.HIGH_GOAL;
     public Alliance alliance = Alliance.BLUE;
 
-    @Override
-    public void init(OpMode opMode) {
-        super.init(opMode);
-
-        subsystemManager.add(drive);
+    public Robot() {
+        subsystemManager.add(vision);
         subsystemManager.add(intake);
         subsystemManager.add(shooter);
         subsystemManager.add(arm);
-        subsystemManager.add(positionLocalizer);
-        subsystemManager.add(roadRunner);
-        subsystemManager.add(vision);
+        subsystemManager.add(drive);
+    }
 
-        subsystemManager.init();
+    @Override
+    public void init(OpMode opMode) {
+        super.init(opMode);
+        subsystemManager.init(hardwareMap);
         telemetry.update();
     }
-
-    /*
-    @Override
-    public void teleopUpdate() {
-
-        // Drive
-
-
-        // Intake
-
-
-
-        // Shooter
-
-    }
-     */
 
     @Override
     public void update() {
@@ -67,42 +60,36 @@ public class Robot extends RobotBase {
     }
 
     @Override
-    public void end() {
-        subsystemManager.end();
+    public void stop() {
+        subsystemManager.stop();
         telemetry.update();
     }
 
+    public void shoot(int n) {
+        // Not async as to prevent other movements.
+        drive.pointAtTargetAsync();
+        shooter.aimAsync(drive.getTargetRelPose()); // Start aiming before aligned, doesn't need to be fully aligned
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while(drive.isBusy() && elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
+            drive.update();
+            shooter.update();
+            // TODO: if bumped into by robot while shooting, it will not update
+        }
+        for (int i = 0; i < n; i++) {
+            shooter.shoot(drive.getTargetRelPose());
+        }
+    }
+    public void shootTarget(Target target, int n) {
+        setTarget(target);
+        shoot(n);
+    }
     public void powerShot() {
         // Point to outward power shot
-        setTarget(Target.OUTWARD_POWER_SHOT);
-        pointAtTarget();
-        shoot();
-
-        setTarget(Target.MIDDLE_POWER_SHOT);
-        pointAtTarget();
-        shoot();
-
-        setTarget(Target.INWARD_POWER_SHOT);
-        pointAtTarget();
-        shoot();
+        shootTarget(Target.OUTWARD_POWER_SHOT, 1);
+        shootTarget(Target.MIDDLE_POWER_SHOT, 1);
+        shootTarget(Target.INWARD_POWER_SHOT, 1);
     }
 
-
-    private void pointAtTarget() {
-        drive.pointAtTarget();
-        ElapsedTime elapsedTime = new ElapsedTime();
-        while (!drive.isAligned() || elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
-            update();
-        }
-    }
-
-    private void shoot() {
-        shooter.shoot();
-        ElapsedTime elapsedTime = new ElapsedTime();
-        while (!shooter.doneShooting() || elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
-            update();
-        }
-    }
 
     public void setTarget(Target target) {
         this.target = target;
@@ -113,5 +100,11 @@ public class Robot extends RobotBase {
         this.alliance = alliance;
         drive.setAlliance(alliance);
         shooter.setAlliance(alliance);
+    }
+    public Target getTarget() {
+        return target;
+    }
+    public Alliance getAlliance() {
+        return alliance;
     }
 }
