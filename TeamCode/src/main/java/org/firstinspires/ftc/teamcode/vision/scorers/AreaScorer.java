@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
 @Config
@@ -27,11 +26,7 @@ public class AreaScorer extends VisionScorer {
 
     @Override
     public double score(MatOfPoint contour) {
-        Rect rect = Imgproc.boundingRect(contour);
-        // Get h/w or w/h, whichever is smaller just encase rotation of phone.
-
         double area = Imgproc.contourArea(contour);
         return squareError(area, optimalArea) * weight;
     }
 }
-
