@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 public class VisionUtil {
-    public static final double FOV = Math.toRadians(45);
-    private static final Random rng = new Random(12345);
-
     public static ArrayList<MatOfPoint> findContours(Mat mask, double threshold1, double threshold2) {
         Mat cannyOutput = new Mat();
         Imgproc.Canny(mask, cannyOutput, threshold1, threshold2);
@@ -48,11 +45,11 @@ public class VisionUtil {
 
         // Display contours and boxes
         if (displayContours) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawContours(dst, contoursPoly, color, thickness);
         }
         if (displayAllBoxes) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawRects(dst, boundRects, color, thickness);
         }
         return boundRects;
@@ -77,11 +74,11 @@ public class VisionUtil {
 
         // Display contours and boxes
         if (displayContours) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawContours(dst, contoursPoly, color, thickness);
         }
         if (displayAllBoxes) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawRotatedRects(dst, boundRects, color, thickness);
         }
         return boundRects;
@@ -111,11 +108,11 @@ public class VisionUtil {
 
         // Display contours and boxes
         if (displayContours) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawContours(dst, contoursPoly, color, thickness);
         }
         if (displayAllBoxes) {
-            Scalar color = genColor();
+            Scalar color = generateColor();
             drawRotatedRects(dst, boundRects, color, thickness);
         }
         return boundRects;
@@ -168,7 +165,8 @@ public class VisionUtil {
         return rotatedRect;
     }
 
-    public static Scalar genColor() {
+    public static Scalar generateColor() {
+        Random rng = new Random(12345);
         return new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
     }
 }

@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.vision.scorers;
+
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+@Config
 public class SolidityScorer extends VisionScorer {
-    private double optimalRatio = .8;
-    private double weight = 1;
+    public static double optimalRatio = .8;
+    public static double weight = 1;
 
     public SolidityScorer() {
 

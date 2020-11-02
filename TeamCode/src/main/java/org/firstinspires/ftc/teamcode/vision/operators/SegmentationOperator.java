@@ -1,24 +1,49 @@
 package org.firstinspires.ftc.teamcode.vision.operators;
 
-import com.example.test.vision.newp.VisionUtil;
-import org.opencv.core.*;
-import org.opencv.highgui.HighGui;
+import com.acmerobotics.dashboard.config.Config;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.test.vision.newp.VisionUtil.genColor;
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.generateColor;
 
 
+@Config
 public class SegmentationOperator {
-    double binaryThresh = 40.0;
-    Size openSize = new Size(11,11);
-    double distThresh = 0.2;
+    public static double binaryThresh = 40.0;
+    public static Size openSize = new Size(11,11);
+    public static double distThresh = 0.2;
 
 
     public SegmentationOperator() {
+    }
 
+    public double getBinaryThresh() {
+        return binaryThresh;
+    }
+    public void setBinaryThresh(double binaryThresh) {
+        this.binaryThresh = binaryThresh;
+    }
+    public Size getOpenSize() {
+        return openSize;
+    }
+    public void setOpenSize(Size openSize) {
+        this.openSize = openSize;
+    }
+    public double getDistThresh() {
+        return distThresh;
+    }
+    public void setDistThresh(double distThresh) {
+        this.distThresh = distThresh;
     }
 
     public List<MatOfPoint> process(Mat img, Mat dist1Dst, Mat dist2Dst, Mat dst) {
@@ -33,7 +58,7 @@ public class SegmentationOperator {
 
         // Create binary image from source image
         Mat bw = new Mat();
-        Imgproc.cvtColor(imgResult, bw, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.cvtColor(imgResult, bw, Imgproc.COLOR_RGB2GRAY);
         Imgproc.threshold(bw, bw, binaryThresh, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU);
 
         // Perform the distance transform algorithm
@@ -89,7 +114,7 @@ public class SegmentationOperator {
         // Generate random colors
         List<Scalar> colors = new ArrayList<>(contours.size());
         for (int i = 0; i < contours.size(); i++) {
-            colors.add(genColor());
+            colors.add(generateColor());
         }
 
         // Create the result image
@@ -156,5 +181,4 @@ public class SegmentationOperator {
         // Visualize the final image
         return finalContours;
     }
-
 }

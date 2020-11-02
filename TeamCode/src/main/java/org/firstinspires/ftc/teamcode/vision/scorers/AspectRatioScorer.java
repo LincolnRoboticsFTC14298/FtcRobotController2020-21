@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.vision.scorers;
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+@Config
 public class AspectRatioScorer extends VisionScorer {
-    private double optimalRatio = 0.75 / 5.0;
-    private double weight = 3;
+    public static double optimalRatio = 0.75 / 5.0;
+    public static double weight = 3;
 
     public AspectRatioScorer() {
 

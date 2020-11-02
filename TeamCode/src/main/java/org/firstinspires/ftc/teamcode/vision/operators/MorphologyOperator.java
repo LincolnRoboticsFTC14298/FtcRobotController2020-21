@@ -1,21 +1,37 @@
 package org.firstinspires.ftc.teamcode.vision.operators;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
 
+@Config
 public class MorphologyOperator implements MatOperator {
-    private Size openSize = new Size(15,15);
-    private Size closeSize = new Size(30,30);
+    public static Size openSize = new Size(15,15);
+    public static Size closeSize = new Size(30,30);
 
     public MorphologyOperator() {
 
     }
     public MorphologyOperator(Size openSize, Size closeSize) {
-        this.openSize = openSize;
-        this.closeSize = closeSize;
+        MorphologyOperator.openSize = openSize;
+        MorphologyOperator.closeSize = closeSize;
     }
+
+    public Size getOpenSize() {
+        return openSize;
+    }
+    public void setOpenSize(Size openSize) {
+        MorphologyOperator.openSize = openSize;
+    }
+    public Size getCloseSize() {
+        return closeSize;
+    }
+    public void setCloseSize(Size closeSize) {
+        MorphologyOperator.closeSize = closeSize;
+    }
+
 
     @Override
     public Mat process(Mat mask) {
@@ -30,7 +46,6 @@ public class MorphologyOperator implements MatOperator {
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, openSize);
         // Applying dilate on the Image
         Imgproc.morphologyEx(mask, finalMask, Imgproc.MORPH_OPEN, kernel);
-        // Don't use close since it makes it harder for segmenter
         // Closes gaps //
         Mat se = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, closeSize);
         Imgproc.morphologyEx(finalMask, finalMask, Imgproc.MORPH_CLOSE, se);

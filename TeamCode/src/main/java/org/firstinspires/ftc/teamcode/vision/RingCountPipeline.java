@@ -35,13 +35,15 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     private ArrayList<VisionScorer> scorers = new ArrayList<>();
 
-    private AreaScorer areaScorer = new AreaScorer();
-    private SolidityScorer solidityScorer = new SolidityScorer();
-    private AspectRatioScorer aspectRatioSCorer = new AspectRatioScorer();
+    public AreaScorer areaScorer = new AreaScorer();
+    public SolidityScorer solidityScorer = new SolidityScorer();
+    public AspectRatioScorer aspectRatioSCorer = new AspectRatioScorer();
 
-    private HSVRangeFilter hsvRangeFilter = new HSVRangeFilter();
-    private MorphologyOperator morphologyOperator = new MorphologyOperator();
-    private SegmentationOperator segmentationOperator = new SegmentationOperator();
+    public HSVRangeFilter hsvRangeFilter = new HSVRangeFilter();
+    public MorphologyOperator morphologyOperator = new MorphologyOperator();
+    public SegmentationOperator segmentationOperator = new SegmentationOperator();
+
+    private Mat latestMat;
 
     public enum Viewport {
         RAW_IMAGE,
@@ -69,7 +71,9 @@ public class RingCountPipeline extends OpenCvPipeline {
     public void setViewport(Viewport viewport) {
         this.viewport = viewport;
     }
-
+    public Mat getLatestMat() {
+        return latestMat;
+    }
 
     @Override
     public Mat processFrame(Mat input) {
@@ -158,6 +162,7 @@ public class RingCountPipeline extends OpenCvPipeline {
                 displayMat = workingMat;
                 break;
         }
+        latestMat = displayMat;
         return displayMat;
     }
 
