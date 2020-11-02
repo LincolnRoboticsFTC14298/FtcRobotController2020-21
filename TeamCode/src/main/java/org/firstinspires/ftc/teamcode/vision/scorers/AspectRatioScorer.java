@@ -7,7 +7,7 @@ import org.opencv.imgproc.Imgproc;
 
 @Config
 public class AspectRatioScorer extends VisionScorer {
-    public static double optimalRatio = 0.75 / 5.0;
+    public static double optimalRatio = 5.0 / 0.75;
     public static double weight = 3;
 
     public AspectRatioScorer() {
@@ -26,9 +26,9 @@ public class AspectRatioScorer extends VisionScorer {
     @Override
     public double score(MatOfPoint contour) {
         Rect rect = Imgproc.boundingRect(contour);
-        // Get h/w or w/h, whichever is smaller just incase rotation of phone.
-        double ratio = (double) rect.height / rect.width;
-        ratio = Math.min(ratio, 1.0/ratio);
+        // Get w/h or h/w, whichever is bigger just incase rotation of phone.
+        double ratio = ((double) rect.width) / rect.height;
+        ratio = Math.max(ratio, 1.0/ratio);
         return squareError(ratio, optimalRatio) * weight;
     }
 }
