@@ -108,4 +108,8 @@ public class Vision implements Subsystem {
         }
 
     }
+
+    public void saveOutput(String filename) {
+        ringCountPipeline.saveLatestMat(filename);
+    }
 }

@@ -78,6 +78,9 @@ public class RingCountPipeline extends OpenCvPipeline {
     public Mat getLatestMat() {
         return latestMat;
     }
+    public void saveLatestMat(String filename) {
+        saveMatToDisk(getLatestMat(), filename);
+    }
 
     @Override
     public Mat processFrame(Mat input) {

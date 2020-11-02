@@ -118,7 +118,6 @@ public class VisionUtil {
         return boundRects;
     }
 
-
     public static void drawContours(Mat dst, MatOfPoint2f[] contoursPoly, Scalar color, int thickness) {
         ArrayList<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
         for (MatOfPoint2f poly : contoursPoly) {
