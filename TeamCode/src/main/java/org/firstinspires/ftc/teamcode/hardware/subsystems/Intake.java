@@ -1,61 +1,83 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.google.common.flogger.FluentLogger;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
-import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 
+@Config
 public class Intake implements Subsystem {
-    private Robot robot;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    TelemetryPacket packet;
 
-    private DcMotor motor1, motor2;
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+    private static final String FRONT_NAME = "intakeFront";
+    private static final String REAR_NAME = "intakeRear";
+
+    public static double FRONT_POWER_ON = 1;
+    public static double REAR_POWER_ON = 1;
+
+    private DcMotorEx front, rear;
+    private double frontPower = 0, rearPower = 0;
     private boolean on = false;
 
-    public Intake(Robot robot) {
-        this.robot = robot;
+    public Intake() {
+
     }
 
     @Override
-    public void init() {
-        motor1 = robot.hardwareMap.get(DcMotor.class, RobotMap.INTAKE_MOTOR1_NAME);
-        motor2 = robot.hardwareMap.get(DcMotor.class, RobotMap.INTAKE_MOTOR2_NAME);
+    public void init(HardwareMap hardwareMap) {
+        packet = new TelemetryPacket();
 
-        motor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
+        rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
+
+        rear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         turnOff();
         updateIntakeMotors();
+
+        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void update() {
+        packet = new TelemetryPacket();
+
         updateIntakeMotors();
+
+        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
-    public void end() {
+    public void stop() {
+        packet = new TelemetryPacket();
+
         turnOff();
         updateIntakeMotors();
+
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public void turnOn() {
-        on = true;
+        frontPower = FRONT_POWER_ON;
+        rearPower = REAR_POWER_ON;
     }
-
     public void turnOff() {
-        on = false;
+        frontPower = 0;
+        rearPower = 0;
     }
 
     public void updateIntakeMotors() {
-        if (on) {
-            motor1.setPower(RobotMap.INTAKE_MOTOR1_POWER_ON);
-            motor2.setPower(RobotMap.INTAKE_MOTOR2_POWER_ON);
-        } else {
-            motor1.setPower(0);
-            motor2.setPower(0);
-        }
-        robot.telemetry.addData("Intake motor powers: ", "%.5f %.5f",
-                motor1.getPower(), motor2.getPower());
+        front.setPower(frontPower);
+        rear.setPower(rearPower);
+        packet.put("Front intake motor power: ", front.getPower());
+        packet.put("Back intake motor power: ", rear.getPower());
     }
 }
