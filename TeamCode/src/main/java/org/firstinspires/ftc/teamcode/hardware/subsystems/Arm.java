@@ -71,27 +71,26 @@ public class Arm implements Subsystem {
 
 
     public void openClaw() {
-        setClawServo(CLAW_OPEN_POSITION);
+        setClawPosition(CLAW_OPEN_POSITION);
     }
     public void closeClaw() {
-        setClawServo(CLAW_CLOSE_POSITION);
+        setClawPosition(CLAW_CLOSE_POSITION);
     }
 
     public void liftArm() {
-        setArmAngle(ARM_LIFT_POSITION);
+        setArmPosition(ARM_LIFT_POSITION);
     }
     public void defaultArm() {
-        setArmAngle(ARM_DEFAULT_POSITION);
+        setArmPosition(ARM_DEFAULT_POSITION);
     }
     public void lowerArm() {
-        setArmAngle(ARM_LOWER_POSITION);
+        setArmPosition(ARM_LOWER_POSITION);
     }
 
-    public void setArmAngle(double position) {
+    public void setArmPosition(double position) {
         this.armPosition = position;
     }
-
-    public void setClawServo(double position) {
+    public void setClawPosition(double position) {
         this.clawPosition = position;
     }
 
