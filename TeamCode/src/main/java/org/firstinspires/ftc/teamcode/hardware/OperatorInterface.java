@@ -1,63 +1,53 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.util.Button;
-import org.firstinspires.ftc.teamcode.util.ButtonType;
-import org.firstinspires.ftc.teamcode.util.Field.*;
-import org.firstinspires.ftc.teamcode.util.StickyGamepad;
-import org.firstinspires.ftc.teamcode.util.ToggleButton;
+import org.firstinspires.ftc.teamcode.hardware.util.gamepad.Button;
+import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ButtonTrigger;
+import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ButtonType;
+import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ToggleButton;
+import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 // Operator Interface
 public class OperatorInterface {
-    private Robot robot;
+    public static final double DEBOUNCER_PERIOD = 0.5;
+
+    private final Robot robot;
     private Gamepad gamepad1;
     private Gamepad gamepad2;
 
     // Use toggle when you want to use the same button for up and down
-    ToggleButton autoAimToggleButton, localControlToggleButton, liftArmToggleButton, openClawToggleButton, intakeOnToggleButton;
+    ToggleButton autoAimToggleButton, fieldCentricToggleButton, liftArmToggleButton,
+            openClawToggleButton, intakeOnToggleButton;
 
-    Button highGoalButton, middleGoalButton, outwardPowerShotButton, middlePowerShotButton, inwardPowerShotButton, powerShotButton;
-    Button shootButton;
-
-    // Toggles
-    double latestAutoAim = 0, latestIntakeOn = 0, latestLocalControl = 0;
+    Button highGoalButton, middleGoalButton, powerShotButton;
+    ButtonTrigger shootButton;
 
     public OperatorInterface(Robot robot) {
         this.robot = robot;
     }
 
-    public void init(OpMode opMode) {
-        // this.gamepad1 = new StickyGamepad(opMode.gamepad1);
-        // this.gamepad2 = new StickyGamepad(opMode.gamepad2);
+    public void init(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
 
+        // ALL OF THE Button MAPPINGS //
+
         autoAimToggleButton = new ToggleButton(gamepad1, ButtonType.a, 1);
-        localControlToggleButton = new ToggleButton(gamepad1, ButtonType.b, 1);
+        fieldCentricToggleButton = new ToggleButton(gamepad1, ButtonType.b, 1);
         liftArmToggleButton = new ToggleButton(gamepad1, ButtonType.x);
         openClawToggleButton = new ToggleButton(gamepad1, ButtonType.y);
         intakeOnToggleButton = new ToggleButton(gamepad1, ButtonType.right_bumper);
 
-
         highGoalButton = new Button(gamepad2, ButtonType.a);
         middleGoalButton = new Button(gamepad2, ButtonType.b);
-
         powerShotButton = new Button(gamepad2, ButtonType.x);
 
-//        outwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_left);
-//        middlePowerShotButton = new Button(gamepad2, ButtonType.dpad_up);
-//        inwardPowerShotButton = new Button(gamepad2, ButtonType.dpad_right);
-
-        shootButton = new Button(gamepad1, ButtonType.left_bumper);
+        shootButton = new ButtonTrigger(gamepad1, ButtonType.right_trigger);
     }
 
     public void update() {
-        // Update gamepads
-        //gamepad1.update();
-        //gamepad2.update();
-
         // Robot controlling
         // Targets
         if (highGoalButton.isPressed()) {
@@ -66,17 +56,6 @@ public class OperatorInterface {
         if (middleGoalButton.isPressed()) {
             robot.setTarget(Target.MIDDLE_GOAL);
         }
-
-        // TODO: Make pre-programmed out rotate and shot power shot
-//        if (outwardPowerShotButton.isPressed()) {
-//            robot.setTarget(Target.OUTWARD_POWER_SHOT);
-//        }
-//        if (middleGoalButton.isPressed()) {
-//            robot.setTarget(Target.MIDDLE_POWER_SHOT);
-//        }
-//        if (inwardPowerShotButton.isPressed()) {
-//            robot.setTarget(Target.INWARD_POWER_SHOT);
-//        }
         if (powerShotButton.isPressed()) {
             robot.powerShot();
         }
@@ -94,10 +73,8 @@ public class OperatorInterface {
         }
 
         // Drive
-        double radius = getLeftStickRadius();
-        double angle = getLeftStickAngle();
-        double rot = getRightX();
-        robot.drive.teleopControl(radius, angle, rot, localControlToggleButton.on(), autoAimToggleButton.on());
+        Pose2d input = getInput();
+        robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
 
         // Intake
         if (intakeOnToggleButton.on()) {
@@ -106,26 +83,15 @@ public class OperatorInterface {
             robot.intake.turnOff();
         }
 
-        // Shooter
+        // Shooter + drive
+        // THIS IS NOT ASYNC. It will pause what it's doing and aim then shoot.
         if (shootButton.isPressed()) {
-            robot.shooter.shoot();
+            // Shoots all three
+            robot.shoot(3);
         }
     }
 
-    public double getLeftStickRadius() {
-        double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
-        double r = Math.hypot(x,y);
-        return r;
-    }
-    public double getLeftStickAngle() {
-        double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
-        double angle = Math.atan2(y,x);
-        return angle;
-    }
-    public double getRightX() {
-        double x = gamepad1.right_stick_x;
-        return x;
+    public Pose2d getInput() {
+        return new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.left_stick_x);
     }
 }
