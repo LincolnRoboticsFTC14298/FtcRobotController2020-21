@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
 @Config
@@ -26,9 +26,9 @@ public class SolidityScorer extends VisionScorer {
 
     @Override
     public double score(MatOfPoint contour) {
-        Rect rect = Imgproc.boundingRect(contour);
-        // Get h/w or w/h, whichever is smaller just incase rotation of phone.
-        double ratio = Imgproc.contourArea(contour) / rect.area();
+        MatOfInt hull = new MatOfInt();
+        Imgproc.convexHull(contour, hull);
+        double ratio = Imgproc.contourArea(contour) / Imgproc.contourArea(hull);
         return squareError(ratio, optimalRatio) * weight;
     }
 }
