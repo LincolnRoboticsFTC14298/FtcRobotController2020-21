@@ -3,13 +3,10 @@ package org.firstinspires.ftc.teamcode.testing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.vision.CameraRingDetection;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
-import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
-import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp()
 public class CameraOpMode extends LinearOpMode {
@@ -22,7 +19,7 @@ public class CameraOpMode extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        ringCountPipeline = new RingCountPipeline(phoneCam,true);
+        ringCountPipeline = new RingCountPipeline(phoneCam, RingCountPipeline.Viewport.ANNOTATED);
         phoneCam.setPipeline(ringCountPipeline);
 
         /*
@@ -54,6 +51,4 @@ public class CameraOpMode extends LinearOpMode {
             sleep(100);
         }
     }
-
-
 }
