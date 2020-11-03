@@ -47,7 +47,7 @@ public class Vision implements Subsystem {
                 new OpenCvCamera.AsyncCameraOpenListener() {
                     @Override
                     public void onOpened() {
-                        ringCountPipeline = new RingCountPipeline(phoneCam, Viewport.ANNOTATED);
+                        ringCountPipeline = new RingCountPipeline(phoneCam);
                         phoneCam.setPipeline(ringCountPipeline);
                         phoneCam.setSensorFps(30);
                     }
