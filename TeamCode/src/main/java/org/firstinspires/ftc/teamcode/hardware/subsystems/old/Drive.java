@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
@@ -48,10 +47,10 @@ public class Drive implements Subsystem {
         packet = new TelemetryPacket();
 
         // Initialize motors //
-        frontLeft = hardwareMap.get(DcMotorEx.class, RobotMap.FRONT_LEFT_NAME);
-        frontRight = hardwareMap.get(DcMotorEx.class, RobotMap.FRONT_RIGHT_NAME);
-        backLeft = hardwareMap.get(DcMotorEx.class, RobotMap.BACK_LEFT_NAME);
-        backRight = hardwareMap.get(DcMotorEx.class, RobotMap.BACK_RIGHT_NAME);
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
         // Reverse direction
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
