@@ -1,53 +1,46 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
-import android.os.Environment;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
-import java.io.File;
-
-@TeleOp(name="Launcher", group="Tuner")
+@TeleOp(name="Camera", group="Tuner")
 public class CameraTuner extends OpMode {
     private FtcDashboard dashboard;
     private Robot robot = new Robot();
+    private RadicalGamepad gamepad;
+    
     @Override
     public void init() {
         dashboard = FtcDashboard.getInstance();
         robot.init(this);
         robot.vision.startStreaming();
+        gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void loop() {
-        if (gamepad1.dpad_down) {
+        gamepad.update();
+        if (gamepad.dpad_down) {
             robot.vision.setViewport(Viewport.RAW_MASK);
-        } else if (gamepad1.dpad_left) {
+        } else if (gamepad.dpad_left) {
             robot.vision.setViewport(Viewport.MASKED);
-        } else if (gamepad1.dpad_up) {
+        } else if (gamepad.dpad_up) {
             robot.vision.setViewport(Viewport.DIST1);
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad.dpad_right) {
             robot.vision.setViewport(Viewport.DIST2);
-        } else if (gamepad1.a) {
+        } else if (gamepad.a) {
             robot.vision.setViewport(Viewport.MARKERS);
-        } else if (gamepad1.b) {
+        } else if (gamepad.b) {
             robot.vision.setViewport(Viewport.RAW_IMAGE);
         }
 
-        if (gamepad1.x) {
-            Viewport lastViewport = robot.vision.getViewport();
-            File f = Environment.getDataDirectory()
-                    .getAbsoluteFile()
-                    .getParentFile()
-                    .getParentFile();
-            String path = f.getPath() + "/vision/samples/";
-            String filename = path + "IMG_" + System.currentTimeMillis();
-            robot.vision.saveOutput(filename);
-            robot.vision.setViewport(lastViewport);
+        if (gamepad.x) {
+            robot.vision.saveOutput();
         }
 
         dashboard.sendImage(robot.vision.getOutput());
