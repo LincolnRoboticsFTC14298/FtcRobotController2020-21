@@ -29,7 +29,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     private boolean viewportPaused = false;
     private static final double SCORE_THRESHOLD = 3;
     private static final int THICKNESS = 4;
-    private Viewport viewport;
+    private Viewport viewport = Viewport.ANNOTATED;
     private static Scalar foundColor = new Scalar(0,255,0);
     private static Scalar falseColor = new Scalar(0,0,255);
     private int rings = 0;
@@ -59,9 +59,8 @@ public class RingCountPipeline extends OpenCvPipeline {
         ANNOTATED
     }
 
-    public RingCountPipeline(OpenCvInternalCamera2 cam, Viewport viewport) {
+    public RingCountPipeline(OpenCvInternalCamera2 cam) {
         this.cam = cam;
-        this.viewport = viewport;
 
         scorers.add(areaScorer);
         scorers.add(aspectRatioSCorer);
