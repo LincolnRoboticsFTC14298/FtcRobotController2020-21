@@ -21,7 +21,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.google.common.flogger.FluentLogger;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -33,8 +32,10 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.util.Field.*;
+import org.firstinspires.ftc.teamcode.util.Field.Alliance;
+import org.firstinspires.ftc.teamcode.util.Field.Target;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ import static org.firstinspires.ftc.teamcode.util.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.kV;
 
 @Config
-public class NewDrive extends MecanumDrive implements Subsystem {
+public class Drive extends MecanumDrive implements Subsystem {
     private FtcDashboard dashboard;
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -99,7 +100,6 @@ public class NewDrive extends MecanumDrive implements Subsystem {
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    private BNO055IMU imu;
 
     private VoltageSensor batteryVoltageSensor;
 
@@ -108,9 +108,7 @@ public class NewDrive extends MecanumDrive implements Subsystem {
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;
 
-    public boolean aligning = false;
-
-    public NewDrive() {
+    public Drive() {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -348,6 +346,7 @@ public class NewDrive extends MecanumDrive implements Subsystem {
     }
 
     public void pointAtTargetAsync() {
+        // TODO: make sure turnAsync is turn to local not global
         turnAsync(getTargetRelHeading());
     }
     public void pointAtTarget() {
@@ -355,7 +354,7 @@ public class NewDrive extends MecanumDrive implements Subsystem {
     }
 
     public double getTargetRelHeading() {
-        return getTargetHeading() - getPoseEstimate().getHeading();
+        return MathUtil.angleWrapRadians(getTargetHeading() - getPoseEstimate().getHeading());
     }
     public double getTargetHeading() {
         Pose2d diff = getTargetRelPose();
@@ -456,7 +455,7 @@ public class NewDrive extends MecanumDrive implements Subsystem {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        return 0;
     }
 
     double getBatteryVoltage(HardwareMap hardwareMap) {

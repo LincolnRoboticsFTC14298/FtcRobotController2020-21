@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.NewDrive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.RobotBase;
@@ -32,7 +32,7 @@ public class Robot extends RobotBase {
 //    public Drive drive = new Drive();
 //    public RoadRunnerDrive roadRunnerDrive = new RoadRunnerDrive(drive);
 
-    public NewDrive drive = new NewDrive();
+    public Drive drive = new Drive();
 
     public boolean autoAim = false, localControl = true, liftArm = true;
     public Target target = Target.HIGH_GOAL;
