@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import android.graphics.Bitmap;
+import android.os.Environment;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -16,6 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
 
+import java.io.File;
 import java.util.Arrays;
 
 import static org.opencv.android.Utils.matToBitmap;
@@ -92,6 +94,21 @@ public class Vision implements Subsystem {
         matToBitmap(mat, bmt);
         return bmt;
     }
+    public void saveOutput(String filename) {
+        ringCountPipeline.saveLatestMat(filename);
+    }
+    public void saveOutput() {
+        Viewport lastViewport = getViewport();
+        File f = Environment.getDataDirectory()
+                .getAbsoluteFile()
+                .getParentFile()
+                .getParentFile()
+                .getParentFile();
+        String path = f.getPath() + "/vision/samples/";
+        String filename = path + "IMG_" + System.currentTimeMillis();
+        saveOutput(filename);
+        setViewport(lastViewport);
+    }
 
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
@@ -107,9 +124,5 @@ public class Vision implements Subsystem {
             return 0;
         }
 
-    }
-
-    public void saveOutput(String filename) {
-        ringCountPipeline.saveLatestMat(filename);
     }
 }
