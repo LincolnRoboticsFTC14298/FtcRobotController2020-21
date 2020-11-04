@@ -23,7 +23,7 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
 
 @Config
-@TeleOp(group="tuner")
+@TeleOp(name="Shooter", group="Tuner")
 public class ShooterTuner extends OpMode {
     public static double angle = 45.0;
     public static double lambda = 9.8 / 50;
