@@ -131,6 +131,7 @@ public class Shooter implements Subsystem {
         this.targetRelPose = targetRelPose;
         shootScheduler += 1;
     }
+
     public void updateShooter() {
         // TODO: come up with better solution so that it can get updated pose, may be unnecessary
         updateServoPositions(); //aimAsync(targetRelPose);
@@ -164,6 +165,9 @@ public class Shooter implements Subsystem {
     }
 
     // Angle is in radians
+    public double getTargetAngle() {
+        return flapAngle;
+    }
     public void setFlapAngle(double angle) {
         flapAngle = angle;
     }
