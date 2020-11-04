@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tuning;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.optim.MaxEval;
@@ -22,6 +23,7 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
 
 @Config
+@TeleOp(group="tuner")
 public class ShooterTuner extends OpMode {
     public static double angle = 45.0;
     public static double lambda = 9.8 / 50;
