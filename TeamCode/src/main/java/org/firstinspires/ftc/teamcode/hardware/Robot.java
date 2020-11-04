@@ -68,7 +68,7 @@ public class Robot extends RobotBase {
     public void shoot(int n) {
         // Not async as to prevent other movements.
         drive.pointAtTargetAsync();
-        shooter.aimAsync(drive.getTargetRelPose()); // Start aiming before aligned, doesn't need to be fully aligned
+        shooter.aimAsync(drive.getTargetPose()); // Start aiming before aligned, doesn't need to be fully aligned
         ElapsedTime elapsedTime = new ElapsedTime();
         while(drive.isBusy() && elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
             drive.update();
@@ -76,7 +76,7 @@ public class Robot extends RobotBase {
             // TODO: if bumped into by robot while shooting, it will not update
         }
         for (int i = 0; i < n; i++) {
-            shooter.shoot(drive.getTargetRelPose());
+            shooter.shoot(drive.getTargetPose());
         }
     }
     public void shootTarget(Target target, int n) {
