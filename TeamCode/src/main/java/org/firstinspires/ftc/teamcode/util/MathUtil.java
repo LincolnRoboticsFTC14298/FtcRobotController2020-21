@@ -15,4 +15,8 @@ public class MathUtil {
             x += 360;
         return x - 180;
     }
+    public static double squareError(double value, double target) {
+        double diff = target - value;
+        return diff * diff;
+    }
 }
