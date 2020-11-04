@@ -354,13 +354,14 @@ public class Drive extends MecanumDrive implements Subsystem {
     }
 
     public double getTargetRelHeading() {
+        // In reference to the the heading of the robot
         return MathUtil.angleWrapRadians(getTargetHeading() - getPoseEstimate().getHeading());
     }
     public double getTargetHeading() {
-        Pose2d diff = getTargetRelPose();
+        Pose2d diff = getTargetPose();
         return Math.atan2(diff.getY(), diff.getX()); // Happens to be in the heading frame
     }
-    public Pose2d getTargetRelPose() {
+    public Pose2d getTargetPose() {
         // Rel pose of target in reference to the shooter
         Pose2d targetPose = target.getPose(alliance);
         Pose2d pose = getPoseEstimate();
