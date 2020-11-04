@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 
+import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
+
 @Config
 public class AreaScorer extends VisionScorer {
     public static double realWidth = 5.0; // In inches

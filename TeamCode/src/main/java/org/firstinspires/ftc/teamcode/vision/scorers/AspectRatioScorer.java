@@ -5,6 +5,8 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
+
 @Config
 public class AspectRatioScorer extends VisionScorer {
     public static double optimalRatio = 5.0 / 0.75;

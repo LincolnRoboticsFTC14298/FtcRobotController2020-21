@@ -6,6 +6,8 @@ import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 
+import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
+
 @Config
 public class SolidityScorer extends VisionScorer {
     public static double optimalRatio = .8;
