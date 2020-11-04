@@ -22,6 +22,7 @@ public class RadicalGamepad {
 
 
     public RadicalGamepad(Gamepad gamepad) {
+        this.gamepad = gamepad;
         dpadUp = new Button(gamepad, ButtonType.dpad_up);
         dpadDown = new Button(gamepad, ButtonType.dpad_down);
         dpadLeft = new Button(gamepad, ButtonType.dpad_left);
@@ -50,7 +51,7 @@ public class RadicalGamepad {
         y = Y.isPressed();
 
         left_bumper = leftBumper.isPressed();
-        right_bumper = leftBumper.isPressed();
+        right_bumper = rightBumper.isPressed();
         left_stick_button = leftStickButton.isPressed();
         right_stick_button = rightStickButton.isPressed();
 
