@@ -56,9 +56,6 @@ public class OperatorInterface {
         if (middleGoalButton.isPressed()) {
             robot.setTarget(Target.MIDDLE_GOAL);
         }
-        if (powerShotButton.isPressed()) {
-            robot.powerShot();
-        }
 
         // Arm
         if (liftArmToggleButton.on()) {
@@ -86,12 +83,15 @@ public class OperatorInterface {
         // Shooter + drive
         // THIS IS NOT ASYNC. It will pause what it's doing and aim then shoot.
         if (shootButton.isPressed()) {
+            // TODO: if shooting, allow button press to cancel
             // Shoots all three
             robot.shoot(3);
+        } else if (powerShotButton.isPressed()) {
+            robot.powerShot();
         }
     }
 
     public Pose2d getInput() {
-        return new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.left_stick_x);
+        return new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.right_stick_x);
     }
 }

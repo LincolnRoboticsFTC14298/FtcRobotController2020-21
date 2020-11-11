@@ -30,7 +30,7 @@ public class CameraTuner extends OpMode {
     public void loop() {
         gamepad.update();
 
-        Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.left_stick_x);
+        Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.right_stick_x);
         drive.teleopControl(input, true, true);
 
         if (gamepad.dpad_down) {
