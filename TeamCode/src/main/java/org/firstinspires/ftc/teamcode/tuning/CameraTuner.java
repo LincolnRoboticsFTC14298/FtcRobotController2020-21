@@ -51,8 +51,7 @@ public class CameraTuner extends OpMode {
             vision.saveOutput();
         }
 
-
-
+        telemetry.addData("Viewport: ", vision.getViewport());
         dashboard.sendImage(vision.getOutput());
     }
 }
