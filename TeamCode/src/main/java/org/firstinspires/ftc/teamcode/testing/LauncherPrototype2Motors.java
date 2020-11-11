@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.testing;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Launcher", group="Prototype")
-public class LauncherPrototype extends LinearOpMode {
+@TeleOp(name="Launcher 2 Motors", group="Prototype")
+public class LauncherPrototype2Motors extends LinearOpMode {
     public final double MOTOR_STEP = 0.05; // Motor speed step
 
     @Override
