@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.optim.MaxEval;
@@ -13,7 +14,9 @@ import org.apache.commons.math3.optim.univariate.SearchInterval;
 import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.RobotMap;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.util.Field;
 
@@ -32,53 +35,86 @@ public class ShooterTuner extends OpMode {
     private ArrayList<Double> heights = new ArrayList<>();
     private ArrayList<Double> actuals = new ArrayList<>();
 
-    private Robot robot = new Robot();
+    private Drive drive = new Drive();
+    private Shooter shooter = new Shooter();
     private RadicalGamepad gamepad;
+
+    Field.Target target = Field.Target.HIGH_GOAL;
+    Field.Alliance alliance = Field.Alliance.BLUE;
 
     @Override
     public void init() {
-        robot.init(this);
+        drive.init(hardwareMap);
+        shooter.init(hardwareMap);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void loop() {
         gamepad.update();
-        Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.left_stick_x);
-        robot.drive.teleopControl(input, true, true);
+        Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.right_stick_x);
+        drive.teleopControl(input, true, true);
 
-        robot.shooter.setFlapAngle(Math.toRadians(angle));
+        shooter.setFlapAngle(Math.toRadians(angle));
 
         if (gamepad.dpad_up) {
-            robot.setTarget(Field.Target.HIGH_GOAL);
+            setTarget(Field.Target.HIGH_GOAL);
         }
         if (gamepad.dpad_left) {
-            robot.setTarget(Field.Target.MIDDLE_GOAL);
+            setTarget(Field.Target.MIDDLE_GOAL);
         }
         if (gamepad.dpad_right) {
-            robot.setTarget(Field.Target.MIDDLE_POWER_SHOT);
+            setTarget(Field.Target.MIDDLE_POWER_SHOT);
+        }
+
+        if (gamepad.left_bumper) {
+            alliance = Field.Alliance.BLUE;
+        }
+        if (gamepad.right_bumper) {
+            alliance = Field.Alliance.RED;
         }
 
         if (gamepad.a) {
-            robot.shoot(1);
+            shoot();
         } else if (gamepad.b) {
-            distances.add(getDistHeight(robot.drive.getTargetPose())[0]);
-            heights.add(getDistHeight(robot.drive.getTargetPose())[1]);
-            actuals.add(robot.shooter.getTargetAngle());
+            distances.add(getDistHeight(drive.getTargetPose())[0]);
+            heights.add(getDistHeight(drive.getTargetPose())[1]);
+            actuals.add(shooter.getTargetAngle());
             lambda = findLambda();
         }
 
-        telemetry.addData("Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
-        telemetry.addData("Distance: ", getDistHeight(robot.drive.getTargetPose())[0]);
-        telemetry.addData("Height: ", getDistHeight(robot.drive.getTargetPose())[0]);
+        telemetry.addData("Angle: ", Math.toDegrees(shooter.getTargetAngle()));
+        telemetry.addData("Distance: ", getDistHeight(drive.getTargetPose())[0]);
+        telemetry.addData("Height: ", getDistHeight(drive.getTargetPose())[1]);
         telemetry.addData("Lambda: ", lambda);
+        telemetry.addLine();
+        telemetry.addData("Target: ", target);
+        telemetry.addData("Alliance: ", alliance);
     }
 
     public double[] getDistHeight(Pose2d targetRelPose) {
         double dist = Math.hypot(targetRelPose.getY(), targetRelPose.getX());
-        double height = robot.getTarget().getLocation(robot.getAlliance()).getZ();
+        double height = target.getLocation(alliance).getZ();
         return new double[]{dist, height};
     }
+
+    public void setTarget(Field.Target target) {
+        this.target = target;
+        drive.setTarget(target);
+        shooter.setTarget(target); // This is useless
+    }
+
+    public void shoot() {
+        // Not async as to prevent other movements.
+        drive.pointAtTargetAsync();
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while(drive.isBusy() && elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
+            drive.update();
+            shooter.update();
+        }
+        shooter.shoot(drive.getTargetPose());
+    }
+
 
     public double findLambda() {
         UnivariateFunction f = new ErrorFunction();
