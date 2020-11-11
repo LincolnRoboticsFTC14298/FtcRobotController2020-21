@@ -28,12 +28,12 @@ public class ShooterTuner extends OpMode {
     public static double angle = 45.0;
     public static double lambda = 9.8 / 50;
 
-    ArrayList<Double> distances = new ArrayList<>();
-    ArrayList<Double> heights = new ArrayList<>();
-    ArrayList<Double> actuals = new ArrayList<>();
+    private ArrayList<Double> distances = new ArrayList<>();
+    private ArrayList<Double> heights = new ArrayList<>();
+    private ArrayList<Double> actuals = new ArrayList<>();
 
-    Robot robot = new Robot();
-    RadicalGamepad gamepad;
+    private Robot robot = new Robot();
+    private RadicalGamepad gamepad;
 
     @Override
     public void init() {
@@ -45,7 +45,7 @@ public class ShooterTuner extends OpMode {
     public void loop() {
         gamepad.update();
         Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.left_stick_x);
-        robot.drive.teleopControl(input, false, true);
+        robot.drive.teleopControl(input, true, true);
 
         robot.shooter.setFlapAngle(Math.toRadians(angle));
 
