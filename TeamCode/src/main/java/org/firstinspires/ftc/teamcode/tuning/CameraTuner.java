@@ -1,48 +1,58 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
 @TeleOp(name="Camera", group="Tuner")
 public class CameraTuner extends OpMode {
     private FtcDashboard dashboard;
-    private Robot robot = new Robot();
+    private Vision vision = new Vision();
+    private Drive drive = new Drive();
     private RadicalGamepad gamepad;
     
     @Override
     public void init() {
         dashboard = FtcDashboard.getInstance();
-        robot.init(this);
-        robot.vision.startStreaming();
+        drive.init(hardwareMap);
+        vision.init(hardwareMap);
+        vision.startStreaming();
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void loop() {
         gamepad.update();
+
+        Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.left_stick_x);
+        drive.teleopControl(input, true, true);
+
         if (gamepad.dpad_down) {
-            robot.vision.setViewport(Viewport.RAW_MASK);
+            vision.setViewport(Viewport.RAW_MASK);
         } else if (gamepad.dpad_left) {
-            robot.vision.setViewport(Viewport.MASKED);
+            vision.setViewport(Viewport.MASKED);
         } else if (gamepad.dpad_up) {
-            robot.vision.setViewport(Viewport.DIST1);
+            vision.setViewport(Viewport.DIST1);
         } else if (gamepad.dpad_right) {
-            robot.vision.setViewport(Viewport.DIST2);
+            vision.setViewport(Viewport.DIST2);
         } else if (gamepad.a) {
-            robot.vision.setViewport(Viewport.MARKERS);
+            vision.setViewport(Viewport.MARKERS);
         } else if (gamepad.b) {
-            robot.vision.setViewport(Viewport.RAW_IMAGE);
+            vision.setViewport(Viewport.RAW_IMAGE);
         }
 
         if (gamepad.x) {
-            robot.vision.saveOutput();
+            vision.saveOutput();
         }
 
-        dashboard.sendImage(robot.vision.getOutput());
+
+
+        dashboard.sendImage(vision.getOutput());
     }
 }
