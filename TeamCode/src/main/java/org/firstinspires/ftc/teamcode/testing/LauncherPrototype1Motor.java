@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Launcher 2 Motors", group="Prototype")
+@TeleOp(name="Launcher 1 Motor", group="Prototype")
 public class LauncherPrototype1Motor extends LinearOpMode {
     public final double MOTOR_STEP = 0.05; // Motor speed step
 
