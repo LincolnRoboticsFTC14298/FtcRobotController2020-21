@@ -21,10 +21,9 @@ public class LauncherPrototype1Motor extends LinearOpMode {
 
         //motor1.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motor1.setPower(mSpeed);
+        motor1.setPower(0);
 
         waitForStart();
-
 
         while (opModeIsActive()) {
             // Up and down updates the first motor speed

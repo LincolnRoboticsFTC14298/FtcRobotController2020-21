@@ -24,8 +24,8 @@ public class LauncherPrototype2Motors extends LinearOpMode {
         //motor1.setDirection(DcMotorSimple.Direction.REVERSE);
         //motor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motor1.setPower(mSpeed1);
-        motor2.setPower(mSpeed2);
+        motor1.setPower(0);
+        motor2.setPower(0);
 
         waitForStart();
 
