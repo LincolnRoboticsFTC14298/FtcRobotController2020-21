@@ -35,8 +35,8 @@ public class ShooterTuner extends OpMode {
     private ArrayList<Double> heights = new ArrayList<>();
     private ArrayList<Double> actuals = new ArrayList<>();
 
-    private Drive drive = new Drive();
-    private Shooter shooter = new Shooter();
+    private Drive drive = new Drive(hardwareMap);
+    private Shooter shooter = new Shooter(hardwareMap);
     private RadicalGamepad gamepad;
 
     Field.Target target = Field.Target.HIGH_GOAL;
@@ -44,8 +44,9 @@ public class ShooterTuner extends OpMode {
 
     @Override
     public void init() {
-        drive.init(hardwareMap);
-        shooter.init(hardwareMap);
+        drive.init();
+        shooter.init();
+
         gamepad = new RadicalGamepad(gamepad1);
     }
 

@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.opmodes.SubsystemOpMode;
 
 import static java.lang.Thread.sleep;
 
 
 @Autonomous(name="Drive to line", group="Autonomous")
-public class DriveToLine extends SubsystemOpMode {
-    Robot robot = new Robot();
+public class DriveToLine extends OpMode {
+    Robot robot = new Robot(this);
 
     @Override
     public void init() {
-        robot.init(this);
+        robot.init();
     }
 
     @Override

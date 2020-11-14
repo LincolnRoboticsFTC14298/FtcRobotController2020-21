@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Drive drive = new Drive();
-        drive.init(hardwareMap);
+        Drive drive = new Drive(hardwareMap);
+        drive.init();
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

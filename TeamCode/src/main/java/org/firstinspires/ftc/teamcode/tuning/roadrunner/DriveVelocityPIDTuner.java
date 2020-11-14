@@ -55,7 +55,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    private Drive drive = new Drive();
+    private Drive drive = new Drive(hardwareMap);
 
     enum Mode {
         DRIVER_MODE,
@@ -87,7 +87,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive.init(hardwareMap);
+        drive.init();
 
         mode = Mode.TUNING_MODE;
 

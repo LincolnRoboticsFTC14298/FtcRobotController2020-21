@@ -8,13 +8,12 @@ import org.firstinspires.ftc.teamcode.hardware.OperatorInterface;
 
 @TeleOp(name="Main TeleOp", group="TeleOp")
 public class MainTeleOp extends OpMode {
-    Robot robot = new Robot();
-    OperatorInterface operatorInterface = new OperatorInterface(robot);
+    Robot robot = new Robot(this);
+    OperatorInterface operatorInterface = new OperatorInterface(robot, gamepad1, gamepad2);
 
     @Override
     public void init() {
-        robot.init(this);
-        operatorInterface.init(gamepad1, gamepad2);
+        robot.init();
     }
 
     @Override

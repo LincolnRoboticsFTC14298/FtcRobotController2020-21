@@ -11,11 +11,12 @@ public abstract class RobotBase {
 
     public SubsystemManager subsystemManager = new SubsystemManager();
 
-    public void init(OpMode opMode) {
+    public RobotBase(OpMode opMode) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
     }
-    // public abstract void teleopUpdate(); // Only for teleop
+
+    public abstract void init();
     public abstract void update();
     public abstract void stop();
 }

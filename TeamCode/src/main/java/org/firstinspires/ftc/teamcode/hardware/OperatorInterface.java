@@ -24,11 +24,8 @@ public class OperatorInterface {
     Button highGoalButton, middleGoalButton, powerShotButton;
     ButtonTrigger shootButton;
 
-    public OperatorInterface(Robot robot) {
+    public OperatorInterface(Robot robot, Gamepad gamepad1, Gamepad gamepad2) {
         this.robot = robot;
-    }
-
-    public void init(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
 
@@ -45,6 +42,7 @@ public class OperatorInterface {
         powerShotButton = new Button(gamepad2, ButtonType.x);
 
         shootButton = new ButtonTrigger(gamepad1, ButtonType.right_trigger);
+
     }
 
     public void update() {

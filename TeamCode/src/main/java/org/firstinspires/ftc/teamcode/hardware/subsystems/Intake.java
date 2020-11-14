@@ -25,19 +25,14 @@ public class Intake implements Subsystem {
     private double frontPower = 0, rearPower = 0;
     private boolean on = false;
 
-
-
-    public Intake() {
-
+    public Intake(HardwareMap hardwareMap) {
+        front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
+        rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
+        rear.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
-    public void init(HardwareMap hardwareMap) {
-        front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
-        rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
-
-        rear.setDirection(DcMotorSimple.Direction.REVERSE);
-
+    public void init() {
         turnOff();
         updateIntakeMotors();
     }

@@ -11,14 +11,16 @@ import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 @TeleOp(name="Camera With Drive", group="Tuner")
 public class CameraTunerWithoutDrive extends OpMode {
     private FtcDashboard dashboard;
-    private Vision vision = new Vision();
+    private Vision vision = new Vision(hardwareMap);
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
         dashboard = FtcDashboard.getInstance();
-        vision.init(hardwareMap);
+
+        vision.init();
         vision.startStreaming();
+
         gamepad = new RadicalGamepad(gamepad1);
     }
 

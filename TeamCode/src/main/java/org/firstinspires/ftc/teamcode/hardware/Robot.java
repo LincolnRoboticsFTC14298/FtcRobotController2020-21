@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.RobotBase;
@@ -15,10 +15,11 @@ import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 public class Robot extends RobotBase {
     // Subsystems
-    public Vision vision = new Vision();
-    public Intake intake = new Intake();
-    public Shooter shooter = new Shooter();
-    public Arm arm = new Arm();
+    public Vision vision;
+    public Intake intake;
+    public Shooter shooter;
+    public Arm arm;
+    public Drive drive;
 
 //    public static interface PositionProvider {
 //        int getX();
@@ -32,24 +33,33 @@ public class Robot extends RobotBase {
 //    public Drive drive = new Drive();
 //    public RoadRunnerDrive roadRunnerDrive = new RoadRunnerDrive(drive);
 
-    public Drive drive = new Drive();
+
 
     public boolean autoAim = false, localControl = true, liftArm = true;
     public Target target = Target.HIGH_GOAL;
     public Alliance alliance = Alliance.BLUE;
 
-    public Robot() {
+    public Robot(OpMode opMode) {
+        super(opMode);
+
+        vision = new Vision(hardwareMap);
+        intake = new Intake(hardwareMap);
+        shooter = new Shooter(hardwareMap);
+        arm = new Arm(hardwareMap);
+        drive = new Drive(hardwareMap);
+
         subsystemManager.add(vision);
         subsystemManager.add(intake);
         subsystemManager.add(shooter);
         subsystemManager.add(arm);
         subsystemManager.add(drive);
+
+        init();
     }
 
     @Override
-    public void init(OpMode opMode) {
-        super.init(opMode);
-        subsystemManager.init(hardwareMap);
+    public void init() {
+        subsystemManager.init();
         telemetry.update();
     }
 

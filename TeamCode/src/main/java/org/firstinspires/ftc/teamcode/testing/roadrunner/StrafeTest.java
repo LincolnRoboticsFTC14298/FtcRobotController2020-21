@@ -18,8 +18,8 @@ public class StrafeTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drive drive = new Drive();
-        drive.init(hardwareMap);
+        Drive drive = new Drive(hardwareMap);
+        drive.init();
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(DISTANCE)

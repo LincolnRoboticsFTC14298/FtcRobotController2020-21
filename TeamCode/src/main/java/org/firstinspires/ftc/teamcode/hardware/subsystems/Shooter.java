@@ -54,11 +54,7 @@ public class Shooter implements Subsystem {
     private double shootScheduler = 0;
     private boolean loading = false;
 
-    public Shooter() {
-    }
-
-    @Override
-    public void init(HardwareMap hardwareMap) {
+    public Shooter(HardwareMap hardwareMap) {
         // Initialize motors and servos //
         motor1 = hardwareMap.get(DcMotor.class, MOTOR1_NAME);
         motor2 = hardwareMap.get(DcMotor.class, MOTOR2_NAME);
@@ -69,8 +65,10 @@ public class Shooter implements Subsystem {
         // Reverse direction
 //        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
 
-
+    @Override
+    public void init() {
         setShooterPower(0);
         setLoadPower(0);
         setFlapAngle(Math.toRadians(45));

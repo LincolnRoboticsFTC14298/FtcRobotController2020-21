@@ -11,9 +11,9 @@ public class SubsystemManager {
         subsystems.add(subsystem);
     }
 
-    public void init(HardwareMap hardwareMap) {
+    public void init() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.init(hardwareMap);
+            subsystem.init();
         }
     }
 

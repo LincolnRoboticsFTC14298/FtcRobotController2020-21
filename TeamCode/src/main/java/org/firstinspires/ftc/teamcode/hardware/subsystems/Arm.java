@@ -28,15 +28,13 @@ public class Arm implements Subsystem {
     private Servo armServo , clawServo;
     private double armPosition, clawPosition;
 
-    public Arm() {
-
+    public Arm(HardwareMap hardwareMap) {
+        clawServo = hardwareMap.get(Servo.class, CLAW_SERVO_NAME);
+        armServo = hardwareMap.get(Servo.class, ARM_SERVO_NAME);
     }
 
     @Override
-    public void init(HardwareMap hardwareMap) {
-        clawServo = hardwareMap.get(Servo.class, CLAW_SERVO_NAME);
-        armServo = hardwareMap.get(Servo.class, ARM_SERVO_NAME);
-
+    public void init() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
         defaultArm();
         updateServoPositions();

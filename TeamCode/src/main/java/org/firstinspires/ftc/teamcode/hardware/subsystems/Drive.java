@@ -108,17 +108,14 @@ public class Drive extends MecanumDrive implements Subsystem {
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;
 
-    public Drive() {
+    public Drive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
         clock = NanoClock.system();
-    }
 
-    @Override
-    public void init(HardwareMap hardwareMap) {
         mode = Mode.IDLE;
 
         turnController = new PIDFController(HEADING_PID);
@@ -165,6 +162,11 @@ public class Drive extends MecanumDrive implements Subsystem {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+    }
+
+    @Override
+    public void init() {
+        setMotorPowers(0,0,0,0);
     }
 
     @Override
