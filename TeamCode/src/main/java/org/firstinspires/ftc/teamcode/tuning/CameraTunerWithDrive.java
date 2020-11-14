@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
-@TeleOp(name="Camera", group="Tuner")
-public class CameraTuner extends OpMode {
+@TeleOp(name="Camera With Drive", group="Tuner")
+public class CameraTunerWithDrive extends OpMode {
     private FtcDashboard dashboard;
     private Vision vision = new Vision();
     private Drive drive = new Drive();
