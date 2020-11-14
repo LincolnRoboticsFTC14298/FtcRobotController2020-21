@@ -13,6 +13,7 @@ public class HSVRangeFilter implements MatOperator {
     public static Scalar lowerThreshold = new Scalar(10, 100, 120);
     public static Scalar upperThreshold = new Scalar(20, 255, 255);
     public static Size blur = new Size(5,5);
+    public static int blurSigma = 1;
 
     public HSVRangeFilter() {
 
@@ -51,7 +52,7 @@ public class HSVRangeFilter implements MatOperator {
         Mat mask = new Mat();
         Imgproc.cvtColor(img, mask, Imgproc.COLOR_RGB2HSV);
 
-        Imgproc.GaussianBlur(mask, mask, blur, 1);
+        Imgproc.GaussianBlur(mask, mask, blur, blurSigma);
 
         Core.inRange(mask, lowerThreshold, upperThreshold, mask);
         return mask;
