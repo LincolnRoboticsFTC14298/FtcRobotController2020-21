@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision.scorers;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.opencv.core.MatOfPoint;
@@ -9,14 +10,16 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
 
 @Config
 public class AreaScorer extends VisionScorer {
-    public static double realWidth = 5.0; // In inches
+    private FtcDashboard dashboard;
+
     public static double optimalArea = 7800; // In inches ^ 2
     public static double weight = .0000001;
 
     public AreaScorer() {
-
+        dashboard = FtcDashboard.getInstance();
     }
     public AreaScorer(double optimalArea, double weight) {
+        dashboard = FtcDashboard.getInstance();
         updateVals(optimalArea, weight);
     }
 
@@ -29,6 +32,7 @@ public class AreaScorer extends VisionScorer {
     @Override
     public double score(MatOfPoint contour) {
         double area = Imgproc.contourArea(contour);
+        dashboard.getTelemetry().addLine("area = " + area);
         return squareError(area, optimalArea) * weight;
     }
 }

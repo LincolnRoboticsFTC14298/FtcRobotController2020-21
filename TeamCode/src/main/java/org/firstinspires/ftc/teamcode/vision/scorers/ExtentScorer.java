@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision.scorers;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.opencv.core.MatOfPoint;
@@ -10,13 +11,16 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
 
 @Config
 public class ExtentScorer extends VisionScorer {
+    private FtcDashboard dashboard;
+
     public static double optimalRatio = .8;
     public static double weight = 1;
 
     public ExtentScorer() {
-
+        dashboard = FtcDashboard.getInstance();
     }
     public ExtentScorer(double optimalRatio, double weight) {
+        dashboard = FtcDashboard.getInstance();
         updateVals(optimalRatio, weight);
     }
 
@@ -30,6 +34,7 @@ public class ExtentScorer extends VisionScorer {
     public double score(MatOfPoint contour) {
         Rect rect = Imgproc.boundingRect(contour);
         double ratio = Imgproc.contourArea(contour) / rect.area();
+        dashboard.getTelemetry().addLine("extent ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
     }
 }
