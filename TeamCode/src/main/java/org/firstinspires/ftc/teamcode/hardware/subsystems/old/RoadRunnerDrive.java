@@ -40,6 +40,7 @@ import androidx.annotation.NonNull;
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.*;
 
 @Config
+@Deprecated
 public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
     private Drive drive;
 

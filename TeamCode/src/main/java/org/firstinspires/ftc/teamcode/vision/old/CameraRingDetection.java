@@ -11,6 +11,7 @@ import java.util.Random;
 
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.*;
 
+@Deprecated
 public class CameraRingDetection {
     // Initiating Imagecodecs
     public static Imgcodecs imageCodecs = new Imgcodecs();

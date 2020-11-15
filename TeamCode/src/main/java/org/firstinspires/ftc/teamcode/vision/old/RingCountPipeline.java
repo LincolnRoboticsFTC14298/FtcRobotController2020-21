@@ -4,6 +4,7 @@ import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+@Deprecated
 public class RingCountPipeline extends OpenCvPipeline {
     OpenCvInternalCamera2 cam;
     boolean viewportPaused = false;
