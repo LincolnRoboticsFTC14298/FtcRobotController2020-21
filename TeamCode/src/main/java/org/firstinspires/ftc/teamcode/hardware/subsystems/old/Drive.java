@@ -26,8 +26,6 @@ public class Drive implements Subsystem {
     private DcMotorEx frontLeft, frontRight,  backLeft,backRight;
     public List<DcMotorEx> motors;
 
-    private HardwareMap hardwareMap;
-
     private double frontLeftPower = 0, frontRightPower = 0, backLeftPower = 0, backRightPower = 0;
 
     private Target target = Target.HIGH_GOAL;
@@ -35,8 +33,7 @@ public class Drive implements Subsystem {
 
     public boolean aligning = false;
 
-    public Drive(HardwareMap ahwMap) {
-        this.hardwareMap = ahwMap;
+    public Drive(HardwareMap hardwareMap) {
         // Initialize motors //
         frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
         frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
