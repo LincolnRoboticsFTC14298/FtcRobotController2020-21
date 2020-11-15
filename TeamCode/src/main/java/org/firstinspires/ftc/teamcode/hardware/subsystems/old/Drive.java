@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems.old;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,16 +13,12 @@ import org.firstinspires.ftc.teamcode.util.Field.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.encoderTicksToInches;
 
 @Deprecated
 public class Drive implements Subsystem {
     // Mecanum drive //
-
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    TelemetryPacket packet;
 
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -55,35 +49,23 @@ public class Drive implements Subsystem {
 
     @Override
     public void init() {
-        packet = new TelemetryPacket();
-
         setMotorPowers(0,0,0,0);
         updateMotorPowers();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void update() {
-        packet = new TelemetryPacket();
-
         //logger.atFine().log("Motor powers: ", frontLeft.getPower(), frontRight.getPower(),backLeft.getPower(), backRight.getPower());
         //logger.atFiner().log("Diff of power - target: ",frontLeft.getPower() - frontLeftPower, frontRight.getPower() - frontRightPower,backLeft.getPower() - backLeftPower, backRight.getPower() - backRightPower);
         //logger.atFiner().log(target.toString(), alliance.toString());
         //logger.atFinest().log(frontLeft.getMode().toString());
         updateMotorPowers();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
     @Override
     public void stop() {
-        packet = new TelemetryPacket();
-
         setMotorPowers(0,0,0,0);
         updateMotorPowers();
-
-        dashboard.sendTelemetryPacket(packet);
     }
 
 
@@ -183,8 +165,8 @@ public class Drive implements Subsystem {
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
 
-        packet.addLine(String.format(Locale.ENGLISH, "Motor powers: %.6f fl   %.6f fr   %.6f bl   %.6f br",
-                frontLeft.getPower(), frontRight.getPower(),
-                backLeft.getPower(), backRight.getPower()));
+//        packet.addLine(String.format(Locale.ENGLISH, "Motor powers: %.6f fl   %.6f fr   %.6f bl   %.6f br",
+//                frontLeft.getPower(), frontRight.getPower(),
+//                backLeft.getPower(), backRight.getPower()));
     }
 }

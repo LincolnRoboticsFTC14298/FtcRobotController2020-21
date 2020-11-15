@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.old.Drive;
 import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 
-@TeleOp(name="Drive", group="Test")
+@TeleOp(name="Drive test", group="Test")
 public class DriveTestOpmode extends OpMode {
     Drive drive = new Drive(hardwareMap);
     RadicalGamepad gamepad;
