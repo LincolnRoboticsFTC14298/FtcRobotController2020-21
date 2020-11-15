@@ -47,7 +47,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    private Drive drive = new Drive(hardwareMap);
+    private Drive drive;
 
     enum Mode {
         DRIVER_MODE,
@@ -67,6 +67,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        drive = new Drive(hardwareMap);
+
         if (RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");

@@ -14,7 +14,7 @@ public class DriveTestOpmode extends OpMode {
 
     @Override
     public void init() {
-        Drive drive = new Drive(hardwareMap);
+        drive = new Drive(hardwareMap);
         drive.init();
         gamepad = new RadicalGamepad(gamepad1);
     }

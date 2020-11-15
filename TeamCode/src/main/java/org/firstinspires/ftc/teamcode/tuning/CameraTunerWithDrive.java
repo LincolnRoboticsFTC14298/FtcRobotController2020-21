@@ -13,12 +13,15 @@ import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 @TeleOp(name="Camera With Drive", group="Tuner")
 public class CameraTunerWithDrive extends OpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
-    private Vision vision = new Vision(hardwareMap);
-    private Drive drive = new Drive(hardwareMap);
+    private Drive drive;
+    private Vision vision;
     private RadicalGamepad gamepad;
     
     @Override
     public void init() {
+        drive = new Drive(hardwareMap);
+        vision = new Vision(hardwareMap);
+
         drive.init();
         vision.init();
         vision.startStreaming();

@@ -28,7 +28,7 @@ public class Drive implements Subsystem {
 
     private HardwareMap hardwareMap;
 
-    private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+    private double frontLeftPower = 0, frontRightPower = 0, backLeftPower = 0, backRightPower = 0;
 
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;

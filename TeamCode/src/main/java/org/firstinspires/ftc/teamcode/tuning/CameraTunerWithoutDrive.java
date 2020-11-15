@@ -12,11 +12,13 @@ import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 public class CameraTunerWithoutDrive extends OpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    private Vision vision = new Vision(hardwareMap);
+    private Vision vision;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
+        vision = new Vision(hardwareMap);
+
         vision.init();
         vision.startStreaming();
 
