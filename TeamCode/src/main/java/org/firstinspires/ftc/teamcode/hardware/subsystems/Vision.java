@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 import org.opencv.core.Mat;
-import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
@@ -41,13 +40,10 @@ public class Vision implements Subsystem {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDeviceAsync(
-                new OpenCvCamera.AsyncCameraOpenListener() {
-                    @Override
-                    public void onOpened() {
-                        ringCountPipeline = new RingCountPipeline(phoneCam);
-                        phoneCam.setPipeline(ringCountPipeline);
-                        phoneCam.setSensorFps(30);
-                    }
+                () -> {
+                    ringCountPipeline = new RingCountPipeline(phoneCam);
+                    phoneCam.setPipeline(ringCountPipeline);
+                    phoneCam.setSensorFps(30);
                 }
         );
     }
