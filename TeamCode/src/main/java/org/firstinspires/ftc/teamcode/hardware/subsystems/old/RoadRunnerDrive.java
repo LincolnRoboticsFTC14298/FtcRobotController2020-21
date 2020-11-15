@@ -78,13 +78,10 @@ public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
 
     private Pose2d lastPoseOnTurn;
 
-    public RoadRunnerDrive(Drive drive) {
+    public RoadRunnerDrive(HardwareMap hardwareMap, Drive drive) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         this.drive = drive;
-    }
 
-    @Override
-    public void init(HardwareMap hardwareMap) {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
@@ -131,6 +128,11 @@ public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override
