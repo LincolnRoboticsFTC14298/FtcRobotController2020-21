@@ -20,7 +20,7 @@ public class GamepadTest extends OpMode {
         gamepad.update();
         telemetry.addData("a button = ", gamepad.a);
         telemetry.addData("lx: ", gamepad.left_stick_y);
-        telemetry.addData("rx: ", gamepad.right_stick_y);
+        telemetry.addData("ry: ", gamepad.right_stick_y);
     }
 
     @Override

@@ -71,7 +71,8 @@ public class Button {
     }
 
     public boolean isPressed() {
-        boolean raw = getRaw();
+        boolean raw = getRawPressed();
+
         if (debounce) {
             raw = debouncePressed(raw);
         }
