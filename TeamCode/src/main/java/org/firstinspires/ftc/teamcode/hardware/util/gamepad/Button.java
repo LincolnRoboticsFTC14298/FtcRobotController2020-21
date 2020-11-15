@@ -86,7 +86,7 @@ public class Button {
         } else {
             state = false;
         }
-        return state;
+        return raw;
     }
 
     private boolean debouncePressed(boolean pressed) {
