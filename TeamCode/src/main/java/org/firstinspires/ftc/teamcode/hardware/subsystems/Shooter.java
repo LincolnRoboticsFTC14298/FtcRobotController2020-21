@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,7 +20,7 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
 @Config
 public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String MOTOR1_NAME = "motor1", MOTOR2_NAME = "motor2", LOAD_MOTOR_NAME = "loadMotor";
     private static final String FLAP_NAME = "flap";

@@ -5,7 +5,6 @@ import android.os.Environment;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
@@ -26,7 +25,7 @@ public class Vision implements Subsystem {
     public static final int height = 240;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private OpenCvInternalCamera2 phoneCam;
     private RingCountPipeline ringCountPipeline;

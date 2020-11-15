@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems.old;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,7 +26,7 @@ public class Drive implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     TelemetryPacket packet;
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
 
     private DcMotorEx frontLeft, frontRight,  backLeft,backRight;
@@ -68,13 +67,10 @@ public class Drive implements Subsystem {
     public void update() {
         packet = new TelemetryPacket();
 
-        logger.atFine().log("Motor powers: ", frontLeft.getPower(), frontRight.getPower(),
-                backLeft.getPower(), backRight.getPower());
-        logger.atFiner().log("Diff of power - target: ",
-                frontLeft.getPower() - frontLeftPower, frontRight.getPower() - frontRightPower,
-                backLeft.getPower() - backLeftPower, backRight.getPower() - backRightPower);
-        logger.atFiner().log(target.toString(), alliance.toString());
-        logger.atFinest().log(frontLeft.getMode().toString());
+        //logger.atFine().log("Motor powers: ", frontLeft.getPower(), frontRight.getPower(),backLeft.getPower(), backRight.getPower());
+        //logger.atFiner().log("Diff of power - target: ",frontLeft.getPower() - frontLeftPower, frontRight.getPower() - frontRightPower,backLeft.getPower() - backLeftPower, backRight.getPower() - backRightPower);
+        //logger.atFiner().log(target.toString(), alliance.toString());
+        //logger.atFinest().log(frontLeft.getMode().toString());
         updateMotorPowers();
 
         dashboard.sendTelemetryPacket(packet);
@@ -98,7 +94,7 @@ public class Drive implements Subsystem {
             angle -= Math.PI / 2 + heading;
         }
 
-        logger.atFinest().log(String.valueOf(radius), String.valueOf(angle), String.valueOf(rotation));
+        //logger.atFinest().log(String.valueOf(radius), String.valueOf(angle), String.valueOf(rotation));
 
         double fl = radius * Math.cos(angle) + rotation;
         double fr = radius * Math.sin(angle) - rotation;
@@ -114,7 +110,7 @@ public class Drive implements Subsystem {
             angle -= Math.PI / 2 + heading;
         }
 
-        logger.atFinest().log(String.valueOf(radius), String.valueOf(angle), String.valueOf(rotation));
+        //logger.atFinest().log(String.valueOf(radius), String.valueOf(angle), String.valueOf(rotation));
 
         double fl = radius * Math.cos(angle) + rotation;
         double fr = radius * Math.sin(angle) - rotation;

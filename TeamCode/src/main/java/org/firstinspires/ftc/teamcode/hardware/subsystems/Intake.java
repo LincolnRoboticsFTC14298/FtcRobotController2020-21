@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 @Config
 public class Intake implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String FRONT_NAME = "intakeFront";
     private static final String REAR_NAME = "intakeRear";

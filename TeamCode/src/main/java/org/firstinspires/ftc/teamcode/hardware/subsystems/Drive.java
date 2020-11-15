@@ -57,7 +57,7 @@ import static org.firstinspires.ftc.teamcode.util.DriveConstants.kV;
 @Config
 public class Drive extends MecanumDrive implements Subsystem {
     private FtcDashboard dashboard;
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String LEFT_FRONT_NAME = "leftFront";
     private static final String LEFT_REAR_NAME = "leftRear";
