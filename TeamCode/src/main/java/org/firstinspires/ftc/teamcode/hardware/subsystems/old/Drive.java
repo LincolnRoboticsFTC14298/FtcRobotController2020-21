@@ -30,7 +30,7 @@ public class Drive implements Subsystem {
 
 
     private DcMotorEx frontLeft, frontRight,  backLeft,backRight;
-    public List<DcMotorEx> motors = new ArrayList<>();
+    public List<DcMotorEx> motors;
 
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
 

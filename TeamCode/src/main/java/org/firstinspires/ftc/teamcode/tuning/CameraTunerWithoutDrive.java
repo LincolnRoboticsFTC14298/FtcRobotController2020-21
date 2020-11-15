@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
-@TeleOp(name="Camera With Drive", group="Tuner")
+@TeleOp(name="Camera Without Drive", group="Tuner")
 public class CameraTunerWithoutDrive extends OpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
