@@ -8,12 +8,13 @@ import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
 
 @TeleOp(name="Drive test", group="Test")
 public class DriveTestOpmode extends OpMode {
-    Drive drive = new Drive(hardwareMap);
+    Drive drive;
     RadicalGamepad gamepad;
 
 
     @Override
     public void init() {
+        Drive drive = new Drive(hardwareMap);
         drive.init();
         gamepad = new RadicalGamepad(gamepad1);
     }
