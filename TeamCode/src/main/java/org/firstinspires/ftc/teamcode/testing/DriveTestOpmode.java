@@ -21,11 +21,11 @@ public class DriveTestOpmode extends OpMode {
 
     @Override
     public void loop() {
-        gamepad.update();
-        double x = gamepad.left_stick_x, y = gamepad.left_stick_y;
+        //gamepad.update();
+        double x = gamepad1.left_stick_x, y = gamepad1.left_stick_y;
         double radius = Math.hypot(x, y);
         double angle = Math.atan2(y,x);
-        drive.teleopControl(radius, angle, gamepad.right_stick_x, 0, false);
+        drive.teleopControl(radius, angle, gamepad1.right_stick_x, 0, false);
         drive.update();
     }
 
