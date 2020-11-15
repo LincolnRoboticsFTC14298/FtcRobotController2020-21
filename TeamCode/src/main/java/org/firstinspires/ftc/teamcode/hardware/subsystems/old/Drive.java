@@ -39,13 +39,7 @@ public class Drive implements Subsystem {
 
     public boolean aligning = false;
 
-    public Drive() {
-    }
-
-    @Override
-    public void init(HardwareMap hardwareMap) {
-        packet = new TelemetryPacket();
-
+    public Drive(HardwareMap hardwareMap) {
         // Initialize motors //
         frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
         frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
@@ -57,6 +51,11 @@ public class Drive implements Subsystem {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(frontLeft, frontRight, backLeft, backRight);
+    }
+
+    @Override
+    public void init() {
+        packet = new TelemetryPacket();
 
         setMotorPowers(0,0,0,0);
         updateMotorPowers();
