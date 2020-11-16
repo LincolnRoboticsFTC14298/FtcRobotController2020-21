@@ -11,7 +11,7 @@ public class Button {
 
 
     private boolean state;
-    private boolean released; // Down means it has already been pressed
+    private boolean down; // Down means it has already been pressed
 
 
     private boolean debounce;
@@ -77,16 +77,17 @@ public class Button {
             raw = debouncePressed(raw);
         }
 
-        if (raw && !released) {
-            released = true;
-            state = true;
-        } else if (!raw && released) {
-            released = false;
+        if (raw && down) {
             state = false;
+        } else if (raw && !down) {
+            down = true;
+            state = true;
         } else {
             state = false;
+            down = false;
         }
-        return raw;
+
+        return state;
     }
 
     private boolean debouncePressed(boolean pressed) {
