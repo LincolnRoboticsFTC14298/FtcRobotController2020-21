@@ -20,7 +20,7 @@ public class GamepadTest extends OpMode {
         gamepad = new RadicalGamepad(gamepad1);
         b = new Button(gamepad1, ButtonType.b);
         x = new ToggleButton(gamepad1, ButtonType.x);
-        y = new ToggleButton(gamepad1, ButtonType.y, 2);
+        y = new ToggleButton(gamepad1, ButtonType.y, 5);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GamepadTest extends OpMode {
         telemetry.addLine();
         telemetry.addData("Button b = ", b.isPressed());
         telemetry.addData("Toggle x = ", x.on());
-        telemetry.addData("Debounce toggle y = ", y.on());
+        telemetry.addData("Debounce toggle y w/ 5 sec debounce = ", y.on());
     }
 
     @Override
