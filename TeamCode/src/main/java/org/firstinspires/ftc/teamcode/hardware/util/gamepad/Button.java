@@ -92,7 +92,7 @@ public class Button {
     }
 
     private boolean debouncePressed(boolean pressed) {
-        if (elapsedTime.milliseconds() / 1000.0 > debouncePeriod && pressed) {
+        if (pressed && elapsedTime.milliseconds() / 1000.0 > debouncePeriod) {
             elapsedTime.reset();
             return true;
         } else {
