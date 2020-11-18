@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.testing;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.Button;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ButtonType;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ToggleButton;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.Button;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.ButtonType;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.ToggleButton;
 
 @TeleOp(name="Button test", group="Test")
 public class ButtonTest extends OpMode {

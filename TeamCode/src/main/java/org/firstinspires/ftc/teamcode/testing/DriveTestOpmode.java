@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.old.Drive;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Drive test", group="Test")
 public class DriveTestOpmode extends OpMode {

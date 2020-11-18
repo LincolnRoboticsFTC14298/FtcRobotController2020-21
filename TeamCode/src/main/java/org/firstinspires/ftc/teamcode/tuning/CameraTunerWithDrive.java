@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
 @TeleOp(name="Camera With Drive", group="Tuner")

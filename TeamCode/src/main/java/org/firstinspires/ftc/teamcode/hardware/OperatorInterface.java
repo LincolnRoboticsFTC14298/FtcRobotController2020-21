@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.Button;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ButtonTrigger;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ButtonType;
-import org.firstinspires.ftc.teamcode.hardware.util.gamepad.ToggleButton;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.Button;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.ButtonTrigger;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.ButtonType;
+import org.firstinspires.ftc.teamcode.hardware.gamepad.ToggleButton;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 // Operator Interface
