@@ -27,25 +27,6 @@ public class SegmentationOperator {
     public SegmentationOperator() {
     }
 
-    public double getBinaryThresh() {
-        return binaryThresh;
-    }
-    public void setBinaryThresh(double binaryThresh) {
-        this.binaryThresh = binaryThresh;
-    }
-    public Size getOpenSize() {
-        return openSize;
-    }
-    public void setOpenSize(Size openSize) {
-        this.openSize = openSize;
-    }
-    public double getDistThresh() {
-        return distThresh;
-    }
-    public void setDistThresh(double distThresh) {
-        this.distThresh = distThresh;
-    }
-
     public List<MatOfPoint> process(Mat img, Mat dist1Dst, Mat dist2Dst, Mat dst) {
         // TODO: add parameters as parameters
         // MODIFIED CODE FROM OPENCV EXAMPLE

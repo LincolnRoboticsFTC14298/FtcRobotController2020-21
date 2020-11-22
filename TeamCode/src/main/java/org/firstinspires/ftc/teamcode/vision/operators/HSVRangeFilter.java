@@ -28,25 +28,6 @@ public class HSVRangeFilter implements MatOperator {
         HSVRangeFilter.blur = blur;
     }
 
-    public Scalar getLowerThreshold() {
-        return lowerThreshold;
-    }
-    public void setLowerThreshold(Scalar lowerThreshold) {
-        HSVRangeFilter.lowerThreshold = lowerThreshold;
-    }
-    public Scalar getUpperThreshold() {
-        return upperThreshold;
-    }
-    public void setUpperThreshold(Scalar upperThreshold) {
-        HSVRangeFilter.upperThreshold = upperThreshold;
-    }
-    public Size getBlur() {
-        return blur;
-    }
-    public void setBlur(Size blur) {
-        HSVRangeFilter.blur = blur;
-    }
-
     @Override
     public Mat process(Mat img) {
         Mat mask = new Mat();

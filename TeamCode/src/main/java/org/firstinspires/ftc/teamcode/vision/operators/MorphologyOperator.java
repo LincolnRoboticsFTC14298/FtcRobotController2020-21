@@ -19,20 +19,6 @@ public class MorphologyOperator implements MatOperator {
         MorphologyOperator.closeSize = closeSize;
     }
 
-    public Size getOpenSize() {
-        return openSize;
-    }
-    public void setOpenSize(Size openSize) {
-        MorphologyOperator.openSize = openSize;
-    }
-    public Size getCloseSize() {
-        return closeSize;
-    }
-    public void setCloseSize(Size closeSize) {
-        MorphologyOperator.closeSize = closeSize;
-    }
-
-
     @Override
     public Mat process(Mat mask) {
         // Denoising //
