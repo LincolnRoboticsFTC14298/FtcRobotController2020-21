@@ -3,24 +3,25 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import robotlib.hardware.Subsystem;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
+import robotlib.hardware.Subsystem;
+
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
 
 @Config
 public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    //private static final Telemetry telemetry = new Telemetry("Shooter");
 
     private static final String MOTOR1_NAME = "motor1", MOTOR2_NAME = "motor2", LOAD_MOTOR_NAME = "loadMotor";
     private static final String FLAP_NAME = "flap";
@@ -45,7 +46,7 @@ public class Shooter implements Subsystem {
     private double flapAngle;
     private double targetAngle = -1;
 
-    private Pose2d targetRelPose;
+    private Vector3D targetRelativePos;
 
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;
@@ -111,25 +112,30 @@ public class Shooter implements Subsystem {
         return shootScheduler == 0 && !isLoading();
     }
 
-    public void aimAsync(Pose2d targetRelPose) {
-        double dist = Math.hypot(targetRelPose.getY(), targetRelPose.getX());
-        double height = target.getLocation(alliance).getZ();
+    public void aimAsync(Vector3D targetRelativePos) {
+        double dist = Math.hypot(targetRelativePos.getY(), targetRelativePos.getX());
+        double height = targetRelativePos.getZ();
 
         // Math stuff
         double k = 1.0/(2*dist*LAMBDA);
-        double det = 1 - 4*(height - SHOOTER_LOCATION.getZ() + LAMBDA*dist*dist)*LAMBDA;
-        double angle = Math.atan(k - k * Math.sqrt(det));
+        double det = 1 - 4*(height + LAMBDA*dist*dist)*LAMBDA;
+        targetAngle = Math.atan(k - k * Math.sqrt(det));
 
-        targetAngle = angle;
         setFlapAngle(targetAngle);
     }
 
-    public void shootAsync(Pose2d targetRelPose) {
-        this.targetRelPose = targetRelPose;
+    public void shootAsync(Vector3D targetRelativePos) {
+        this.targetRelativePos = targetRelativePos;
         shootScheduler += 1;
     }
-
-    public void updateShooter() {
+    public void shoot(Vector3D targetRelativePos) {
+        shootAsync(targetRelativePos);
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while (!doneShooting() || elapsedTime.milliseconds() < TIMEOUT) {
+            update();
+        }
+    }
+    private void updateShooter() {
         // TODO: come up with better solution so that it can get updated pose, may be unnecessary
         updateServoPositions(); //aimAsync(targetRelPose);
         if (readyToShoot() && shootScheduler != 0) {
@@ -137,24 +143,23 @@ public class Shooter implements Subsystem {
             shootScheduler -= 1;
         }
     }
-    public void shoot(Pose2d targetRelPose) {
-        shootAsync(targetRelPose);
-        ElapsedTime elapsedTime = new ElapsedTime();
-        while (!doneShooting() || elapsedTime.milliseconds() < TIMEOUT) {
-            update();
-        }
-    }
 
     ElapsedTime loadingElapse = new ElapsedTime();
-    public void startLoadingRing() {
+    private void startLoadingRing() {
         loading = true;
         loadingElapse.reset();
         setLoadPower(LOAD_MOTOR_POWER);
     }
-    public void updateLoadingRing() {
-        if (isLoading() && loadingElapse.milliseconds() / 1000.0 > LOAD_MOTOR_DELAY) {
-            loading = false;
-            setLoadPower(0);
+    private void updateLoadingRing() {
+        if (isLoading()) {
+
+            if (loadingElapse.milliseconds() / 1000.0 > LOAD_MOTOR_DELAY) {
+                loading = false;
+                setLoadPower(0);
+            } else {
+                setLoadPower(LOAD_MOTOR_POWER);
+            }
+
         }
     }
     public boolean isLoading() {
@@ -168,12 +173,12 @@ public class Shooter implements Subsystem {
     public void setFlapAngle(double angle) {
         flapAngle = angle;
     }
-    public void setShooterPower(double power) {
+    private void setShooterPower(double power) {
         // TODO: Clip powers to make sure it's between -1 and 1
         double p = Range.clip(power, -1, 1);
         motor1Power = motor2Power = p;
     }
-    public void setLoadPower(double power) {
+    private void setLoadPower(double power) {
         loadMotorPower = Range.clip(power, -1, 1);
     }
 

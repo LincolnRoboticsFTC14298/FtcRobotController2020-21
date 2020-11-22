@@ -29,12 +29,10 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import robotlib.hardware.Subsystem;
 
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.RUN_USING_ENCODER;
@@ -330,45 +328,29 @@ public class Drive extends MecanumDrive implements Subsystem {
     /*
      * Input is the forwardAmt, strafeAmt, rotation
      */
-    public void teleopControl(Pose2d rawInput, boolean fieldCentric, boolean pointAtTarget) {
-        Vector2d input = new Vector2d(rawInput.getX(), -rawInput.getY());
+    public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget, double targetRelativeHeading) {
+        Vector2d input = new Vector2d(rawControllerInput.getX(), -rawControllerInput.getY());
 
         if (fieldCentric) {
             input = input.rotated(-getPoseEstimate().getHeading());
         }
 
         if (pointAtTarget) {
-            pointAtTargetAsync();
+            turnAsync(targetRelativeHeading);
         }
 
         setWeightedDrivePower(
-                new Pose2d(input.getX(), input.getY(), -rawInput.getHeading())
+                new Pose2d(input.getX(), input.getY(), -rawControllerInput.getHeading())
         );
     }
 
-    public void pointAtTargetAsync() {
-        // TODO: make sure turnAsync is turn to local not global
-        turnAsync(getTargetRelHeading());
-    }
-    public void pointAtTarget() {
-        turn(getTargetRelHeading());
-    }
-
-    public double getTargetRelHeading() {
-        // In reference to the the heading of the robot
-        return MathUtil.angleWrapRadians(getTargetHeading() - getPoseEstimate().getHeading());
-    }
-    public double getTargetHeading() {
-        Pose2d diff = getTargetPose();
-        return Math.atan2(diff.getY(), diff.getX()); // Happens to be in the heading frame
-    }
-    public Pose2d getTargetPose() {
-        // Rel pose of target in reference to the shooter
-        Pose2d targetPose = target.getPose(alliance);
-        Pose2d pose = getPoseEstimate();
-        Pose2d shooterPos = new Pose2d(pose.getX() + SHOOTER_LOCATION.getX(), pose.getY() + SHOOTER_LOCATION.getY());
-        return new Pose2d(targetPose.getX() - shooterPos.getX(), targetPose.getY() - shooterPos.getY());
-    }
+//    public void pointAtTargetAsync(double targetRelativeHeading) {
+//        // TODO: make sure turnAsync is turn to local not global
+//        turnAsync(targetRelativeHeading);
+//    }
+//    public void pointAtTarget(double targetRelativeHeading) {
+//        turn(targetRelativeHeading);
+//    }
 
     public Target getTarget() {
         return target;
