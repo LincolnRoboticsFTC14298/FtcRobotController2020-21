@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.hardware.OperatorInterface;
 
 @TeleOp(name="Main TeleOp", group="TeleOp")
 public class MainTeleOp extends OpMode {
