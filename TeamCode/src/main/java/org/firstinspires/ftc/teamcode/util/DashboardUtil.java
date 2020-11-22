@@ -7,13 +7,15 @@ import com.acmerobotics.roadrunner.path.Path;
 
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.util.DriveConstants.ROBOT_LENGTH;
+import static org.firstinspires.ftc.teamcode.util.DriveConstants.ROBOT_WIDTH;
+
 /**
  * Set of helper functions for drawing Road Runner paths and trajectories on dashboard canvases.
  */
 public class DashboardUtil {
     private static final double DEFAULT_RESOLUTION = 2.0; // distance units; presumed inches
     private static final double ROBOT_RADIUS = 9; // in
-    private static final double ROBOT_WIDTH = 18, ROBOT_HEIGHT = 18; // in
 
 
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {
@@ -46,7 +48,7 @@ public class DashboardUtil {
     }
 
     public static void drawRobot(Canvas canvas, Pose2d pose) {
-        canvas.strokeRect(pose.getX(), pose.getY(), ROBOT_WIDTH, ROBOT_HEIGHT);
+        canvas.strokeRect(pose.getX(), pose.getY(), ROBOT_WIDTH, ROBOT_LENGTH);
         //canvas.strokeCircle(pose.getX(), pose.getY(), ROBOT_RADIUS);
         Vector2d v = pose.headingVec().times(ROBOT_RADIUS);
         double x1 = pose.getX() + v.getX() / 2, y1 = pose.getY() + v.getY() / 2;

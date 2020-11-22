@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  */
 @Config
 public class DriveConstants {
+    public static final double ROBOT_WIDTH = 18, ROBOT_LENGTH = 18, ROBOT_HEIGHT = 10;
 
     /*
      * These are motor constants that should be listed online for your motors.
