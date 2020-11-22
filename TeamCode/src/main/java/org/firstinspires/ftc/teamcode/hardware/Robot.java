@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.hardware.util.RobotBase;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
+
+import robotlib.hardware.RobotBase;
 
 
 public class Robot extends RobotBase {
@@ -118,5 +119,4 @@ public class Robot extends RobotBase {
         drive.setAlliance(alliance);
         shooter.setAlliance(alliance);
     }
-
 }

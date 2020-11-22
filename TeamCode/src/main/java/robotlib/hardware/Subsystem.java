@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.util;
+package robotlib.hardware;
 
 public interface Subsystem {
     void init();

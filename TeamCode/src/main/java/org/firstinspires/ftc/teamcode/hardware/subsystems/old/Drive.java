@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import robotlib.hardware.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.util.DriveConstants.encoderTicksToInches;
 

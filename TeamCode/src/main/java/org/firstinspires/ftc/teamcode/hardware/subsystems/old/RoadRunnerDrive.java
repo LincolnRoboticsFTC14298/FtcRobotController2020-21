@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
+import robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 

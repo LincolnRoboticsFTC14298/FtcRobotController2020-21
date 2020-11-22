@@ -17,7 +17,7 @@ import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.firstinspires.ftc.teamcode.hardware.RobotMap;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.hardware.gamepad.RadicalGamepad;
+import robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;

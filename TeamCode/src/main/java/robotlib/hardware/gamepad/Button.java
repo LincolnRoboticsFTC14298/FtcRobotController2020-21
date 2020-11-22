@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.gamepad;
+package robotlib.hardware.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;

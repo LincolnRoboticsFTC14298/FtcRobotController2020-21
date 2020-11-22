@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.hardware.util.Subsystem;
+import robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 import org.opencv.core.Mat;
