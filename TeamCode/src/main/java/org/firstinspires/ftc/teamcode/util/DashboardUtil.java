@@ -7,8 +7,8 @@ import com.acmerobotics.roadrunner.path.Path;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.ROBOT_LENGTH;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.ROBOT_WIDTH;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.ROBOT_LENGTH;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.ROBOT_WIDTH;
 
 /**
  * Set of helper functions for drawing Road Runner paths and trajectories on dashboard canvases.

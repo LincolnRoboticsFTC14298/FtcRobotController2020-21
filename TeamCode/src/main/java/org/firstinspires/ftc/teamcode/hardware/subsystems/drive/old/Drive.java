@@ -15,7 +15,7 @@ import java.util.List;
 
 import robotlib.hardware.Subsystem;
 
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
 
 public class Drive implements Subsystem {

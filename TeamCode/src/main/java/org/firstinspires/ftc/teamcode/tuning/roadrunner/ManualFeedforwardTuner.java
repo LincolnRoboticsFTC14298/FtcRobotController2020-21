@@ -14,14 +14,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
-import org.firstinspires.ftc.teamcode.util.DriveConstants;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants;
 
 import java.util.Objects;
 
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,

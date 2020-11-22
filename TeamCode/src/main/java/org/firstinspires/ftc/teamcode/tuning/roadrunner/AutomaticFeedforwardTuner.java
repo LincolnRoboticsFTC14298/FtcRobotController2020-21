@@ -17,9 +17,9 @@ import org.firstinspires.ftc.teamcode.util.RegressionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.MAX_RPM;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.rpmToVelocity;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_RPM;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.rpmToVelocity;
 
 /*
  * Op mode for computing kV, kStatic, and kA from various drive routines. For the curious, here's an

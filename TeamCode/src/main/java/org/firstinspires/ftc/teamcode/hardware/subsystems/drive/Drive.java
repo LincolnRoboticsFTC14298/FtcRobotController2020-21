@@ -42,14 +42,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import robotlib.hardware.Subsystem;
 
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.BASE_CONSTRAINTS;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.util.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 @Config
 public class Drive extends MecanumDrive implements Subsystem {
