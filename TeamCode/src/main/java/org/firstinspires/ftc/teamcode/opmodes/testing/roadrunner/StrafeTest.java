@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing.roadrunner;
+package org.firstinspires.ftc.teamcode.opmodes.testing.roadrunner;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
  */
 @Config
 @Autonomous(group = "drive")
-public class StraightTest extends LinearOpMode {
+public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 
     @Override
@@ -22,7 +22,7 @@ public class StraightTest extends LinearOpMode {
         drive.init();
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .forward(DISTANCE)
+                .strafeRight(DISTANCE)
                 .build();
 
         waitForStart();
