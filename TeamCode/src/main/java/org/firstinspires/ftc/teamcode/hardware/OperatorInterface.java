@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.util.Field.Target;
+
 import robotlib.hardware.gamepad.Button;
 import robotlib.hardware.gamepad.ButtonTrigger;
 import robotlib.hardware.gamepad.ButtonType;
 import robotlib.hardware.gamepad.ToggleButton;
-import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 // Operator Interface
 public class OperatorInterface {
@@ -69,7 +70,7 @@ public class OperatorInterface {
 
         // Drive
         Pose2d input = getInput();
-        robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
+        robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on(), robot.getTargetRelativeHeading());
 
         // Intake
         if (intakeOnToggleButton.on()) {
