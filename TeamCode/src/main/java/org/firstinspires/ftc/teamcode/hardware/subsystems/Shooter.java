@@ -106,7 +106,7 @@ public class Shooter implements Subsystem {
     }
 
     public void aimAsync() {
-        Vector3D targetRelativePos = positionProvider.getTargetRelativeLocation(target, alliance);
+        Vector3D targetRelativePos = positionProvider.getTargetRelativeLocation();
         double dist = Math.hypot(targetRelativePos.getY(), targetRelativePos.getX());
         double height = targetRelativePos.getZ();
 

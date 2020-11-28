@@ -353,10 +353,10 @@ public class Drive extends MecanumDrive implements Subsystem {
 
     public void pointAtTargetAsync() {
         // TODO: make sure turnAsync is turn to local not global
-        turnAsync(positionProvider.getTargetRelativeHeading(target, alliance));
+        turnAsync(positionProvider.getTargetRelativeHeading());
     }
     public void pointAtTarget() {
-        turn(positionProvider.getTargetRelativeHeading(target, alliance));
+        turn(positionProvider.getTargetRelativeHeading());
     }
 
     public Target getTarget() {
