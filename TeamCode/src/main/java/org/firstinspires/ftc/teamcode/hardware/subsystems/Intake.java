@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,18 +32,16 @@ public class Intake implements Subsystem {
     @Override
     public void init() {
         turnOff();
-        updateIntakeMotors();
     }
 
     @Override
     public void update() {
-        updateIntakeMotors();
+
     }
 
     @Override
     public void stop() {
         turnOff();
-        updateIntakeMotors();
     }
 
     public void turnOn() {
@@ -56,13 +53,14 @@ public class Intake implements Subsystem {
         rearPower = 0;
     }
 
-    public void updateIntakeMotors() {
+    @Override
+    public void updateMotorsAndServos() {
         front.setPower(frontPower);
         rear.setPower(rearPower);
 
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Front intake motor power: ", front.getPower());
-        packet.put("Back intake motor power: ", rear.getPower());
-        dashboard.sendTelemetryPacket(packet);
+//        TelemetryPacket packet = new TelemetryPacket();
+//        packet.put("Front intake motor power: ", front.getPower());
+//        packet.put("Back intake motor power: ", rear.getPower());
+//        dashboard.sendTelemetryPacket(packet);
     }
 }

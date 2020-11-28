@@ -31,7 +31,7 @@ public class OperatorInterface {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
 
-        // ALL OF THE Button MAPPINGS //
+        // ALL OF THE BUTTON MAPPINGS //
 
         autoAimToggleButton = new ToggleButton(gamepad1, ButtonType.a, 1);
         fieldCentricToggleButton = new ToggleButton(gamepad1, ButtonType.b, 1);

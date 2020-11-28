@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 import org.opencv.core.Mat;
@@ -17,6 +16,8 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 import java.io.File;
 import java.util.Arrays;
+
+import robotlib.hardware.Subsystem;
 
 import static org.opencv.android.Utils.matToBitmap;
 
@@ -60,6 +61,11 @@ public class Vision implements Subsystem {
     @Override
     public void stop() {
         stopStreaming();
+    }
+
+    @Override
+    public void updateMotorsAndServos() {
+
     }
 
     public void analyze() {

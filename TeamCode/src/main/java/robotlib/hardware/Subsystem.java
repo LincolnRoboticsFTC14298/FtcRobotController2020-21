@@ -4,4 +4,5 @@ public interface Subsystem {
     void init();
     void update();
     void stop();
+    void updateMotorsAndServos();
 }

@@ -72,21 +72,15 @@ public class Shooter implements Subsystem {
         setShooterPower(0);
         setLoadPower(0);
         setFlapAngle(Math.toRadians(45));
-        updateMotorPowers();
-        updateServoPositions();
     }
 
     @Override
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
-
         if (!doneShooting()) {
             updateShooter();
             updateLoadingRing();
         }
-
-        updateMotorPowers();
-        updateServoPositions();
     }
 
     @Override
@@ -94,8 +88,6 @@ public class Shooter implements Subsystem {
         setShooterPower(0);
         setLoadPower(0);
         setFlapAngle(Math.toRadians(45));
-        updateMotorPowers();
-        updateServoPositions();
     }
 
     public boolean readyToShoot() {
@@ -137,7 +129,7 @@ public class Shooter implements Subsystem {
     }
     private void updateShooter() {
         // TODO: come up with better solution so that it can get updated pose, may be unnecessary
-        updateServoPositions(); //aimAsync(targetRelPose);
+        updateMotorsAndServos(); //aimAsync(targetRelPose);
         if (readyToShoot() && shootScheduler != 0) {
             startLoadingRing();
             shootScheduler -= 1;
@@ -191,17 +183,16 @@ public class Shooter implements Subsystem {
         return Range.scale(angle, FLAP_MIN_ANGLE, FLAP_MAX_ANGLE, 0, 1);
     }
 
-    private void updateMotorPowers() {
+    @Override
+    public void updateMotorsAndServos() {
         motor1.setPower(motor1Power);
         motor2.setPower(motor2Power);
         loadMotor.setPower(loadMotorPower);
+
+        flap.setPosition(angleToPos(flapAngle));
+
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Shooter power: ", motor1.getPower());
-        dashboard.sendTelemetryPacket(packet);
-    }
-    private void updateServoPositions() {
-        flap.setPosition(angleToPos(flapAngle));
-        TelemetryPacket packet = new TelemetryPacket();
         packet.addLine("Flap Angle: " +  Math.toDegrees(targetAngle) + " target vs " +
                 Math.toDegrees(posToAngle(flap.getPosition())) + " actual");
         dashboard.sendTelemetryPacket(packet);

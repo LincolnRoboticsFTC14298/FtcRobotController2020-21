@@ -24,7 +24,7 @@ public class Arm implements Subsystem {
     public static double ARM_DEFAULT_POSITION = .5;
     public static double ARM_LOWER_POSITION = 0;
 
-    private Servo armServo , clawServo;
+    private Servo armServo, clawServo;
     private double armPosition, clawPosition;
 
     public Arm(HardwareMap hardwareMap) {
@@ -36,19 +36,17 @@ public class Arm implements Subsystem {
     public void init() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
         defaultArm();
-        updateServoPositions();
     }
 
     @Override
     public void update() {
-        updateServoPositions();
+
     }
 
     @Override
     public void stop() {
         closeClaw();
         defaultArm();
-        updateServoPositions();
     }
 
     public void openClaw() {
@@ -75,7 +73,8 @@ public class Arm implements Subsystem {
         this.clawPosition = position;
     }
 
-    public void updateServoPositions() {
+    @Override
+    public void updateMotorsAndServos() {
         armServo.setPosition(armPosition);
         clawServo.setPosition(clawPosition);
 

@@ -438,6 +438,11 @@ public class Drive extends MecanumDrive implements Subsystem {
     }
 
     @Override
+    public void updateMotorsAndServos() {
+
+    }
+
+    @Override
     public double getRawExternalHeading() {
         return 0;
     }
