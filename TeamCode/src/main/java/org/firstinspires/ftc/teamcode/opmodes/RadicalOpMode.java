@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 public abstract class RadicalOpMode extends OpMode {
+    // TODO: write alliance and pose to
     private static Field.Alliance alliance;
     private static Pose2d lastPose;
 

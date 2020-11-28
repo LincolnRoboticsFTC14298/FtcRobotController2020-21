@@ -69,7 +69,7 @@ public class Robot extends RobotBase {
         subsystemManager.stop();
         telemetry.update();
     }
-    
+
 
     public void shoot(int n) {
         // Not async as to prevent other movements.
@@ -101,8 +101,8 @@ public class Robot extends RobotBase {
     public void setTarget(Target target) {
         this.target = target;
         positionProvider.setTarget(target);
-        drive.setTarget(target);
-        shooter.setTarget(target);
+//        drive.setTarget(target);
+//        shooter.setTarget(target);
     }
 
     public Alliance getAlliance() {
@@ -111,7 +111,7 @@ public class Robot extends RobotBase {
     public void setAlliance(Alliance alliance) {
         this.alliance = alliance;
         positionProvider.setAlliance(alliance);
-        drive.setAlliance(alliance);
-        shooter.setAlliance(alliance);
+//        drive.setAlliance(alliance);
+//        shooter.setAlliance(alliance);
     }
 }

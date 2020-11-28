@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.firstinspires.ftc.teamcode.util.Field.Alliance;
-import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 import robotlib.hardware.Subsystem;
 
@@ -46,8 +44,8 @@ public class Shooter implements Subsystem {
     private double flapAngle;
     private double targetAngle = -1;
 
-    private Target target = Target.HIGH_GOAL;
-    private Alliance alliance = Alliance.BLUE;
+//    private Target target = Target.HIGH_GOAL;
+//    private Alliance alliance = Alliance.BLUE;
 
     private PositionProvider positionProvider;
 
@@ -198,17 +196,17 @@ public class Shooter implements Subsystem {
         dashboard.sendTelemetryPacket(packet);
     }
 
-    public Target getTarget() {
-        return target;
-    }
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-
-    public Alliance getAlliance() {
-        return alliance;
-    }
-    public void setAlliance(Alliance alliance) {
-        this.alliance = alliance;
-    }
+//    public Target getTarget() {
+//        return target;
+//    }
+//    public void setTarget(Target target) {
+//        this.target = target;
+//    }
+//
+//    public Alliance getAlliance() {
+//        return alliance;
+//    }
+//    public void setAlliance(Alliance alliance) {
+//        this.alliance = alliance;
+//    }
 }

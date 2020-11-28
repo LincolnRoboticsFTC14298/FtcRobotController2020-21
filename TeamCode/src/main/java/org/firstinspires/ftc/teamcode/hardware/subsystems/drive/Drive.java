@@ -31,8 +31,6 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.util.Field.Alliance;
-import org.firstinspires.ftc.teamcode.util.Field.Target;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -105,8 +103,8 @@ public class Drive extends MecanumDrive implements Subsystem {
 
     private PositionProvider positionProvider;
 
-    private Target target = Target.HIGH_GOAL;
-    private Alliance alliance = Alliance.BLUE;
+//    private Target target = Target.HIGH_GOAL;
+//    private Alliance alliance = Alliance.BLUE;
 
     public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -359,19 +357,19 @@ public class Drive extends MecanumDrive implements Subsystem {
         turn(positionProvider.getTargetRelativeHeading());
     }
 
-    public Target getTarget() {
-        return target;
-    }
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-
-    public Alliance getAlliance() {
-        return alliance;
-    }
-    public void setAlliance(Alliance alliance) {
-        this.alliance = alliance;
-    }
+//    public Target getTarget() {
+//        return target;
+//    }
+//    public void setTarget(Target target) {
+//        this.target = target;
+//    }
+//
+//    public Alliance getAlliance() {
+//        return alliance;
+//    }
+//    public void setAlliance(Alliance alliance) {
+//        this.alliance = alliance;
+//    }
 
 
 
