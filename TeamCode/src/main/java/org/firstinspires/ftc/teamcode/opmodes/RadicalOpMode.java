@@ -9,17 +9,17 @@ public abstract class RadicalOpMode extends OpMode {
     private static Field.Alliance alliance;
     private static Pose2d lastPose;
 
-    protected void setAlliance(Field.Alliance alliance) {
-        this.alliance = alliance;
-    }
     protected Field.Alliance getAlliance() {
         return alliance;
     }
-
-    protected void setLastPose(Pose2d lastPose) {
-        this.lastPose = lastPose;
+    protected void setAlliance(Field.Alliance alliance) {
+        this.alliance = alliance;
     }
+
     protected Pose2d getLastPose() {
         return lastPose;
+    }
+    protected void setLastPose(Pose2d lastPose) {
+        this.lastPose = lastPose;
     }
 }
