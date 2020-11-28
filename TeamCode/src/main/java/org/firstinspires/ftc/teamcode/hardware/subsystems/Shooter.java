@@ -46,15 +46,15 @@ public class Shooter implements Subsystem {
     private double flapAngle;
     private double targetAngle = -1;
 
-    private Vector3D targetRelativePos;
-
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;
+
+    private PositionProvider positionProvider;
 
     private double shootScheduler = 0;
     private boolean loading = false;
 
-    public Shooter(HardwareMap hardwareMap) {
+    public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
         // Initialize motors and servos //
         motor1 = hardwareMap.get(DcMotor.class, MOTOR1_NAME);
         motor2 = hardwareMap.get(DcMotor.class, MOTOR2_NAME);
@@ -62,6 +62,7 @@ public class Shooter implements Subsystem {
 
         flap = hardwareMap.get(Servo.class, FLAP_NAME);
 
+        this.positionProvider = positionProvider;
         // Reverse direction
 //        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -104,7 +105,8 @@ public class Shooter implements Subsystem {
         return shootScheduler == 0 && !isLoading();
     }
 
-    public void aimAsync(Vector3D targetRelativePos) {
+    public void aimAsync() {
+        Vector3D targetRelativePos = positionProvider.getTargetRelativeLocation(target, alliance);
         double dist = Math.hypot(targetRelativePos.getY(), targetRelativePos.getX());
         double height = targetRelativePos.getZ();
 
@@ -116,15 +118,15 @@ public class Shooter implements Subsystem {
         setFlapAngle(targetAngle);
     }
 
-    public void shootAsync(Vector3D targetRelativePos) {
-        this.targetRelativePos = targetRelativePos;
+    public void shootAsync() {
         shootScheduler += 1;
     }
-    public void shoot(Vector3D targetRelativePos) {
-        shootAsync(targetRelativePos);
+    public void shoot() {
+        shootAsync();
         ElapsedTime elapsedTime = new ElapsedTime();
         while (!doneShooting() || elapsedTime.milliseconds() < TIMEOUT) {
             update();
+            updateMotorsAndServos();
         }
     }
     private void updateShooter() {
@@ -144,14 +146,12 @@ public class Shooter implements Subsystem {
     }
     private void updateLoadingRing() {
         if (isLoading()) {
-
             if (loadingElapse.milliseconds() / 1000.0 > LOAD_MOTOR_DELAY) {
                 loading = false;
                 setLoadPower(0);
             } else {
                 setLoadPower(LOAD_MOTOR_POWER);
             }
-
         }
     }
     public boolean isLoading() {

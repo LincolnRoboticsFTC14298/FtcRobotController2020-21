@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
@@ -102,10 +103,12 @@ public class Drive extends MecanumDrive implements Subsystem {
 
     private Pose2d lastPoseOnTurn;
 
+    private PositionProvider positionProvider;
+
     private Target target = Target.HIGH_GOAL;
     private Alliance alliance = Alliance.BLUE;
 
-    public Drive(HardwareMap hardwareMap) {
+    public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -159,6 +162,8 @@ public class Drive extends MecanumDrive implements Subsystem {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+
+        this.positionProvider = positionProvider;
     }
 
     @Override
@@ -178,6 +183,8 @@ public class Drive extends MecanumDrive implements Subsystem {
         if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst();
         }
+
+        positionProvider.setPoseEstimate(currentPose);
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
@@ -328,7 +335,7 @@ public class Drive extends MecanumDrive implements Subsystem {
     /*
      * Input is the forwardAmt, strafeAmt, rotation
      */
-    public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget, double targetRelativeHeading) {
+    public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget) {
         Vector2d input = new Vector2d(rawControllerInput.getX(), -rawControllerInput.getY());
 
         if (fieldCentric) {
@@ -336,7 +343,7 @@ public class Drive extends MecanumDrive implements Subsystem {
         }
 
         if (pointAtTarget) {
-            turnAsync(targetRelativeHeading);
+            pointAtTargetAsync();
         }
 
         setWeightedDrivePower(
@@ -344,13 +351,13 @@ public class Drive extends MecanumDrive implements Subsystem {
         );
     }
 
-//    public void pointAtTargetAsync(double targetRelativeHeading) {
-//        // TODO: make sure turnAsync is turn to local not global
-//        turnAsync(targetRelativeHeading);
-//    }
-//    public void pointAtTarget(double targetRelativeHeading) {
-//        turn(targetRelativeHeading);
-//    }
+    public void pointAtTargetAsync() {
+        // TODO: make sure turnAsync is turn to local not global
+        turnAsync(positionProvider.getTargetRelativeHeading(target, alliance));
+    }
+    public void pointAtTarget() {
+        turn(positionProvider.getTargetRelativeHeading(target, alliance));
+    }
 
     public Target getTarget() {
         return target;

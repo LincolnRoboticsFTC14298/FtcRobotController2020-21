@@ -44,7 +44,6 @@ public class OperatorInterface {
         powerShotButton = new Button(gamepad2, ButtonType.x);
 
         shootButton = new ButtonTrigger(gamepad1, ButtonType.right_trigger);
-
     }
 
     public void update() {
