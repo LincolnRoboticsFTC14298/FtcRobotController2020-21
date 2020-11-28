@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,7 +22,6 @@ public class Intake implements Subsystem {
 
     private DcMotorEx front, rear;
     private double frontPower = 0, rearPower = 0;
-    private boolean on = false;
 
     public Intake(HardwareMap hardwareMap) {
         front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
@@ -58,9 +58,9 @@ public class Intake implements Subsystem {
         front.setPower(frontPower);
         rear.setPower(rearPower);
 
-//        TelemetryPacket packet = new TelemetryPacket();
-//        packet.put("Front intake motor power: ", front.getPower());
-//        packet.put("Back intake motor power: ", rear.getPower());
-//        dashboard.sendTelemetryPacket(packet);
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("Front intake motor power: ", front.getPower());
+        packet.put("Back intake motor power: ", rear.getPower());
+        dashboard.sendTelemetryPacket(packet);
     }
 }
