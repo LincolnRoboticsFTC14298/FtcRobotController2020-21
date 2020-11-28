@@ -15,7 +15,7 @@ public abstract class DataWriterUtil {
         Properties p = getProperty();
         return Field.Alliance.valueOf(p.getProperty("alliance"));
     }
-    public static void setAlliance(Field.Alliance alliance) {
+    public static void saveAlliance(Field.Alliance alliance) {
         Properties p = getProperty();
         p.setProperty("alliance", String.valueOf(alliance));
         store(p);
@@ -28,7 +28,7 @@ public abstract class DataWriterUtil {
         double h = Double.parseDouble(p.getProperty("lastPoseHeading"));
         return new Pose2d(x, y, h);
     }
-    public static void setLastPose(Pose2d lastPose) {
+    public static void saveLastPose(Pose2d lastPose) {
         double x = lastPose.getX();
         double y = lastPose.getY();
         double h = lastPose.getHeading();
