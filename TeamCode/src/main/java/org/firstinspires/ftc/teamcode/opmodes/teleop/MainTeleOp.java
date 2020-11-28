@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.opmodes.RadicalOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 
 @TeleOp(name="Main TeleOp", group="TeleOp")
-public class MainTeleOp extends RadicalOpMode {
-    Robot robot = new Robot(this);
+public class MainTeleOp extends OpMode {
+    Robot robot;
     OperatorInterface operatorInterface = new OperatorInterface(robot, gamepad1, gamepad2);
 
     @Override
     public void init() {
-        robot.setAlliance(getAlliance());
-        robot.drive.setPoseEstimate(getLastPose());
+        robot = new Robot(this);
+
+        robot.setAlliance(DataWriterUtil.getAlliance());
+        robot.drive.setPoseEstimate(DataWriterUtil.getLastPose());
+
         robot.init();
     }
 

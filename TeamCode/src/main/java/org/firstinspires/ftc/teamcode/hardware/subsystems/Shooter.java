@@ -90,14 +90,10 @@ public class Shooter implements Subsystem {
     }
 
     public boolean readyToShoot() {
-        if (targetAngle != -1) {
-            return posToAngle(flap.getPosition()) - targetAngle < FLAP_MIN_ERROR &&
-                    motor1.getPower() - motor1Power < SHOOTER_MIN_ERROR &&
-                    motor2.getPower() - motor2Power < SHOOTER_MIN_ERROR &&
-                    !isLoading();
-        } else {
-            return false;
-        }
+        return targetAngle != -1 && Math.abs(posToAngle(flap.getPosition()) - targetAngle) < FLAP_MIN_ERROR &&
+                Math.abs(motor1.getPower() - motor1Power) < SHOOTER_MIN_ERROR &&
+                Math.abs(motor2.getPower() - motor2Power) < SHOOTER_MIN_ERROR &&
+                !isLoading();
     }
     public boolean doneShooting() {
         return shootScheduler == 0 && !isLoading();
@@ -129,8 +125,8 @@ public class Shooter implements Subsystem {
     }
     private void updateShooter() {
         // TODO: come up with better solution so that it can get updated pose, may be unnecessary
-        updateMotorsAndServos(); //aimAsync(targetRelPose);
-        if (readyToShoot() && shootScheduler != 0) {
+        //aimAsync(targetRelPose);
+        if (readyToShoot() && shootScheduler > 0) {
             startLoadingRing();
             shootScheduler -= 1;
         }
