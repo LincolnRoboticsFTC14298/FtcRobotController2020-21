@@ -9,14 +9,9 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 public class PositionProvider {
-
     private Pose2d poseEstimate;
     private Field.Target target;
     private Field.Alliance alliance;
-
-    public PositionProvider() {
-
-    }
 
     public void setPoseEstimate(Pose2d poseEstimate) {
         this.poseEstimate = poseEstimate;
