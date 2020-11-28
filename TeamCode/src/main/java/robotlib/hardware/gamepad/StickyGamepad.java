@@ -3,9 +3,8 @@ package robotlib.hardware.gamepad;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class StickyGamepad {
-    // USE BUTTON CLASS INSTEAD
+    // USE RADICALGAMEPAD INSTEAD
     // Modified version of Acmerobotics StickyGamepad
-
 
     private Gamepad gamepad;
 

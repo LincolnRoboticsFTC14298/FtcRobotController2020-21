@@ -20,11 +20,9 @@ public class ToggleButton extends Button {
     }
 
     public boolean on() {
-        get();
-        return toggle;
+        return get();
     }
     public boolean off() {
-        get();
-        return !toggle;
+        return !get();
     }
 }
