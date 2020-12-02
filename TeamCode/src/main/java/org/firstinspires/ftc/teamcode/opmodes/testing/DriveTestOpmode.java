@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.testing;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.old.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive.Drive;
 import robotlib.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Drive test", group="Test")
@@ -15,8 +15,12 @@ public class DriveTestOpmode extends OpMode {
     @Override
     public void init() {
         drive = new Drive(hardwareMap);
-        drive.init();
         gamepad = new RadicalGamepad(gamepad1);
+    }
+
+    @Override
+    public void start() {
+        drive.start();
     }
 
     @Override

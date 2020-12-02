@@ -70,7 +70,7 @@ public class OperatorInterface {
 
         // Drive
         Pose2d input = getInput();
-        robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on(), robot.getTargetRelativeHeading());
+        robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
 
         // Intake
         if (intakeOnToggleButton.on()) {

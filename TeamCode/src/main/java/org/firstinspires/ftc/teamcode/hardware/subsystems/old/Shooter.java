@@ -1,18 +1,21 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.old;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 
 import robotlib.hardware.Subsystem;
 
-@Config
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
+
+@Deprecated
 public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -39,7 +42,7 @@ public class Shooter implements Subsystem {
 
     private double motor1Power, motor2Power, loadMotorPower;
     private double flapAngle;
-    private double targetAngle = 0;
+    private double targetAngle = -1;
 
 //    private Target target = Target.HIGH_GOAL;
 //    private Alliance alliance = Alliance.BLUE;
@@ -65,23 +68,37 @@ public class Shooter implements Subsystem {
 
     @Override
     public void start() {
+        setShooterPower(0);
+        setLoadPower(0);
         setFlapAngle(Math.toRadians(45));
     }
 
     @Override
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
+        if (!doneShooting()) {
+            updateShooter();
+            updateLoadingRing();
+        }
     }
 
     @Override
     public void stop() {
+        setShooterPower(0);
+        setLoadPower(0);
         setFlapAngle(Math.toRadians(45));
     }
 
-
-    public boolean doneAiming() {
-        return Math.abs(posToAngle(flap.getPosition()) - flapAngle) < FLAP_MIN_ERROR;
+    public boolean readyToShoot() {
+        return targetAngle != -1 && Math.abs(posToAngle(flap.getPosition()) - targetAngle) < FLAP_MIN_ERROR &&
+                Math.abs(motor1.getPower() - motor1Power) < SHOOTER_MIN_ERROR &&
+                Math.abs(motor2.getPower() - motor2Power) < SHOOTER_MIN_ERROR &&
+                !isLoading();
     }
+    public boolean doneShooting() {
+        return shootScheduler == 0 && !isLoading();
+    }
+
     public void aimAsync() {
         Vector3D targetRelativePos = positionProvider.getTargetRelativeLocation();
         double dist = Math.hypot(targetRelativePos.getY(), targetRelativePos.getX());
@@ -94,22 +111,53 @@ public class Shooter implements Subsystem {
 
         setFlapAngle(targetAngle);
     }
-    public void aim() {
-        aimAsync();
-        while (!doneAiming()) {
+
+    public void shootAsync() {
+        shootScheduler += 1;
+    }
+    public void shoot() {
+        shootAsync();
+        ElapsedTime elapsedTime = new ElapsedTime();
+        while (!doneShooting() || elapsedTime.milliseconds() < TIMEOUT) {
             update();
             updateMotorsAndServos();
         }
     }
-
-    public void shoot() {
-        Thread t = new Thread(() -> {
-            System.out.println();
-        });
+    private void updateShooter() {
+        // TODO: come up with better solution so that it can get updated pose, may be unnecessary
+        //aimAsync();
+        if (shootScheduler > 0 && readyToShoot()) {
+            loadRingAsync();
+            shootScheduler -= 1;
+        }
     }
 
-
-
+    ElapsedTime loadingElapse = new ElapsedTime();
+    private void loadRingAsync() {
+        loading = true;
+        loadingElapse.reset();
+        setLoadPower(LOAD_MOTOR_POWER);
+    }
+    private void loadRing() {
+        loadRingAsync();
+        while (loadingElapse.milliseconds() / 1000.0 > LOAD_MOTOR_DELAY) {
+            update();
+            updateMotorsAndServos();
+        }
+    }
+    private void updateLoadingRing() {
+        if (isLoading()) {
+            if (loadingElapse.milliseconds() / 1000.0 > LOAD_MOTOR_DELAY) {
+                loading = false;
+                setLoadPower(0);
+            } else {
+                setLoadPower(LOAD_MOTOR_POWER);
+            }
+        }
+    }
+    public boolean isLoading() {
+        return loading;
+    }
 
     // Angle is in radians
     public double getTargetAngle() {
@@ -150,4 +198,18 @@ public class Shooter implements Subsystem {
                 Math.toDegrees(posToAngle(flap.getPosition())) + " actual");
         dashboard.sendTelemetryPacket(packet);
     }
+
+//    public Target getTarget() {
+//        return target;
+//    }
+//    public void setTarget(Target target) {
+//        this.target = target;
+//    }
+//
+//    public Alliance getAlliance() {
+//        return alliance;
+//    }
+//    public void setAlliance(Alliance alliance) {
+//        this.alliance = alliance;
+//    }
 }

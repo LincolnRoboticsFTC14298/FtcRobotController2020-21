@@ -33,7 +33,7 @@ public class Arm implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void start() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
         defaultArm();
     }

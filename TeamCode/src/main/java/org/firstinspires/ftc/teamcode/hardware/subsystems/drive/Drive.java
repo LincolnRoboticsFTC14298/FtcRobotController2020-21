@@ -165,7 +165,7 @@ public class Drive extends MecanumDrive implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void start() {
         setMotorPowers(0,0,0,0);
     }
 

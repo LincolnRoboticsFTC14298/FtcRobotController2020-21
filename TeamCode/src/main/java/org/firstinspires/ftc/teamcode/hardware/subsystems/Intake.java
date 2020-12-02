@@ -30,7 +30,7 @@ public class Intake implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void start() {
         turnOff();
     }
 

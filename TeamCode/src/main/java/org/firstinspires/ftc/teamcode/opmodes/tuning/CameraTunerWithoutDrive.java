@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
-import robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
+
+import robotlib.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Camera Without Drive", group="Tuner")
 public class CameraTunerWithoutDrive extends OpMode {
@@ -18,11 +19,13 @@ public class CameraTunerWithoutDrive extends OpMode {
     @Override
     public void init() {
         vision = new Vision(hardwareMap);
-
-        vision.init();
-        vision.startStreaming();
-
         gamepad = new RadicalGamepad(gamepad1);
+    }
+
+    @Override
+    public void start() {
+        vision.start();
+        vision.startStreaming();
     }
 
     @Override

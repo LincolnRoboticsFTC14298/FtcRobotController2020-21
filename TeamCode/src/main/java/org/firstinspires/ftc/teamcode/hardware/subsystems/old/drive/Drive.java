@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems.drive.old;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +17,7 @@ import robotlib.hardware.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
-
+@Deprecated
 public class Drive implements Subsystem {
     // Mecanum drive //
 
@@ -49,9 +49,9 @@ public class Drive implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void start() {
         setMotorPowers(0,0,0,0);
-        updateMotorPowers();
+        updateMotorsAndServos();
     }
 
     @Override
@@ -60,15 +60,14 @@ public class Drive implements Subsystem {
         //logger.atFiner().log("Diff of power - target: ",frontLeft.getPower() - frontLeftPower, frontRight.getPower() - frontRightPower,backLeft.getPower() - backLeftPower, backRight.getPower() - backRightPower);
         //logger.atFiner().log(target.toString(), alliance.toString());
         //logger.atFinest().log(frontLeft.getMode().toString());
-        updateMotorPowers();
+        updateMotorsAndServos();
     }
 
     @Override
     public void stop() {
         setMotorPowers(0,0,0,0);
-        updateMotorPowers();
+        updateMotorsAndServos();
     }
-
 
 
     public void teleopControl(double radius, double angle, double rotation, double heading, boolean localControl) {
@@ -160,7 +159,8 @@ public class Drive implements Subsystem {
         backRight.setMode(mode);
     }
 
-    private void updateMotorPowers() {
+    @Override
+    public void updateMotorsAndServos() {
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);

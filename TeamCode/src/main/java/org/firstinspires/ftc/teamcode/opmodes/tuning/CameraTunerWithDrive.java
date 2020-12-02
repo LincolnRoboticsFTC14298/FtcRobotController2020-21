@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
@@ -14,20 +15,24 @@ import robotlib.hardware.gamepad.RadicalGamepad;
 @TeleOp(name="Camera With Drive", group="Tuner")
 public class CameraTunerWithDrive extends OpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private PositionProvider positionProvider;
     private Drive drive;
     private Vision vision;
     private RadicalGamepad gamepad;
     
     @Override
     public void init() {
-        drive = new Drive(hardwareMap);
+        positionProvider = new PositionProvider();
+        drive = new Drive(hardwareMap, positionProvider);
         vision = new Vision(hardwareMap);
-
-        drive.init();
-        vision.init();
-        vision.startStreaming();
-
         gamepad = new RadicalGamepad(gamepad1);
+    }
+
+    @Override
+    public void start() {
+        drive.start();
+        vision.start();
+        vision.startStreaming();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems.drive.old;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -20,15 +20,14 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.StandardTrackingWheelLocalizer;
-import robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
@@ -37,11 +36,17 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.*;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 @Config
 @Deprecated
-public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
+public class RoadRunnerDrive extends MecanumDrive {
     private Drive drive;
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
@@ -131,12 +136,6 @@ public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
-    @Override
-    public void init() {
-
-    }
-
-    @Override
     public void update() {
         updatePoseEstimate();
 
@@ -224,13 +223,6 @@ public class RoadRunnerDrive extends MecanumDrive implements Subsystem {
 
         dashboard.sendTelemetryPacket(packet);
     }
-
-    @Override
-    public void stop() {
-
-    }
-
-
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, constraints);

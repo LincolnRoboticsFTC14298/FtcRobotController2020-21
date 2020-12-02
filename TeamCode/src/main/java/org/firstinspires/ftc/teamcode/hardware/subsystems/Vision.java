@@ -49,7 +49,7 @@ public class Vision implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void start() {
 
     }
 

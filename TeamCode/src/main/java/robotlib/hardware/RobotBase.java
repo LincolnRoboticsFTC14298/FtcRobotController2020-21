@@ -16,7 +16,7 @@ public abstract class RobotBase {
         this.telemetry = opMode.telemetry;
     }
 
-    public abstract void init();
+    public abstract void start();
     public abstract void update();
     public abstract void stop();
 }

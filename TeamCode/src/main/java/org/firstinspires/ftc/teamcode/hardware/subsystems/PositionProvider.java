@@ -20,22 +20,30 @@ public class PositionProvider {
         return poseEstimate;
     }
 
-    public double getTargetRelativeHeading() {
-        // In reference to the the heading of the robot
-        return MathUtil.angleWrapRadians(getTargetHeading() - poseEstimate.getHeading());
+    public Vector3D getShooterLocation() {
+        return new Vector3D(
+                poseEstimate.getX() + SHOOTER_LOCATION.getX(),
+                poseEstimate.getY() + SHOOTER_LOCATION.getY(),
+                   SHOOTER_LOCATION.getZ()
+        );
     }
+
+    public Vector3D getTargetRelativeLocation() {
+        // Rel pose of target in reference to the shooter
+        Vector3D targetPos = target.getLocation(alliance);
+        Vector3D shooterPos = getShooterLocation();
+        return new Vector3D(targetPos.getX() - shooterPos.getX(),
+                targetPos.getY() - shooterPos.getY(),
+                targetPos.getZ() - shooterPos.getZ());
+    }
+
     public double getTargetHeading() {
         Vector3D diff = getTargetRelativeLocation();
         return Math.atan2(diff.getY(), diff.getX()); // Happens to be in the heading frame
     }
-    public Vector3D getTargetRelativeLocation() {
-        // Rel pose of target in reference to the shooter
-        Vector3D targetPos = target.getLocation(alliance);
-        Pose2d pose = poseEstimate;
-        Vector3D shooterPos = new Vector3D(pose.getX() + SHOOTER_LOCATION.getX(), pose.getY() + SHOOTER_LOCATION.getY(), SHOOTER_LOCATION.getZ());
-        return new Vector3D(targetPos.getX() - shooterPos.getX(),
-                targetPos.getY() - shooterPos.getY(),
-                targetPos.getZ() - shooterPos.getZ());
+    public double getTargetRelativeHeading() {
+        // In reference to the the heading of the robot
+        return MathUtil.angleWrapRadians(getTargetHeading() - poseEstimate.getHeading());
     }
 
     public Field.Target getTarget() {

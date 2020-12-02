@@ -29,7 +29,7 @@ public class FollowerPIDTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Drive drive = new Drive(hardwareMap);
-        drive.init();
+        drive.start();
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 

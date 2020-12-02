@@ -1,7 +1,7 @@
 package robotlib.hardware;
 
 public interface Subsystem {
-    void init();
+    void start();
     void update();
     void stop();
     void updateMotorsAndServos();

@@ -4,9 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.univariate.BrentOptimizer;
@@ -14,13 +14,12 @@ import org.apache.commons.math3.optim.univariate.SearchInterval;
 import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
-import org.firstinspires.ftc.teamcode.hardware.RobotMap;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
-import robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
+
+import robotlib.hardware.gamepad.RadicalGamepad;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
@@ -35,90 +34,68 @@ public class ShooterTuner extends OpMode {
     private ArrayList<Double> heights = new ArrayList<>();
     private ArrayList<Double> actuals = new ArrayList<>();
 
-    private Drive drive;
-    private Shooter shooter;
+    private Robot robot;
     private RadicalGamepad gamepad;
-
-    Field.Target target = Field.Target.HIGH_GOAL;
-    Field.Alliance alliance = Field.Alliance.BLUE;
 
     @Override
     public void init() {
-        drive = new Drive(hardwareMap);
-        shooter = new Shooter(hardwareMap);
-
-        drive.init();
-        shooter.init();
-
+        robot = new Robot(this);
         gamepad = new RadicalGamepad(gamepad1);
+    }
+
+    @Override
+    public void start() {
+        robot.start();
     }
 
     @Override
     public void loop() {
         gamepad.update();
         Pose2d input = new Pose2d(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.right_stick_x);
-        drive.teleopControl(input, true, true);
+        robot.drive.teleopControl(input, true, true);
 
-        shooter.setFlapAngle(Math.toRadians(angle));
+        robot.shooter.setFlapAngle(Math.toRadians(angle));
 
         if (gamepad.dpad_up) {
-            setTarget(Field.Target.HIGH_GOAL);
+            robot.setTarget(Field.Target.HIGH_GOAL);
         }
         if (gamepad.dpad_left) {
-            setTarget(Field.Target.MIDDLE_GOAL);
+            robot.setTarget(Field.Target.MIDDLE_GOAL);
         }
         if (gamepad.dpad_right) {
-            setTarget(Field.Target.MIDDLE_POWER_SHOT);
+            robot.setTarget(Field.Target.MIDDLE_POWER_SHOT);
         }
 
         if (gamepad.left_bumper) {
-            alliance = Field.Alliance.BLUE;
+            robot.setAlliance(Field.Alliance.BLUE);
         }
         if (gamepad.right_bumper) {
-            alliance = Field.Alliance.RED;
+            robot.setAlliance(Field.Alliance.RED);
         }
 
         if (gamepad.a) {
-            shoot();
+            robot.shoot(1);
         } else if (gamepad.b) {
-            distances.add(getDistHeight(drive.getTargetPose())[0]);
-            heights.add(getDistHeight(drive.getTargetPose())[1]);
-            actuals.add(shooter.getTargetAngle());
+            distances.add(getDistHeight(robot.positionProvider.getTargetRelativeLocation())[0]);
+            heights.add(getDistHeight(robot.positionProvider.getTargetRelativeLocation())[1]);
+            actuals.add(robot.shooter.getTargetAngle());
             lambda = findLambda();
         }
 
-        telemetry.addData("Angle: ", Math.toDegrees(shooter.getTargetAngle()));
-        telemetry.addData("Distance: ", getDistHeight(drive.getTargetPose())[0]);
-        telemetry.addData("Height: ", getDistHeight(drive.getTargetPose())[1]);
+        telemetry.addData("Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
+        telemetry.addData("Distance: ", getDistHeight(robot.positionProvider.getTargetRelativeLocation())[0]);
+        telemetry.addData("Height: ", getDistHeight(robot.positionProvider.getTargetRelativeLocation())[1]);
         telemetry.addData("Lambda: ", lambda);
         telemetry.addLine();
-        telemetry.addData("Target: ", target);
-        telemetry.addData("Alliance: ", alliance);
+        telemetry.addData("Target: ", robot.getTarget());
+        telemetry.addData("Alliance: ", robot.getAlliance());
     }
 
-    public double[] getDistHeight(Pose2d targetRelPose) {
-        double dist = Math.hypot(targetRelPose.getY(), targetRelPose.getX());
-        double height = target.getLocation(alliance).getZ();
+    public double[] getDistHeight(Vector3D targetRelLoc) {
+        double dist = Math.hypot(targetRelLoc.getY(), targetRelLoc.getX());
+        double height = targetRelLoc.getZ();
         return new double[]{dist, height};
     }
-
-    public void setTarget(Field.Target target) {
-        this.target = target;
-        drive.setTarget(target);
-        shooter.setTarget(target); // This is useless
-    }
-
-    public void shoot() {
-        // Not async as to prevent other movements.
-        drive.pointAtTargetAsync();
-        ElapsedTime elapsedTime = new ElapsedTime();
-        while(drive.isBusy() && elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
-            drive.update();
-            shooter.update();
-        }
-        shooter.shoot(drive.getTargetPose());
-    }
-
 
     public double findLambda() {
         UnivariateFunction f = new ErrorFunction();

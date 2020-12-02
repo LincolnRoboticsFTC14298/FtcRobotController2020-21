@@ -34,7 +34,7 @@ public class TrackWidthTuner extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Drive drive = new Drive(hardwareMap);
-        drive.init();
+        drive.start();
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 

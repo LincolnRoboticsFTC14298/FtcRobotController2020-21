@@ -9,9 +9,9 @@ public class SubsystemManager {
         subsystems.add(subsystem);
     }
 
-    public void init() {
+    public void start() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.init();
+            subsystem.start();
             subsystem.updateMotorsAndServos();
         }
     }

@@ -25,10 +25,6 @@ public class Robot extends RobotBase {
     public Arm arm;
     public Drive drive;
 
-//    public Drive drive = new Drive();
-//    public RoadRunnerDrive roadRunnerDrive = new RoadRunnerDrive(drive);
-
-    public boolean autoAim = false, localControl = true, liftArm = true;
     public Target target = Target.HIGH_GOAL;
     public Alliance alliance = Alliance.BLUE;
 
@@ -48,13 +44,11 @@ public class Robot extends RobotBase {
         subsystemManager.add(shooter);
         subsystemManager.add(arm);
         subsystemManager.add(drive);
-
-        init();
     }
 
     @Override
-    public void init() {
-        subsystemManager.init();
+    public void start() {
+        subsystemManager.start();
         telemetry.update();
     }
 
@@ -80,7 +74,7 @@ public class Robot extends RobotBase {
             update();
         }
         for (int i = 0; i < n; i++) {
-            shooter.shoot();
+            //shooter.shoot();
         }
     }
 
