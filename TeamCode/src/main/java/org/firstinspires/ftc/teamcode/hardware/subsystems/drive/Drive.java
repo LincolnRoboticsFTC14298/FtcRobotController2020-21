@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 @Config
-public class Drive extends MecanumDrive, Subsystem {
+public class Drive extends MecanumDrive implements Subsystem {
     private FtcDashboard dashboard;
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -105,6 +105,62 @@ public class Drive extends MecanumDrive, Subsystem {
 
 //    private Target target = Target.HIGH_GOAL;
 //    private Alliance alliance = Alliance.BLUE;
+
+    public Drive(HardwareMap hardwareMap) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+
+        dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
+
+        clock = NanoClock.system();
+
+        mode = Mode.IDLE;
+
+        turnController = new PIDFController(HEADING_PID);
+        turnController.setInputBounds(0, 2 * Math.PI);
+
+        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        poseHistory = new LinkedList<>();
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_NAME);
+        leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_NAME);
+        rightRear = hardwareMap.get(DcMotorEx.class, RIGHT_FRONT_NAME);
+        rightFront = hardwareMap.get(DcMotorEx.class, RIGHT_REAR_NAME);
+
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+    }
 
     public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
