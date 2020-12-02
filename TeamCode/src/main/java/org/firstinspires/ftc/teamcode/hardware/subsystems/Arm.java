@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import robotlib.hardware.Subsystem;
 
 @Config
-public class Arm extends Subsystem {
+public class Arm implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 

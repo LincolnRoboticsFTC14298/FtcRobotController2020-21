@@ -9,13 +9,6 @@ public class SubsystemManager {
         subsystems.add(subsystem);
     }
 
-    public void init_loop() {
-        for (Subsystem subsystem : subsystems) {
-            subsystem.init_loop();
-            subsystem.updateMotorsAndServos();
-        }
-    }
-
     public void start() {
         for (Subsystem subsystem : subsystems) {
             subsystem.start();

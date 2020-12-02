@@ -13,7 +13,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import robotlib.hardware.Subsystem;
 
 @Config
-public class Shooter extends Subsystem {
+public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     //private static final Telemetry telemetry = new Telemetry("Shooter");

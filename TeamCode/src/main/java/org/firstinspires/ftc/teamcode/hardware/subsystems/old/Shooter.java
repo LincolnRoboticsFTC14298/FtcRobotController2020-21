@@ -16,7 +16,7 @@ import robotlib.hardware.Subsystem;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
 
 @Deprecated
-public class Shooter extends Subsystem {
+public class Shooter implements Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     //private static final Telemetry telemetry = new Telemetry("Shooter");
