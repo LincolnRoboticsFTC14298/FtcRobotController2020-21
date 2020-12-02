@@ -18,27 +18,30 @@ public class Shooter implements Subsystem {
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     //private static final Telemetry telemetry = new Telemetry("Shooter");
 
-    private static final String MOTOR1_NAME = "motor1", MOTOR2_NAME = "motor2", LOAD_MOTOR_NAME = "loadMotor";
-    private static final String FLAP_NAME = "flap";
+    private static final String MOTOR1_NAME = "motor1", MOTOR2_NAME = "motor2";
+    private static final String FLAP_NAME = "flap", LAUNCH_FLAP_NAME = "launchFlap";
+
+    public static double SHOOTER_MIN_ERROR = 0.1;
+    public static double SHOOTER_DEFAULT_POWER = .75;
 
     // In radians
     public static double FLAP_MIN_ERROR = .03;
     public static double FLAP_MIN_ANGLE = 0;
     public static double FLAP_MAX_ANGLE = 0;
 
-    public static double SHOOTER_MIN_ERROR = 0.1;
-    public static double SHOOTER_DEFAULT_POWER = .75;
+    public static double LAUNCH_FLAP_RETRACTED_MIN_ERROR = 0.1;
+    public static double LAUNCH_FLAP_EXTENDED_MIN_ERROR = 0.2;
+    public static double LAUNCH_FLAP_RETRACTED_POS = 0;
+    public static double LAUNCH_FLAP_EXTENDED_POS = 1;
 
-    public static double LOAD_MOTOR_POWER = 1;
-    public static double LOAD_MOTOR_DELAY = .5;
 
     private static final double LAMBDA = 1; // = g / (2*v0*v0) optimal lambda will be found and used
 
-    private DcMotor motor1, motor2, loadMotor;
-    private Servo flap;
+    private DcMotor motor1, motor2;
+    private Servo flap, launchFlap;
 
-    private double motor1Power, motor2Power, loadMotorPower;
-    private double flapAngle;
+    private double motor1Power, motor2Power;
+    private double flapAngle, launchFlapPos;
     private double targetAngle = 0;
 
 //    private Target target = Target.HIGH_GOAL;
@@ -53,9 +56,9 @@ public class Shooter implements Subsystem {
         // Initialize motors and servos //
         motor1 = hardwareMap.get(DcMotor.class, MOTOR1_NAME);
         motor2 = hardwareMap.get(DcMotor.class, MOTOR2_NAME);
-        loadMotor = hardwareMap.get(DcMotor.class, LOAD_MOTOR_NAME);
 
         flap = hardwareMap.get(Servo.class, FLAP_NAME);
+        launchFlap = hardwareMap.get(Servo.class, LAUNCH_FLAP_NAME);
 
         this.positionProvider = positionProvider;
         // Reverse direction
@@ -66,6 +69,7 @@ public class Shooter implements Subsystem {
     @Override
     public void start() {
         setFlapAngle(Math.toRadians(45));
+        retractLaunchFlap();
     }
 
     @Override
@@ -76,6 +80,7 @@ public class Shooter implements Subsystem {
     @Override
     public void stop() {
         setFlapAngle(Math.toRadians(45));
+        retractLaunchFlap();
     }
 
 
@@ -102,12 +107,30 @@ public class Shooter implements Subsystem {
         }
     }
 
-    public void shoot() {
-        Thread t = new Thread(() -> {
-            System.out.println();
-        });
+    public boolean readyToLaunch() {
+        return doneAiming() &&
+                Math.abs(motor1.getPower() - motor1Power) < SHOOTER_MIN_ERROR &&
+                Math.abs(motor2.getPower() - motor2Power) < SHOOTER_MIN_ERROR;
     }
 
+    public void launch() {
+        extendLaunchFlap();
+        while (Math.abs(launchFlap.getPosition() - launchFlapPos) < LAUNCH_FLAP_EXTENDED_MIN_ERROR) {
+            updateMotorsAndServos();
+        }
+        retractLaunchFlap();
+        while (Math.abs(launchFlap.getPosition() - launchFlapPos) < LAUNCH_FLAP_RETRACTED_MIN_ERROR) {
+            updateMotorsAndServos();
+        }
+    }
+
+
+    public void turnOnShooterMotor() {
+        setShooterPower(SHOOTER_DEFAULT_POWER);
+    }
+    public void turnOffShooterMotor() {
+        setShooterPower(0);
+    }
 
 
 
@@ -118,13 +141,18 @@ public class Shooter implements Subsystem {
     public void setFlapAngle(double angle) {
         flapAngle = angle;
     }
+
+    public void retractLaunchFlap() {
+        launchFlapPos = LAUNCH_FLAP_RETRACTED_POS;
+    }
+    public void extendLaunchFlap() {
+        launchFlapPos = LAUNCH_FLAP_EXTENDED_POS;
+    }
+
     private void setShooterPower(double power) {
         // TODO: Clip powers to make sure it's between -1 and 1
         double p = Range.clip(power, -1, 1);
         motor1Power = motor2Power = p;
-    }
-    private void setLoadPower(double power) {
-        loadMotorPower = Range.clip(power, -1, 1);
     }
 
     private double posToAngle(double pos) {
@@ -140,9 +168,9 @@ public class Shooter implements Subsystem {
     public void updateMotorsAndServos() {
         motor1.setPower(motor1Power);
         motor2.setPower(motor2Power);
-        loadMotor.setPower(loadMotorPower);
 
         flap.setPosition(angleToPos(flapAngle));
+        launchFlap.setPosition(launchFlapPos);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Shooter power: ", motor1.getPower());

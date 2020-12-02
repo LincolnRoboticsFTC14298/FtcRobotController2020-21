@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
@@ -69,13 +68,14 @@ public class Robot extends RobotBase {
         // Not async as to prevent other movements.
         drive.pointAtTargetAsync();
         shooter.aimAsync(); // Start aiming before aligned, doesn't need to be fully aligned
-        ElapsedTime elapsedTime = new ElapsedTime();
-        while(drive.isBusy() && elapsedTime.milliseconds() < RobotMap.TIMEOUT) {
+        shooter.turnOnShooterMotor();
+        while(drive.isBusy() || !shooter.readyToLaunch()) {
             update();
         }
         for (int i = 0; i < n; i++) {
-            //shooter.shoot();
+            shooter.launch();
         }
+        shooter.turnOffShooterMotor();
     }
 
     public void shootTarget(Target target, int n) {
