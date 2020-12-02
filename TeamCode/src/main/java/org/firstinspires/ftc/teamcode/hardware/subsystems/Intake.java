@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import robotlib.hardware.Subsystem;
 
 @Config
-public class Intake implements Subsystem {
+public class Intake extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 

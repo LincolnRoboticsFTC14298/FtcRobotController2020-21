@@ -18,7 +18,7 @@ import robotlib.hardware.Subsystem;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
 @Deprecated
-public class Drive implements Subsystem {
+public class Drive extends Subsystem {
     // Mecanum drive //
 
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();

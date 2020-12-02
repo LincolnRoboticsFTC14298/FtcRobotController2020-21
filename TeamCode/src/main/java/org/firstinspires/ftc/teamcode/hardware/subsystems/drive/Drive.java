@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 @Config
-public class Drive extends MecanumDrive implements Subsystem {
+public class Drive extends MecanumDrive, Subsystem {
     private FtcDashboard dashboard;
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
