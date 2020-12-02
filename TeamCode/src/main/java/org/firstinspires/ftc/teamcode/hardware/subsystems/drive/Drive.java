@@ -336,16 +336,19 @@ public class Drive extends MecanumDrive implements Subsystem {
     public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget) {
         Vector2d input = new Vector2d(rawControllerInput.getX(), -rawControllerInput.getY());
 
+        double turn = -rawControllerInput.getHeading();
+
         if (fieldCentric) {
             input = input.rotated(-getPoseEstimate().getHeading());
         }
 
         if (pointAtTarget) {
             pointAtTargetAsync();
+            turn = 0;
         }
 
         setWeightedDrivePower(
-                new Pose2d(input.getX(), input.getY(), -rawControllerInput.getHeading())
+                new Pose2d(input.getX(), input.getY(), turn)
         );
     }
 
