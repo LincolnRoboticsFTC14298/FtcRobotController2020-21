@@ -6,6 +6,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import robotlib.vision.MatOperator;
+
 @Config
 public class MorphologyOperator implements MatOperator {
     public static Size openSize = new Size(15,15);

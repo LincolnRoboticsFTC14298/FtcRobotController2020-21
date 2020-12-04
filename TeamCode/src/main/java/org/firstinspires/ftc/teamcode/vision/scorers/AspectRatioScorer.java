@@ -6,6 +6,8 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+import robotlib.vision.VisionScorer;
+
 import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
 
 @Config

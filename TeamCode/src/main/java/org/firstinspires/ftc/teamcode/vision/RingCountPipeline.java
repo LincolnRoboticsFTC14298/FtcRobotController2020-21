@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.vision;
 import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
 import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
+import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.AspectRatioScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.ExtentScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.SolidityScorer;
-import org.firstinspires.ftc.teamcode.vision.scorers.VisionScorer;
-import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
-
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -20,6 +18,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import robotlib.vision.VisionScorer;
 
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.getBoundingRects;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
@@ -78,7 +78,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         return latestMat;
     }
     public void saveLatestMat(String filename) {
-        saveMatToDisk(getLatestMat(), filename);
+        saveMatToDisk(latestMat, filename);
     }
 
     @Override

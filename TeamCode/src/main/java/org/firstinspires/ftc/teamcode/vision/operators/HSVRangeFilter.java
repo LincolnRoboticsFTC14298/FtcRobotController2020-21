@@ -8,6 +8,8 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import robotlib.vision.MatOperator;
+
 @Config
 public class HSVRangeFilter implements MatOperator {
     public static Scalar lowerThreshold = new Scalar(10, 100, 120);
