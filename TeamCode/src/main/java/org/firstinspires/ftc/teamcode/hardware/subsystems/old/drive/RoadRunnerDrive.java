@@ -28,8 +28,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import robotlib.util.DashboardUtil;
+import robotlib.util.LynxModuleUtil;
 
 import java.util.LinkedList;
 import java.util.List;

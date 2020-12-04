@@ -8,7 +8,7 @@ import org.opencv.imgproc.Imgproc;
 
 import robotlib.vision.VisionScorer;
 
-import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
+import static robotlib.util.MathUtil.squareError;
 
 @Config
 public class AreaScorer extends VisionScorer {

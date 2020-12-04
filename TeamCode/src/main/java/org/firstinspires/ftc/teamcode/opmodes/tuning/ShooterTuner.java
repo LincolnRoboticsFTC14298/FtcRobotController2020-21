@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import robotlib.hardware.gamepad.RadicalGamepad;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
-import static org.firstinspires.ftc.teamcode.util.MathUtil.squareError;
+import static robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Shooter", group="Tuner")
