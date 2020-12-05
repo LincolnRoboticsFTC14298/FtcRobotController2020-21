@@ -89,6 +89,7 @@ public class ShooterTuner extends OpMode {
         telemetry.addLine();
         telemetry.addData("Target: ", robot.getTarget());
         telemetry.addData("Alliance: ", robot.getAlliance());
+        telemetry.update();
     }
 
     public double[] getDistHeight(Vector3D targetRelLoc) {

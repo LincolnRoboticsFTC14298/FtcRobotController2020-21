@@ -51,6 +51,7 @@ public class CameraTunerWithoutDrive extends OpMode {
         }
 
         telemetry.addData("Viewport: ", vision.getViewport());
+        telemetry.update();
         dashboard.sendImage(vision.getOutput());
     }
 }
