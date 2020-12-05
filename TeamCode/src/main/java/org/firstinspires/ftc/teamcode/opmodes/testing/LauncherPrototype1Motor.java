@@ -38,6 +38,8 @@ public class LauncherPrototype1Motor extends LinearOpMode {
 
             // Telemetry
             telemetry.addData("Motor power: ", mSpeed);
+            telemetry.update();
         }
+
     }
 }

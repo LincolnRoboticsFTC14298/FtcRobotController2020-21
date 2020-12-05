@@ -27,5 +27,6 @@ public class ButtonTest extends OpMode {
         telemetry.addData("Times b has been pressed: ", bt);
         telemetry.addData("Toggle x = ", x.on());
         telemetry.addData("Debounce toggle y w/ 5 sec debounce = ", y.on());
+        telemetry.update();
     }
 }
