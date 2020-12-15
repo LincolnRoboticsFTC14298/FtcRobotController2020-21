@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.generateColor;
 @Config
 public class SegmentationOperator {
     public static double binaryThresh = 40.0;
-    public static Size openSize = new Size(11,11);
+    public static Size openSize = new Size(25,7);
     public static double distThresh = 0.2;
 
 
