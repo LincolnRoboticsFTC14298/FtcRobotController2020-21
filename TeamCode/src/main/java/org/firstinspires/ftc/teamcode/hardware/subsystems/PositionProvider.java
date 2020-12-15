@@ -14,10 +14,10 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 @Config
 public class PositionProvider {
-    private Pose2d poseEstimate;
-    private Pose2d velEstimate;
-    private Field.Target target;
-    private Field.Alliance alliance;
+    private static Pose2d poseEstimate;
+    private static Pose2d velEstimate;
+    private static Field.Target target;
+    private static Field.Alliance alliance;
 
     private static double targetHeading = 0;
     private static double targetLaunchAngle = 0;
@@ -86,7 +86,7 @@ public class PositionProvider {
 
     private final static double relativeAccuracy = 1.0e-8;
     private final static double absoluteAccuracy = 1.0e-6;
-    final static LaguerreSolver solver = new LaguerreSolver(relativeAccuracy, absoluteAccuracy);
+    private final static LaguerreSolver solver = new LaguerreSolver(relativeAccuracy, absoluteAccuracy);
     private Vector3D estimatedRingPosition(double t) {
         Vector3D velR = new Vector3D(velEstimate.getX(),velEstimate.getY(),0);
         return G.scalarMultiply(t*t)
