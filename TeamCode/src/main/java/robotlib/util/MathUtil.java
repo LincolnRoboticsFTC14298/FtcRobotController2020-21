@@ -1,6 +1,40 @@
 package robotlib.util;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+
 public class MathUtil {
+    public static double inchesToMeters(double inches) {
+        return .0254*inches;
+    }
+    public static Vector2D inchesToMeters(Vector2D inches) {
+        return new Vector2D(inchesToMeters(inches.getX()),
+                inchesToMeters(inches.getY()));
+    }
+    public static Vector3D inchesToMeters(Vector3D inches) {
+        return new Vector3D(inchesToMeters(inches.getX()),
+                inchesToMeters(inches.getY()),
+                inchesToMeters(inches.getZ()));
+    }
+
+
+    public static double metersToInches(double meters) {
+        return 39.37007874*meters;
+    }
+    public static Vector2D metersToInches(Vector2D meters) {
+        return new Vector2D(inchesToMeters(meters.getX()),
+                inchesToMeters(meters.getY()));
+    }
+    public static Vector3D metersToInches(Vector3D meters) {
+        return new Vector3D(inchesToMeters(meters.getX()),
+                inchesToMeters(meters.getY()),
+                inchesToMeters(meters.getZ()));
+    }
+
+    public static boolean withinRange(double number, double min, double max) {
+        return number >= min && number <= max;
+    }
+
     public static double angleWrapRadians(double angle) {
         // Makes angle between (-PI, PI)
         double x = (angle + Math.PI) % 2*Math.PI;
