@@ -15,7 +15,7 @@ public class AreaScorer extends VisionScorer {
     private FtcDashboard dashboard;
 
     public static double optimalArea = 7800; // In inches ^ 2
-    public static double weight = .0000001;
+    public static double weight = .4;
 
     public AreaScorer() {
         dashboard = FtcDashboard.getInstance();
@@ -35,6 +35,6 @@ public class AreaScorer extends VisionScorer {
     public double score(MatOfPoint contour) {
         double area = Imgproc.contourArea(contour);
         dashboard.getTelemetry().addLine("area = " + area);
-        return squareError(area, optimalArea) * weight;
+        return squareError(area/1000.0, optimalArea/1000.0) * weight;
     }
 }

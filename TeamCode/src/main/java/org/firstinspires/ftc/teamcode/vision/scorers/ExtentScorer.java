@@ -16,7 +16,7 @@ public class ExtentScorer extends VisionScorer {
     private FtcDashboard dashboard;
 
     public static double optimalRatio = .8;
-    public static double weight = 1;
+    public static double weight = .7;
 
     public ExtentScorer() {
         dashboard = FtcDashboard.getInstance();

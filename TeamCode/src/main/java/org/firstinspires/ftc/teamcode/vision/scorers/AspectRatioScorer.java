@@ -15,7 +15,7 @@ public class AspectRatioScorer extends VisionScorer {
     private FtcDashboard dashboard;
 
     public static double optimalRatio = 5.0 / 0.75;
-    public static double weight = 3;
+    public static double weight = .5;
 
     public AspectRatioScorer() {
         dashboard = FtcDashboard.getInstance();
