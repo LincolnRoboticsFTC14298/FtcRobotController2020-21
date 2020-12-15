@@ -30,8 +30,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
-import robotlib.util.DashboardUtil;
-import robotlib.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +38,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import robotlib.hardware.Subsystem;
+import robotlib.util.DashboardUtil;
+import robotlib.util.LynxModuleUtil;
 
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
@@ -239,6 +239,7 @@ public class Drive extends MecanumDrive implements Subsystem {
         }
 
         positionProvider.setPoseEstimate(currentPose);
+        positionProvider.setVelEstimate(getPoseVelocity());
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
@@ -400,7 +401,7 @@ public class Drive extends MecanumDrive implements Subsystem {
 
         if (pointAtTarget) {
             pointAtTargetAsync();
-            turn = 0;
+            turn = 0; // may not work, must test
         }
 
         setWeightedDrivePower(
@@ -409,7 +410,6 @@ public class Drive extends MecanumDrive implements Subsystem {
     }
 
     public void pointAtTargetAsync() {
-        // TODO: make sure turnAsync is turn to local not global
         turnAsync(positionProvider.getTargetRelativeHeading());
     }
     public void pointAtTarget() {
