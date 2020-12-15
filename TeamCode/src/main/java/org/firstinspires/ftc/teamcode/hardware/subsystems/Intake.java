@@ -44,15 +44,6 @@ public class Intake implements Subsystem {
         turnOff();
     }
 
-    public void turnOn() {
-        frontPower = FRONT_POWER_ON;
-        rearPower = REAR_POWER_ON;
-    }
-    public void turnOff() {
-        frontPower = 0;
-        rearPower = 0;
-    }
-
     @Override
     public void updateMotorsAndServos() {
         front.setPower(frontPower);
@@ -62,5 +53,14 @@ public class Intake implements Subsystem {
         packet.put("Front intake motor power: ", front.getPower());
         packet.put("Back intake motor power: ", rear.getPower());
         dashboard.sendTelemetryPacket(packet);
+    }
+
+    public void turnOn() {
+        frontPower = FRONT_POWER_ON;
+        rearPower = REAR_POWER_ON;
+    }
+    public void turnOff() {
+        frontPower = 0;
+        rearPower = 0;
     }
 }

@@ -49,6 +49,17 @@ public class Arm implements Subsystem {
         defaultArm();
     }
 
+    @Override
+    public void updateMotorsAndServos() {
+        armServo.setPosition(armPosition);
+        clawServo.setPosition(clawPosition);
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("Arm position: ", armServo.getPosition());
+        packet.put("Claw position: ", clawServo.getPosition());
+        dashboard.sendTelemetryPacket(packet);
+    }
+
     public void openClaw() {
         setClawPosition(CLAW_OPEN_POSITION);
     }
@@ -71,16 +82,5 @@ public class Arm implements Subsystem {
     }
     public void setClawPosition(double position) {
         this.clawPosition = position;
-    }
-
-    @Override
-    public void updateMotorsAndServos() {
-        armServo.setPosition(armPosition);
-        clawServo.setPosition(clawPosition);
-
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Arm position: ", armServo.getPosition());
-        packet.put("Claw position: ", clawServo.getPosition());
-        dashboard.sendTelemetryPacket(packet);
     }
 }
