@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -164,8 +165,17 @@ public class VisionUtil {
         return rotatedRect;
     }
 
+    public static MatOfPoint2f pickPoints(MatOfPoint points, MatOfInt indices) {
+        Point[] pickedPoints = new Point[indices.rows()];
+        int newRow = 0;
+        for (int index : indices.toArray()) {
+            pickedPoints[newRow++] = new Point(points.get(index, 0));
+        }
+        return new MatOfPoint2f(pickedPoints);
+    }
+
+    private static Random rng = new Random(12345);
     public static Scalar generateColor() {
-        Random rng = new Random(12345);
         return new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
     }
 }
