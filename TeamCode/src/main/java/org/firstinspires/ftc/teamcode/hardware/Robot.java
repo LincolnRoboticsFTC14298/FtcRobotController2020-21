@@ -53,6 +53,7 @@ public class Robot extends RobotBase {
 
     @Override
     public void update() {
+        positionProvider.update();
         subsystemManager.update();
         telemetry.update();
     }
