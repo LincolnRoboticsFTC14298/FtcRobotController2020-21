@@ -65,6 +65,8 @@ public class Drive extends MecanumDrive implements Subsystem {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
+    public static double HEADING_MIN_ERROR = .1;
+
     public static double LATERAL_MULTIPLIER = 1;
 
     public static double VX_WEIGHT = 1;
@@ -409,6 +411,9 @@ public class Drive extends MecanumDrive implements Subsystem {
         );
     }
 
+    public boolean readyToShoot() {
+        return Math.abs(getPoseEstimate().getHeading() - positionProvider.getTargetHeading()) < HEADING_MIN_ERROR;
+    }
     public void pointAtTargetAsync() {
         turnAsync(positionProvider.getTargetRelativeHeading());
     }
