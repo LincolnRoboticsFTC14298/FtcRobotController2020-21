@@ -35,7 +35,7 @@ public class Arm implements Subsystem {
     @Override
     public void start() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
-        defaultArm();
+        defaultPos();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Arm implements Subsystem {
     @Override
     public void stop() {
         closeClaw();
-        defaultArm();
+        defaultPos();
     }
 
     @Override
@@ -67,13 +67,13 @@ public class Arm implements Subsystem {
         setClawPosition(CLAW_CLOSE_POSITION);
     }
 
-    public void liftArm() {
+    public void lift() {
         setArmPosition(ARM_LIFT_POSITION);
     }
-    public void defaultArm() {
+    public void defaultPos() {
         setArmPosition(ARM_DEFAULT_POSITION);
     }
-    public void lowerArm() {
+    public void lower() {
         setArmPosition(ARM_LOWER_POSITION);
     }
 
