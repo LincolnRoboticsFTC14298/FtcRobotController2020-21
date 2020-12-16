@@ -114,11 +114,11 @@ public class Shooter implements Subsystem {
 
     public void launch() {
         extendLaunchFlap();
-        while (!isExtended()) {
+        while (!isExtended() && !Thread.currentThread().isInterrupted()) {
             updateMotorsAndServos();
         }
         retractLaunchFlap();
-        while (!isRetracted()) {
+        while (!isRetracted() && !Thread.currentThread().isInterrupted()) {
             updateMotorsAndServos();
         }
     }
