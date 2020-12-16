@@ -16,7 +16,7 @@ public class MainTeleOp extends OpMode {
         robot = new Robot(this);
 
         robot.setAlliance(DataWriterUtil.readAlliance());
-        robot.drive.setPoseEstimate(DataWriterUtil.readLastPose());
+        robot.setPoseEstimate(DataWriterUtil.readLastPose());
     }
 
     @Override
