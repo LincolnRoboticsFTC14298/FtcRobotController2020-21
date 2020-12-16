@@ -43,13 +43,19 @@ public class Shooter implements Subsystem {
 
     private PositionProvider positionProvider;
 
-    enum LaunchStatus {
+    public enum LaunchStatus {
         EXTENDING,
         RETRACTING,
         RETRACTED
     }
 
+    public enum AimingStatus {
+        AIMING,
+        IDLE
+    }
+
     private LaunchStatus launchStatus = LaunchStatus.RETRACTED;
+    private AimingStatus aimingStatus = AimingStatus.IDLE;
 
     public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
         // Initialize motors and servos //
@@ -68,6 +74,7 @@ public class Shooter implements Subsystem {
 
     @Override
     public void start() {
+        stopAiming();
         setFlapAngle(Math.toRadians(45));
         retractLaunchFlap();
     }
@@ -75,6 +82,12 @@ public class Shooter implements Subsystem {
     @Override
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
+
+        switch (aimingStatus) {
+            case AIMING:
+                aimAsync();
+                break;
+        }
 
         switch (launchStatus) {
             case EXTENDING:
@@ -89,10 +102,12 @@ public class Shooter implements Subsystem {
                 }
                 break;
         }
+
     }
 
     @Override
     public void stop() {
+        stopAiming();
         setFlapAngle(Math.toRadians(45));
         retractLaunchFlap();
     }
@@ -117,7 +132,12 @@ public class Shooter implements Subsystem {
         return Math.abs(posToAngle(flapServo.getPosition()) - flapAngle) < FLAP_MIN_ERROR;
     }
     public void aimAsync() {
+        // TODO: Make update every update()
+        aimingStatus = AimingStatus.AIMING;
         setFlapAngle(positionProvider.getTargetLaunchAngle());
+    }
+    public void stopAiming() {
+        aimingStatus = AimingStatus.IDLE;
     }
 
     public boolean readyToLaunch() {
@@ -125,14 +145,20 @@ public class Shooter implements Subsystem {
                 MathUtil.withinRange(positionProvider.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
                 Math.abs(shooterMotor1.getPower() - shooterMotor1Power) < SHOOTER_MIN_ERROR &&
                 Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
-                launchStatus == LaunchStatus.RETRACTED; // Could use isRetracted();
+                isRetractedStatus(); // Could use isRetracted();
     }
 
+    public LaunchStatus getLaunchStatus() {
+        return launchStatus;
+    }
     public boolean isExtended() {
         return Math.abs(launchFlapServo.getPosition() - LAUNCH_FLAP_EXTENDED_POS) < LAUNCH_FLAP_EXTENDED_MIN_ERROR;
     }
     public boolean isRetracted() {
         return Math.abs(launchFlapServo.getPosition() - LAUNCH_FLAP_RETRACTED_POS) < LAUNCH_FLAP_RETRACTED_MIN_ERROR;
+    }
+    public boolean isRetractedStatus() {
+        return launchStatus == LaunchStatus.RETRACTED;
     }
 
     public void launchAsync() {
