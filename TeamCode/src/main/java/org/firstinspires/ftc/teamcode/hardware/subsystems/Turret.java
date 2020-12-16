@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import robotlib.hardware.Subsystem;
+import robotlib.util.MathUtil;
 
 @Config
 public class Turret implements Subsystem {
-    private static final double GEAR_RATIO = .1; // turret rot / motor rot
+    private static final double GEAR_RATIO = .1; // turret output / motor input
 
     private static final int INITIAL_LOCAL_HEADING = 0; // 0 local heading is aligned with heading of drive
 
@@ -88,7 +89,7 @@ public class Turret implements Subsystem {
     }
 
     public void aimAtTargetAsync() {
-        // TODO: adjust for horizontal movement relative to target;
+        // could be setTurretLocalTargetHeading(positionProvider.getRelativeTargetHeading());
         aimAsync(positionProvider.getTargetHeading());
         mode = Mode.AUTO_AIMING;
     }
@@ -100,7 +101,7 @@ public class Turret implements Subsystem {
     }
     public void aim(double globalHeading) {
         aimAsync(globalHeading);
-        while (!isAligned()) {
+        while (!isAligned() && !Thread.currentThread().isInterrupted()) {
             updateMotorsAndServos();
         }
         stopAiming();
@@ -110,19 +111,15 @@ public class Turret implements Subsystem {
     }
 
     private void setTurretGlobalTargetHeading(double heading) {
-        setTurretLocalTargetHeading(heading - getTurretGlobalHeading());
+        turn(heading - getTurretGlobalHeading());
     }
     private double getTurretGlobalHeading() {
         return getTurretLocalHeading() + positionProvider.getPoseEstimate().getHeading();
     }
 
-
-    // When local = 0, local heading is aligned with robot,
+    // Local heading x axis is aligned with robot,
     private void setTurretLocalTargetHeading(double heading) {
-        double targetTurretGearRev = (heading - INITIAL_LOCAL_HEADING) / (2 * Math.PI);
-        double targetMotorGearRev = targetTurretGearRev / GEAR_RATIO;
-        int targetTicks = (int) (targetMotorGearRev * TICKS_PER_REV);
-        turretMotor.setTargetPosition(targetTicks);
+       turn(heading - getTurretLocalHeading());
     }
     private double getTurretLocalHeading() {
         double motorRevs = getMotorRevs();
@@ -130,6 +127,13 @@ public class Turret implements Subsystem {
         return 2 * Math.PI * turretRevs + INITIAL_LOCAL_HEADING;
     }
 
+    private void turn(double deltaHeading) {
+        deltaHeading = MathUtil.angleWrapRadians(deltaHeading);
+        double deltaTargetTurretGearRev = deltaHeading / (2 * Math.PI);
+        double deltaTargetMotorGearRev = deltaTargetTurretGearRev / GEAR_RATIO;
+        int targetTicks = turretMotor.getCurrentPosition() + (int) (deltaTargetMotorGearRev * TICKS_PER_REV);
+        turretMotor.setTargetPosition(targetTicks);
+    }
 
     private double getMotorRevs() {
         int ticks = turretMotor.getCurrentPosition();
