@@ -1,21 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive.Drive;
-import robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 
 @TeleOp(name="Drive test", group="Test")
 public class DriveTestOpmode extends OpMode {
     Drive drive;
-    RadicalGamepad gamepad;
-
 
     @Override
     public void init() {
         drive = new Drive(hardwareMap);
-        gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
@@ -25,11 +22,8 @@ public class DriveTestOpmode extends OpMode {
 
     @Override
     public void loop() {
-        //gamepad.update();
-        double x = gamepad1.left_stick_x, y = -gamepad1.left_stick_y;
-        double radius = Math.hypot(x, y);
-        double angle = Math.atan2(y,x);
-        drive.teleopControl(radius, angle, gamepad1.right_stick_x, 0, false);
+        Pose2d input = new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.right_stick_x);
+        drive.teleopControl(input, false, false);
         drive.update();
     }
 
