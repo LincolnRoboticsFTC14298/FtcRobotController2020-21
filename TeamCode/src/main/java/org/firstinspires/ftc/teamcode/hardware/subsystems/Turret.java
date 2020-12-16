@@ -111,7 +111,6 @@ public class Turret implements Subsystem {
     }
 
     private void setTurretGlobalTargetHeading(double heading) {
-
         turn(heading - getTurretGlobalHeading());
     }
     private double getTurretGlobalHeading() {
