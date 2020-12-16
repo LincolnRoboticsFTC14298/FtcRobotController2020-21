@@ -22,7 +22,6 @@ public class Elevator implements Subsystem {
 
     DcMotorEx elevatorMotor;
 
-
     private double topHeight = 10; // inches
 
     enum Mode {
@@ -33,7 +32,7 @@ public class Elevator implements Subsystem {
 
     Mode mode = Mode.IDLE;
 
-    public Elevator(HardwareMap hardwareMap, PositionProvider positionProvider) {
+    public Elevator(HardwareMap hardwareMap) {
         elevatorMotor = hardwareMap.get(DcMotorEx.class, ELEVATOR_MOTOR_NAME);
 
         // Needs to move clockwise
