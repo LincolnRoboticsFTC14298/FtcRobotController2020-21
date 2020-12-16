@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.optim.MaxEval;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.univariate.BrentOptimizer;
@@ -21,18 +20,17 @@ import java.util.ArrayList;
 
 import robotlib.hardware.gamepad.RadicalGamepad;
 
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Shooter", group="Tuner")
 public class ShooterTuner extends OpMode {
     public static double angle = 45.0;
-    public static double lambda = 9.8 / 50;
+    public static double fudgeFactor = 1;
 
-    private ArrayList<Double> distances = new ArrayList<>();
-    private ArrayList<Double> heights = new ArrayList<>();
-    private ArrayList<Double> actuals = new ArrayList<>();
+    private ArrayList<Pose2d> poses = new ArrayList<>();
+    private ArrayList<Field.Target> targets = new ArrayList<>();
+    private ArrayList<Double> actualAngles = new ArrayList<>();
 
     private Robot robot;
     private RadicalGamepad gamepad;
@@ -76,26 +74,19 @@ public class ShooterTuner extends OpMode {
         if (gamepad.a) {
             robot.shoot(1);
         } else if (gamepad.b) {
-            distances.add(getDistHeight(robot.positionProvider.getTargetRelativeLocation())[0]);
-            heights.add(getDistHeight(robot.positionProvider.getTargetRelativeLocation())[1]);
-            actuals.add(robot.shooter.getTargetAngle());
-            lambda = findLambda();
+            poses.add(robot.positionProvider.getPoseEstimate());
+            targets.add(robot.getTarget());
+            actualAngles.add(robot.shooter.getTargetAngle());
+            fudgeFactor = findLambda();
         }
 
         telemetry.addData("Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
-        telemetry.addData("Distance: ", getDistHeight(robot.positionProvider.getTargetRelativeLocation())[0]);
-        telemetry.addData("Height: ", getDistHeight(robot.positionProvider.getTargetRelativeLocation())[1]);
-        telemetry.addData("Lambda: ", lambda);
+        telemetry.addData("Pose: ", robot.positionProvider.getPoseEstimate().toString());
+        telemetry.addData("Target: ", robot.getTarget().toString());
         telemetry.addLine();
-        telemetry.addData("Target: ", robot.getTarget());
+        telemetry.addData("Fudge Factor: ", fudgeFactor);
         telemetry.addData("Alliance: ", robot.getAlliance());
         telemetry.update();
-    }
-
-    public double[] getDistHeight(Vector3D targetRelLoc) {
-        double dist = Math.hypot(targetRelLoc.getY(), targetRelLoc.getX());
-        double height = targetRelLoc.getZ();
-        return new double[]{dist, height};
     }
 
     public double findLambda() {
@@ -105,7 +96,7 @@ public class ShooterTuner extends OpMode {
         UnivariatePointValuePair val = optimizer.optimize(new MaxEval(200),
                 new UnivariateObjectiveFunction(f),
                 GoalType.MINIMIZE,
-                new SearchInterval(0, 2));
+                new SearchInterval(0.01, 2));
 
         return val.getValue();
     }
@@ -113,14 +104,19 @@ public class ShooterTuner extends OpMode {
     private class ErrorFunction implements UnivariateFunction {
         @Override
         public double value(double x) {
+            robot.positionProvider.fudgeFactor = x;
             double totalError = 0.0;
-            for (int i = 0; i < distances.size(); i++) {
-                double d = distances.get(i), h = heights.get(i);
-                double k = 1.0 / (2 * d * x);
-                double det = 1 - 4 * (h - SHOOTER_LOCATION.getZ() + x * d * d) * x;
-                double predicted = Math.atan(k - k * Math.sqrt(det));
-                totalError += squareError(predicted, actuals.get(i));
+            Field.Target lastTarget = robot.getTarget();
+            Pose2d lastPose = robot.positionProvider.getPoseEstimate();
+            for (int i = 0; i < targets.size(); i++) {
+                robot.setTarget(targets.get(i));
+                robot.positionProvider.setPoseEstimate(poses.get(i));
+                robot.positionProvider.update();
+                double predicted = robot.positionProvider.getTargetLaunchAngle();
+                totalError += squareError(predicted, actualAngles.get(i));
             }
+            robot.setTarget(lastTarget);
+            robot.positionProvider.setPoseEstimate(lastPose);
             return totalError;
         }
     }
