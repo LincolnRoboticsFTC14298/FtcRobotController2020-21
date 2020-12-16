@@ -94,8 +94,6 @@ public class Drive extends MecanumDrive implements Subsystem {
 
     private LinkedList<Pose2d> poseHistory;
 
-    private Pose2d controllerPose;
-
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
@@ -393,7 +391,7 @@ public class Drive extends MecanumDrive implements Subsystem {
      * Input is the forwardAmt, strafeAmt, rotation
      */
     public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget) {
-        Vector2d input = new Vector2d(rawControllerInput.getX(), -rawControllerInput.getY());
+        Vector2d input = new Vector2d(rawControllerInput.getX(), rawControllerInput.getY());
 
         double turn = -rawControllerInput.getHeading();
 

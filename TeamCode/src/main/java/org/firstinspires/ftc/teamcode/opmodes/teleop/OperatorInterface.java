@@ -58,9 +58,9 @@ public class OperatorInterface {
 
         // Arm
         if (liftArmToggleButton.on()) {
-            robot.arm.liftArm();
+            robot.arm.lift();
         } else if (liftArmToggleButton.off()) {
-            robot.arm.lowerArm();
+            robot.arm.lower();
         }
         if (openClawToggleButton.on()) {
             robot.arm.openClaw();
@@ -91,6 +91,6 @@ public class OperatorInterface {
     }
 
     public Pose2d getInput() {
-        return new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.right_stick_x);
+        return new Pose2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad2.right_stick_x);
     }
 }

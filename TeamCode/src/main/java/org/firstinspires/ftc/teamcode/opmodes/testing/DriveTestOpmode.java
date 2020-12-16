@@ -22,7 +22,7 @@ public class DriveTestOpmode extends OpMode {
 
     @Override
     public void loop() {
-        Pose2d input = new Pose2d(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad2.right_stick_x);
+        Pose2d input = new Pose2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad2.right_stick_x);
         drive.teleopControl(input, false, false);
         drive.update();
     }
