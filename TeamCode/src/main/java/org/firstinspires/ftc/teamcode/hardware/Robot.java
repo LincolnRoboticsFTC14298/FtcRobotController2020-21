@@ -48,12 +48,14 @@ public class Robot extends RobotBase {
     @Override
     public void start() {
         subsystemManager.start();
+        telemetry.setMsTransmissionInterval(50);
         telemetry.update();
     }
 
     @Override
     public void update() {
         positionProvider.update();
+        updateShooting();
         subsystemManager.update();
         telemetry.update();
     }
@@ -65,29 +67,52 @@ public class Robot extends RobotBase {
     }
 
 
-    public void shoot(int n) {
-        // Not async as to prevent other movements.
-        drive.pointAtTargetAsync();
-        shooter.aimAsync(); // Start aiming before aligned, doesn't need to be fully aligned
-        shooter.turnOnShooterMotor();
-        while(drive.isBusy() || !shooter.readyToLaunch()) {
+    private int shootScheduler = 0;
+    public boolean doneShooting() {
+        return shootScheduler == 0;
+    }
+    public void waitTillDoneShooting() {
+        while (!doneShooting() && !Thread.currentThread().isInterrupted()) {
             update();
         }
-        for (int i = 0; i < n; i++) {
-            shooter.launch();
-        }
-        shooter.turnOffShooterMotor();
     }
 
+    public void shoot(int n) {
+        shootScheduler += n;
+    }
     public void shootTarget(Target target, int n) {
         setTarget(target);
         shoot(n);
     }
     public void powerShot() {
-        // Point to outward power shot
+        // Break
+        drive.setMotorPowers(0,0,0,0);
+
+        // Outward shot
         shootTarget(Target.OUTWARD_POWER_SHOT, 1);
+        waitTillDoneShooting();
+
+        // Middle shot
         shootTarget(Target.MIDDLE_POWER_SHOT, 1);
+        waitTillDoneShooting();
+
+        // Inward shot
         shootTarget(Target.INWARD_POWER_SHOT, 1);
+        waitTillDoneShooting();
+    }
+
+    public void updateShooting() {
+        if (shootScheduler > 0) {
+            drive.pointAtTargetAsync();
+            shooter.aimAsync(); // Start aiming before aligned, doesn't need to be fully aligned
+            shooter.turnOnShooterMotor();
+            if (drive.readyToShoot() && shooter.readyToLaunch()) {
+                shooter.launch(); // TODO: Shooter not async, fix
+                shootScheduler--;
+            }
+        } else {
+            shooter.turnOffShooterMotor();
+        }
     }
 
     public Target getTarget() {
@@ -96,8 +121,6 @@ public class Robot extends RobotBase {
     public void setTarget(Target target) {
         this.target = target;
         positionProvider.setTarget(target);
-//        drive.setTarget(target);
-//        shooter.setTarget(target);
     }
 
     public Alliance getAlliance() {
@@ -106,7 +129,5 @@ public class Robot extends RobotBase {
     public void setAlliance(Alliance alliance) {
         this.alliance = alliance;
         positionProvider.setAlliance(alliance);
-//        drive.setAlliance(alliance);
-//        shooter.setAlliance(alliance);
     }
 }

@@ -102,7 +102,8 @@ public class Shooter implements Subsystem {
         return doneAiming() &&
                 MathUtil.withinRange(positionProvider.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
                 Math.abs(shooterMotor1.getPower() - shooterMotor1Power) < SHOOTER_MIN_ERROR &&
-                Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR;
+                Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
+                isRetracted();
     }
 
     public boolean isExtended() {
@@ -118,9 +119,6 @@ public class Shooter implements Subsystem {
             updateMotorsAndServos();
         }
         retractLaunchFlap();
-        while (!isRetracted() && !Thread.currentThread().isInterrupted()) {
-            updateMotorsAndServos();
-        }
     }
 
 
