@@ -90,13 +90,28 @@ public class Elevator implements Subsystem {
         return Math.abs(getPlatformHeight() - 0) < HEIGHT_MIN_ERROR;
     }
 
-    public void raise() {
+    public void raiseAsync() {
         mode = Mode.RAISING;
         setPlatformHeight(topHeight);
     }
-    public void lower() {
+    public void raise() {
+        raise();
+        while (!isUp() && !Thread.currentThread().isInterrupted()) {
+            update();
+            updateMotorsAndServos();
+        }
+    }
+
+    public void lowerAsync() {
         mode = Mode.LOWERING;
         setPlatformHeight(0);
+    }
+    public void lower() {
+        lowerAsync();
+        while (!isDown() && !Thread.currentThread().isInterrupted()) {
+            update();
+            updateMotorsAndServos();
+        }
     }
 
     public void stopLifting() {
