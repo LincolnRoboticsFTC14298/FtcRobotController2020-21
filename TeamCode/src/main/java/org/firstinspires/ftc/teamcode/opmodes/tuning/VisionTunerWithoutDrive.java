@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
 import robotlib.hardware.gamepad.RadicalGamepad;
 
-@TeleOp(name="Camera Without Drive", group="Tuner")
-public class CameraTunerWithoutDrive extends OpMode {
+@TeleOp(name="Vision Without Drive", group="Tuner")
+public class VisionTunerWithoutDrive extends OpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private Vision vision;
@@ -49,6 +49,8 @@ public class CameraTunerWithoutDrive extends OpMode {
         if (gamepad.x) {
             vision.saveOutput();
         }
+
+        vision.update();
 
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
