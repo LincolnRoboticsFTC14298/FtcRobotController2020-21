@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
@@ -21,6 +24,8 @@ public class Robot extends RobotBase {
     public Vision vision;
     public Intake intake;
     public Shooter shooter;
+    public Elevator elevator;
+    public Turret turret;
     public Arm arm;
     public Drive drive;
 
@@ -35,12 +40,16 @@ public class Robot extends RobotBase {
         vision = new Vision(hardwareMap);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap, positionProvider);
+        elevator = new Elevator(hardwareMap);
+        turret = new Turret(hardwareMap, positionProvider);
         arm = new Arm(hardwareMap);
         drive = new Drive(hardwareMap, positionProvider);
 
         subsystemManager.add(vision);
         subsystemManager.add(intake);
         subsystemManager.add(shooter);
+        subsystemManager.add(elevator);
+        subsystemManager.add(turret);
         subsystemManager.add(arm);
         subsystemManager.add(drive);
     }
@@ -88,7 +97,7 @@ public class Robot extends RobotBase {
     }
     public void powerShot() {
         // Break
-        drive.setMotorPowers(0,0,0,0);
+        drive.stop();
 
         // Outward shot
         shootTarget(Target.OUTWARD_POWER_SHOT, 1);
@@ -105,24 +114,34 @@ public class Robot extends RobotBase {
 
     boolean launching = false;
     public void updateShooting() {
-        //turret.aimAtTargetAsync();
+        // Maybe only want to aim when shootScheduler > 0
+        elevator.raiseAsync();
+        turret.aimAtTargetAsync();
+        shooter.aimAsync();
+
+        if (launching && shooter.isRetractedStatus()) {
+            launching = false;
+            shootScheduler--;
+        }
+
         if (shootScheduler > 0) {
-            drive.pointAtTargetAsync();
-            shooter.aimAsync(); // Start aiming before aligned, doesn't need to be fully aligned
+            //drive.pointAtTargetAsync();
             shooter.turnOnShooterMotor();
-            //elevator.raiseAsync();
-            if (positionProvider.readyToShoot() && drive.readyToShoot() && shooter.readyToLaunch() ) {
-                // && turret.isAligned() && elevator.isUp(), remove drive.readyToShoot()
+            elevator.raiseAsync();
+            if (positionProvider.readyToShoot() && shooter.readyToLaunch()
+                    && turret.isAligned() && elevator.isUp()) {
                 shooter.launchAsync();
                 launching = true;
             }
-            if (launching && shooter.isRetracted()) {
-                launching = false;
-                shootScheduler--;
-            }
         } else {
             shooter.turnOffShooterMotor();
+            elevator.lowerAsync();
         }
+    }
+
+    public void setPoseEstimate(Pose2d pose) {
+        drive.setPoseEstimate(pose);
+        positionProvider.setPoseEstimate(pose);
     }
 
     public Target getTarget() {
