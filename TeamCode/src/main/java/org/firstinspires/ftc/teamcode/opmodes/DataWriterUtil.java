@@ -4,28 +4,24 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.util.Field;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 public abstract class DataWriterUtil {
-    private static final String FILE_NAME = "data.properties";
+    // May not work, make sure userNodeForPackage works
+    private static Preferences prefs = Preferences.userNodeForPackage(DataWriterUtil.class);
 
-    public static Field.Alliance getAlliance() {
-        Properties p = getProperty();
-        return Field.Alliance.valueOf(p.getProperty("alliance"));
+    public static Field.Alliance readAlliance() {
+        String alliance = prefs.get("alliance", "BLUE");
+        return Field.Alliance.valueOf(alliance);
     }
     public static void saveAlliance(Field.Alliance alliance) {
-        Properties p = getProperty();
-        p.setProperty("alliance", String.valueOf(alliance));
-        store(p);
+        prefs.put("alliance", alliance.toString());
     }
 
-    public static Pose2d getLastPose() {
-        Properties p = getProperty();
-        double x = Double.parseDouble(p.getProperty("lastPoseX"));
-        double y = Double.parseDouble(p.getProperty("lastPoseY"));
-        double h = Double.parseDouble(p.getProperty("lastPoseHeading"));
+    public static Pose2d readLastPose() {
+        double x = prefs.getDouble("lastPoseX", 0);
+        double y = prefs.getDouble("lastPoseY", 0);
+        double h = prefs.getDouble("lastPoseHeading", 0);
         return new Pose2d(x, y, h);
     }
     public static void saveLastPose(Pose2d lastPose) {
@@ -33,34 +29,8 @@ public abstract class DataWriterUtil {
         double y = lastPose.getY();
         double h = lastPose.getHeading();
 
-        Properties p = getProperty();
-        p.setProperty("lastPoseX", String.valueOf(x));
-        p.setProperty("lastPoseY", String.valueOf(y));
-        p.setProperty("lastPoseHeading", String.valueOf(h));
-        store(p);
-    }
-
-    private static Properties getProperty() {
-        try {
-            // create a reader object on the properties file
-            FileReader reader = new FileReader(FILE_NAME);
-
-            // create properties object
-            Properties p = new Properties();
-
-            // Add a wrapper around reader object
-            p.load(reader);
-
-            return p;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    private static void store(Properties p) {
-        try {
-            p.store(new FileWriter(FILE_NAME), "Latest data");
-        } catch (Exception e) {
-
-        }
+        prefs.putDouble("lastPoseX",       x);
+        prefs.putDouble("lastPoseY",       y);
+        prefs.putDouble("lastPoseHeading", h);
     }
 }
