@@ -55,7 +55,9 @@ public class Robot extends RobotBase {
     @Override
     public void update() {
         positionProvider.update();
+
         updateShooting();
+
         subsystemManager.update();
         telemetry.update();
     }
@@ -71,7 +73,7 @@ public class Robot extends RobotBase {
     public boolean doneShooting() {
         return shootScheduler == 0;
     }
-    public void waitTillDoneShooting() {
+    public void waitUntilDoneShooting() {
         while (!doneShooting() && !Thread.currentThread().isInterrupted()) {
             update();
         }
@@ -90,24 +92,32 @@ public class Robot extends RobotBase {
 
         // Outward shot
         shootTarget(Target.OUTWARD_POWER_SHOT, 1);
-        waitTillDoneShooting();
+        waitUntilDoneShooting();
 
         // Middle shot
         shootTarget(Target.MIDDLE_POWER_SHOT, 1);
-        waitTillDoneShooting();
+        waitUntilDoneShooting();
 
         // Inward shot
         shootTarget(Target.INWARD_POWER_SHOT, 1);
-        waitTillDoneShooting();
+        waitUntilDoneShooting();
     }
 
+    boolean launching = false;
     public void updateShooting() {
+        //turret.aimAtTargetAsync();
         if (shootScheduler > 0) {
             drive.pointAtTargetAsync();
             shooter.aimAsync(); // Start aiming before aligned, doesn't need to be fully aligned
             shooter.turnOnShooterMotor();
-            if (drive.readyToShoot() && shooter.readyToLaunch()) {
-                shooter.launch(); // TODO: Shooter not async, fix
+            //elevator.raiseAsync();
+            if (positionProvider.readyToShoot() && drive.readyToShoot() && shooter.readyToLaunch() ) {
+                // && turret.isAligned() && elevator.isUp(), remove drive.readyToShoot()
+                shooter.launchAsync();
+                launching = true;
+            }
+            if (launching && shooter.isRetracted()) {
+                launching = false;
                 shootScheduler--;
             }
         } else {

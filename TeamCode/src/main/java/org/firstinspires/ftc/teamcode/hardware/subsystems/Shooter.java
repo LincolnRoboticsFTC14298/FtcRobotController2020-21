@@ -43,6 +43,14 @@ public class Shooter implements Subsystem {
 
     private PositionProvider positionProvider;
 
+    enum LaunchStatus {
+        EXTENDING,
+        RETRACTING,
+        RETRACTED
+    }
+
+    private LaunchStatus launchStatus = LaunchStatus.RETRACTED;
+
     public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
         // Initialize motors and servos //
         shooterMotor1 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR1_NAME);
@@ -51,11 +59,11 @@ public class Shooter implements Subsystem {
         flapServo = hardwareMap.get(Servo.class, FLAP_NAME);
         launchFlapServo = hardwareMap.get(Servo.class, LAUNCH_FLAP_NAME);
 
-        this.positionProvider = positionProvider;
-
         // Reverse direction
 //        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        this.positionProvider = positionProvider;
     }
 
     @Override
@@ -67,6 +75,20 @@ public class Shooter implements Subsystem {
     @Override
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
+
+        switch (launchStatus) {
+            case EXTENDING:
+                if (isExtended()) {
+                    launchStatus = LaunchStatus.RETRACTING;
+                    retractLaunchFlap();
+                }
+                break;
+            case RETRACTING:
+                if (isRetracted()) {
+                    launchStatus = LaunchStatus.RETRACTED;
+                }
+                break;
+        }
     }
 
     @Override
@@ -103,7 +125,7 @@ public class Shooter implements Subsystem {
                 MathUtil.withinRange(positionProvider.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
                 Math.abs(shooterMotor1.getPower() - shooterMotor1Power) < SHOOTER_MIN_ERROR &&
                 Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
-                isRetracted();
+                launchStatus == LaunchStatus.RETRACTED; // Could use isRetracted();
     }
 
     public boolean isExtended() {
@@ -113,6 +135,9 @@ public class Shooter implements Subsystem {
         return Math.abs(launchFlapServo.getPosition() - LAUNCH_FLAP_RETRACTED_POS) < LAUNCH_FLAP_RETRACTED_MIN_ERROR;
     }
 
+    public void launchAsync() {
+        launchStatus = LaunchStatus.EXTENDING;
+    }
     public void launch() {
         extendLaunchFlap();
         while (!isExtended() && !Thread.currentThread().isInterrupted()) {

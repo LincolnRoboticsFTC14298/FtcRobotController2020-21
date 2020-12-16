@@ -27,6 +27,8 @@ public class PositionProvider {
     private static final double g = 9.8;
     private static final Vector3D G = new Vector3D(0, 0, -g/2);
 
+    private static boolean recentlyUpdated = true;
+
     public void setPoseEstimate(Pose2d poseEstimate) {
         this.poseEstimate = poseEstimate;
     }
@@ -119,10 +121,20 @@ public class PositionProvider {
         return solver.solve(10, function, 0, 1, .05);
     }
     public void findTargetAngles() {
-        double t = findT();
-        Vector3D vel = targetLaunchVector(t);
-        targetHeading = Math.atan2(vel.getY(), vel.getX());
-        targetLaunchAngle = Math.asin(vel.getZ());
+        try {
+            double t = findT();
+            Vector3D vel = targetLaunchVector(t);
+            targetHeading = Math.atan2(vel.getY(), vel.getX());
+            targetLaunchAngle = Math.asin(vel.getZ());
+            recentlyUpdated = true;
+        } catch (Exception e) {
+            recentlyUpdated = false;
+        }
+
+    }
+
+    public boolean readyToShoot() {
+        return recentlyUpdated;
     }
 
 

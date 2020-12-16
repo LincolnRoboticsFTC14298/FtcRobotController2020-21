@@ -89,7 +89,6 @@ public class Turret implements Subsystem {
     }
 
     public void aimAtTargetAsync() {
-        // could be setTurretLocalTargetHeading(positionProvider.getRelativeTargetHeading());
         aimAsync(positionProvider.getTargetHeading());
         mode = Mode.AUTO_AIMING;
     }
@@ -97,6 +96,7 @@ public class Turret implements Subsystem {
     public void aimAsync(double globalHeading) {
         mode = Mode.AIMING;
         targetGlobalHeading = globalHeading;
+        // could be setTurretLocalTargetHeading(positionProvider.getRelativeTargetHeading());
         setTurretGlobalTargetHeading(globalHeading);
     }
     public void aim(double globalHeading) {
@@ -111,6 +111,7 @@ public class Turret implements Subsystem {
     }
 
     private void setTurretGlobalTargetHeading(double heading) {
+
         turn(heading - getTurretGlobalHeading());
     }
     private double getTurretGlobalHeading() {
