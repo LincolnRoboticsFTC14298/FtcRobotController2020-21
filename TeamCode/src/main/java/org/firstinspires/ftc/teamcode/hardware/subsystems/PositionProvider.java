@@ -94,38 +94,37 @@ public class PositionProvider {
         return G.scalarMultiply(t*t)
                 .add(
                         velR.add(
-                                targetLaunchVector(t).scalarMultiply(launchVel)
+                                targetLaunchVector(t)
                         ).scalarMultiply(t));
     }
     private Vector3D targetLaunchVector(double t) {
-        Vector3D velR = new Vector3D(velEstimate.getX(),velEstimate.getY(),0);
-        Vector3D targetVect = getTargetRelativeLocation();
+        Vector3D robotVelocity = new Vector3D(velEstimate.getX(),velEstimate.getY(),0);
+        Vector3D targetVector = getTargetRelativeLocation();
         // (T/t - VelR - G*t)/v
-        return targetVect.scalarMultiply(1/t)
-                .subtract(velR)
-                .subtract(G.scalarMultiply(t))
-                .scalarMultiply(1.0/(launchVel*fudgeFactor));
+        return targetVector.scalarMultiply(1/t)
+                .subtract(robotVelocity)
+                .subtract(G.scalarMultiply(t));
     }
-    private double findT() {
+    private double findTimeHitTarget() {
         Vector3D target = getTargetRelativeLocation();
-        Vector3D vel = new Vector3D(velEstimate.getX(), velEstimate.getY(),0);
+        Vector3D robotVel = new Vector3D(velEstimate.getX(), velEstimate.getY(),0);
 
         double[] coefficients = new double[5];
         coefficients[0] = target.dotProduct(target);
-        coefficients[1] = -2.0 * (target.dotProduct(vel));
-        coefficients[2] = vel.dotProduct(vel) + g*target.getZ() - launchVel*launchVel;
+        coefficients[1] = -2.0 * (target.dotProduct(robotVel));
+        coefficients[2] = robotVel.dotProduct(robotVel) + g*target.getZ() - launchVel*launchVel;
         coefficients[3] = 0.0;
         coefficients[4] = g*g / 4.0;
         PolynomialFunction function = new PolynomialFunction(coefficients);
 
-        return solver.solve(10, function, 0, 1, .05);
+        return solver.solve(15, function, 0, 1, .05);
     }
     public void findTargetAngles() {
         try {
-            double t = findT();
+            double t = findTimeHitTarget();
             Vector3D vel = targetLaunchVector(t);
             targetHeading = Math.atan2(vel.getY(), vel.getX());
-            targetLaunchAngle = Math.asin(vel.getZ());
+            targetLaunchAngle = fudgeFactor*Math.asin(vel.getZ() / launchVel);
             recentlyUpdated = true;
         } catch (Exception e) {
             recentlyUpdated = false;
