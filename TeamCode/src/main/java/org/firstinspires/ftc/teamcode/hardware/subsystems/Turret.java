@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -10,6 +11,8 @@ import robotlib.util.MathUtil;
 
 @Config
 public class Turret extends Subsystem {
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     private static final double GEAR_RATIO = .1; // turret output revs / motor input revs
 
     private static final int INITIAL_LOCAL_HEADING = 0; // 0 local heading is aligned with heading of drive
@@ -84,6 +87,17 @@ public class Turret extends Subsystem {
                 turretMotor.setPower(0);
                 break;
         }
+    }
+
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("mode: ", mode);
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atFine().log("mode: ", mode);
+        logger.atFinest().log("is aligned: ", isAligned());
     }
 
     public boolean isAligned() {

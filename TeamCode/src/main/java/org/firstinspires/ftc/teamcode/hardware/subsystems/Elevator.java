@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -9,6 +10,8 @@ import robotlib.hardware.Subsystem;
 
 @Config
 public class Elevator extends Subsystem {
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     private static final double RADIUS = 5; // inches
     private static final double GEAR_RATIO = 1; // output revs / input revs
 
@@ -83,6 +86,20 @@ public class Elevator extends Subsystem {
             default:
                 elevatorMotor.setPower(0);
         }
+    }
+
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("mode: ", mode);
+        telemetry.put("position: ", getPlatformHeight());
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atFine().log("mode: ", mode);
+        logger.atFine().log("position: ", getPlatformHeight());
+        logger.atFine().log("is up: ", isUp());
+        logger.atFine().log("is down: ", isDown());
     }
 
     public boolean isUp() {

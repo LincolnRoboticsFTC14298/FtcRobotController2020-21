@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -12,8 +11,7 @@ import robotlib.hardware.Subsystem;
 
 @Config
 public class Arm extends Subsystem {
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     public static final String CLAW_SERVO_NAME = "claw";
     public static final String ARM_MOTOR_NAME = "arm";
@@ -69,11 +67,22 @@ public class Arm extends Subsystem {
     public void updateMotorAndServoValues() {
         clawServo.setPosition(clawPosition);
         updateArmAngle(armAngle);
+    }
 
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Arm position: ", getArmAngle());
-        packet.put("Claw position: ", clawServo.getPosition());
-        dashboard.sendTelemetryPacket(packet);
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("claw position: ", clawServo.getPosition());
+        telemetry.put("arm angle: ", getArmAngle());
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atFine().log("claw position: ", clawServo.getPosition());
+        logger.atFine().log("arm angle: ", getArmAngle());
+        logger.atFiner().log("target - claw position: ", clawPosition - clawServo.getPosition());
+        logger.atFiner().log("target - arm angle: ", armAngle - getArmAngle());
+        logger.atFinest().log("claw target: ", clawPosition);
+        logger.atFinest().log("arm target: ", armAngle);
     }
 
     public void openClaw() {

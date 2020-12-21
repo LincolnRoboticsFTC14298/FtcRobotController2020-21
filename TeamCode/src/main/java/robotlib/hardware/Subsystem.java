@@ -6,7 +6,7 @@ import robotlib.util.TelemetryData;
 
 public abstract class Subsystem {
     private String name;
-    private TelemetryData telemetry;
+    protected TelemetryData telemetry;
 
     public Subsystem(String name) {
         this.name = name;

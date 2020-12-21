@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,8 +10,7 @@ import robotlib.hardware.Subsystem;
 
 @Config
 public class Intake extends Subsystem {
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String FRONT_NAME = "intakeFront";
     private static final String REAR_NAME = "intakeRear";
@@ -50,11 +48,22 @@ public class Intake extends Subsystem {
     public void updateMotorAndServoValues() {
         front.setPower(frontPower);
         rear.setPower(rearPower);
+    }
 
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Front intake motor power: ", front.getPower());
-        packet.put("Back intake motor power: ", rear.getPower());
-        dashboard.sendTelemetryPacket(packet);
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("front motor power: ", front.getPower());
+        telemetry.put("back motor power: ", rear.getPower());
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atFine().log("front motor power: ", front.getPower());
+        logger.atFine().log("back motor power: ", rear.getPower());
+        logger.atFiner().log("target - front power: ", frontPower - front.getPower());
+        logger.atFiner().log("target - rear power: ", rearPower - rear.getPower());
+        logger.atFiner().log("front target: ", frontPower);
+        logger.atFiner().log("rear target: ", rearPower);
     }
 
     public void turnOn() {

@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,9 +12,7 @@ import robotlib.util.MathUtil;
 
 @Config
 public class Shooter extends Subsystem {
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-    //private static final Telemetry telemetry = new Telemetry("Shooter");
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String SHOOTER_MOTOR1_NAME = "shooter1", SHOOTER_MOTOR2_NAME = "shooter2";
     private static final String FLAP_NAME = "flap", LAUNCH_FLAP_NAME = "launchFlap";
@@ -49,13 +46,13 @@ public class Shooter extends Subsystem {
         RETRACTED
     }
 
-    public enum AimingStatus {
+    public enum AimingMode {
         AIMING,
         IDLE
     }
 
     private LaunchStatus launchStatus = LaunchStatus.RETRACTED;
-    private AimingStatus aimingStatus = AimingStatus.IDLE;
+    private AimingMode aimingMode = AimingMode.IDLE;
 
     public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
         super("Shooter");
@@ -89,7 +86,7 @@ public class Shooter extends Subsystem {
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
 
-        switch (aimingStatus) {
+        switch (aimingMode) {
             case AIMING:
                 aimAsync();
                 break;
@@ -125,12 +122,30 @@ public class Shooter extends Subsystem {
 
         flapServo.setPosition(angleToPos(flapAngle));
         launchFlapServo.setPosition(launchFlapPos);
+    }
 
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Shooter power: ", shooterMotor1.getPower());
-        packet.addLine("Flap Angle: " +  Math.toDegrees(targetAngle) + " target vs " +
-                Math.toDegrees(posToAngle(flapServo.getPosition())) + " actual");
-        dashboard.sendTelemetryPacket(packet);
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("aiming mode: ", aimingMode);
+        telemetry.put("launch status: ", launchStatus);
+        telemetry.put("shooter power: ", shooterMotor1.getPower());
+        telemetry.put("flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atFine().log("aiming mode: ", aimingMode);
+        logger.atFine().log("launch status: ", launchStatus);
+        logger.atFine().log("shooter power: ", shooterMotor1.getPower());
+        logger.atFine().log("flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
+
+        logger.atFiner().log("target - shoot power: ", shooterMotor1Power - shooterMotor1.getPower());
+        logger.atFiner().log("target - flap angle: ", Math.toDegrees(targetAngle) - Math.toDegrees(posToAngle(flapServo.getPosition())));
+
+        logger.atFinest().log("ready to launch: ", readyToLaunch());
+        logger.atFinest().log("done aiming: ", doneAiming());
+        logger.atFinest().log("is extended: ", isExtended());
+        logger.atFinest().log("is retracted: ", isRetracted());
     }
 
 
@@ -139,11 +154,11 @@ public class Shooter extends Subsystem {
     }
     public void aimAsync() {
         // TODO: Make update every update()
-        aimingStatus = AimingStatus.AIMING;
+        aimingMode = AimingMode.AIMING;
         setFlapAngle(positionProvider.getTargetLaunchAngle());
     }
     public void stopAiming() {
-        aimingStatus = AimingStatus.IDLE;
+        aimingMode = AimingMode.IDLE;
     }
 
     public boolean readyToLaunch() {

@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import java.util.ArrayList;
 
 public class SubsystemManager {
+    private FtcDashboard dashboard;
     private ArrayList<Subsystem> subsystems = new ArrayList<>();
 
     public void add(Subsystem subsystem) {
@@ -13,6 +14,9 @@ public class SubsystemManager {
     }
 
     public void init() {
+        dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
+
         for (Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.init();
@@ -72,6 +76,6 @@ public class SubsystemManager {
         for (Subsystem subsystem : subsystems) {
             packet.putAll(subsystem.getTelemetryData());
         }
-        FtcDashboard.getInstance().sendTelemetryPacket(packet);
+        dashboard.sendTelemetryPacket(packet);
     }
 }

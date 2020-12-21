@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -51,8 +52,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 
 @Config
 public class Drive extends MecanumDrive {
-    private FtcDashboard dashboard;
-    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String LEFT_FRONT_NAME = "leftFront";
     private static final String LEFT_REAR_NAME = "leftRear";
@@ -104,9 +104,6 @@ public class Drive extends MecanumDrive {
 
     public Drive(HardwareMap hardwareMap) {
         super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
-        dashboard = FtcDashboard.getInstance();
-        dashboard.setTelemetryTransmissionInterval(25);
 
         clock = NanoClock.system();
 
@@ -160,9 +157,6 @@ public class Drive extends MecanumDrive {
 
     public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
         super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
-        dashboard = FtcDashboard.getInstance();
-        dashboard.setTelemetryTransmissionInterval(25);
 
         clock = NanoClock.system();
 
@@ -226,7 +220,6 @@ public class Drive extends MecanumDrive {
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
-        Pose2d lastError = getLastError();
 
         poseHistory.add(currentPose);
 
@@ -236,19 +229,6 @@ public class Drive extends MecanumDrive {
 
         positionProvider.setPoseEstimate(currentPose);
         positionProvider.setVelEstimate(getPoseVelocity());
-
-        TelemetryPacket packet = new TelemetryPacket();
-        Canvas fieldOverlay = packet.fieldOverlay();
-
-        packet.put("mode", mode);
-
-        packet.put("x", currentPose.getX());
-        packet.put("y", currentPose.getY());
-        packet.put("heading", currentPose.getHeading());
-
-        packet.put("xError", lastError.getX());
-        packet.put("yError", lastError.getY());
-        packet.put("headingError", lastError.getHeading());
 
         switch (mode) {
             case IDLE:
@@ -271,21 +251,61 @@ public class Drive extends MecanumDrive {
                         0, 0, targetAlpha
                 )));
 
-                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
-
-                fieldOverlay.setStroke("#4CAF50");
-                DashboardUtil.drawRobot(fieldOverlay, newPose);
-
                 if (t >= turnProfile.duration()) {
+                    mode = Mode.IDLE;
+                    setDriveSignal(new DriveSignal());
+                }
+                break;
+            }
+            case FOLLOW_TRAJECTORY: {
+                setDriveSignal(follower.update(currentPose));
+
+                if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
                     setDriveSignal(new DriveSignal());
                 }
 
                 break;
             }
-            case FOLLOW_TRAJECTORY: {
-                setDriveSignal(follower.update(currentPose));
+        }
+    }
 
+    @Override
+    public void stop() {
+        setMotorPowers(0,0,0,0);
+    }
+
+    @Override
+    public void updateTelemetry() {
+        Pose2d currentPose = getPoseEstimate();
+
+        telemetry.put("mode", mode);
+
+        telemetry.put("Motor velocities: ", getWheelVelocities().toString());
+
+        telemetry.put("x", currentPose.getX());
+        telemetry.put("y", currentPose.getY());
+        telemetry.put("heading", currentPose.getHeading());
+
+        TelemetryPacket packet = new TelemetryPacket();
+        Canvas fieldOverlay = packet.fieldOverlay();
+
+        switch (mode) {
+            case IDLE:
+                // do nothing
+                break;
+            case TURN: {
+                double t = clock.seconds() - turnStart;
+
+                MotionState targetState = turnProfile.get(t);
+
+                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
+
+                fieldOverlay.setStroke("#4CAF50");
+                DashboardUtil.drawRobot(fieldOverlay, newPose);
+                break;
+            }
+            case FOLLOW_TRAJECTORY: {
                 Trajectory trajectory = follower.getTrajectory();
 
                 fieldOverlay.setStrokeWidth(1);
@@ -296,12 +316,6 @@ public class Drive extends MecanumDrive {
 
                 fieldOverlay.setStroke("#3F51B5");
                 DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
-
-                if (!follower.isFollowing()) {
-                    mode = Mode.IDLE;
-                    setDriveSignal(new DriveSignal());
-                }
-
                 break;
             }
         }
@@ -309,12 +323,55 @@ public class Drive extends MecanumDrive {
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
-        dashboard.sendTelemetryPacket(packet);
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
 
     @Override
-    public void stop() {
-        setMotorPowers(0,0,0,0);
+    public void updateLogging() {
+        Pose2d currentPose = getPoseEstimate();
+        Pose2d lastError = getLastError();
+
+        logger.atFine().log("mode", mode);
+
+        logger.atFine().log("x", currentPose.getX());
+        logger.atFine().log("y", currentPose.getY());
+        logger.atFine().log("heading", currentPose.getHeading());
+
+        logger.atFine().log("xError", lastError.getX());
+        logger.atFine().log("yError", lastError.getY());
+        logger.atFine().log("headingError", lastError.getHeading());
+    }
+
+    /*
+     * Input is the forwardAmt, strafeAmt, rotation
+     */
+    public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget) {
+        Vector2d input = new Vector2d(rawControllerInput.getX(), rawControllerInput.getY());
+
+        double turn = -rawControllerInput.getHeading();
+
+        if (fieldCentric) {
+            input = input.rotated(-getPoseEstimate().getHeading());
+        }
+
+        if (pointAtTarget) {
+            pointAtTargetAsync();
+            turn = 0; // may not work, must test
+        }
+
+        setWeightedDrivePower(
+                new Pose2d(input.getX(), input.getY(), turn)
+        );
+    }
+
+    public boolean readyToShoot() {
+        return Math.abs(getPoseEstimate().getHeading() - positionProvider.getTargetHeading()) < HEADING_MIN_ERROR;
+    }
+    public void pointAtTargetAsync() {
+        turnAsync(positionProvider.getTargetRelativeHeading());
+    }
+    public void pointAtTarget() {
+        turn(positionProvider.getTargetRelativeHeading());
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -383,50 +440,18 @@ public class Drive extends MecanumDrive {
         return mode != Mode.IDLE;
     }
 
-    /*
-     * Input is the forwardAmt, strafeAmt, rotation
-     */
-    public void teleopControl(Pose2d rawControllerInput, boolean fieldCentric, boolean pointAtTarget) {
-        Vector2d input = new Vector2d(rawControllerInput.getX(), rawControllerInput.getY());
-
-        double turn = -rawControllerInput.getHeading();
-
-        if (fieldCentric) {
-            input = input.rotated(-getPoseEstimate().getHeading());
-        }
-
-        if (pointAtTarget) {
-            pointAtTargetAsync();
-            turn = 0; // may not work, must test
-        }
-
-        setWeightedDrivePower(
-                new Pose2d(input.getX(), input.getY(), turn)
-        );
-    }
-
-    public boolean readyToShoot() {
-        return Math.abs(getPoseEstimate().getHeading() - positionProvider.getTargetHeading()) < HEADING_MIN_ERROR;
-    }
-    public void pointAtTargetAsync() {
-        turnAsync(positionProvider.getTargetRelativeHeading());
-    }
-    public void pointAtTarget() {
-        turn(positionProvider.getTargetRelativeHeading());
-    }
-
-
-
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
         }
     }
+
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
+
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
@@ -436,6 +461,7 @@ public class Drive extends MecanumDrive {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);
         }
     }
+
     public void setWeightedDrivePower(Pose2d drivePower) {
         Pose2d vel = drivePower;
 
