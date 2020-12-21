@@ -18,7 +18,7 @@ import robotlib.hardware.Subsystem;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
 @Deprecated
-public class Drive implements Subsystem {
+public class Drive extends Subsystem {
     // Mecanum drive //
 
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -51,7 +51,7 @@ public class Drive implements Subsystem {
     @Override
     public void start() {
         setMotorPowers(0,0,0,0);
-        updateMotorsAndServos();
+        updateMotorAndServoValues();
     }
 
     @Override
@@ -60,13 +60,13 @@ public class Drive implements Subsystem {
         //logger.atFiner().log("Diff of power - target: ",frontLeft.getPower() - frontLeftPower, frontRight.getPower() - frontRightPower,backLeft.getPower() - backLeftPower, backRight.getPower() - backRightPower);
         //logger.atFiner().log(target.toString(), alliance.toString());
         //logger.atFinest().log(frontLeft.getMode().toString());
-        updateMotorsAndServos();
+        updateMotorAndServoValues();
     }
 
     @Override
     public void stop() {
         setMotorPowers(0,0,0,0);
-        updateMotorsAndServos();
+        updateMotorAndServoValues();
     }
 
 
@@ -160,7 +160,7 @@ public class Drive implements Subsystem {
     }
 
     @Override
-    public void updateMotorsAndServos() {
+    public void updateMotorAndServoValues() {
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);

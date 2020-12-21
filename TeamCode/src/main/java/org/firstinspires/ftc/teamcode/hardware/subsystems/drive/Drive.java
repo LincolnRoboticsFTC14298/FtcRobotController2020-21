@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -37,7 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import robotlib.hardware.Subsystem;
+import robotlib.hardware.roadrunner.MecanumDrive;
 import robotlib.util.DashboardUtil;
 import robotlib.util.LynxModuleUtil;
 
@@ -51,7 +50,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 
 @Config
-public class Drive extends MecanumDrive implements Subsystem {
+public class Drive extends MecanumDrive {
     private FtcDashboard dashboard;
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -102,9 +101,6 @@ public class Drive extends MecanumDrive implements Subsystem {
     private Pose2d lastPoseOnTurn;
 
     private PositionProvider positionProvider;
-
-//    private Target target = Target.HIGH_GOAL;
-//    private Alliance alliance = Alliance.BLUE;
 
     public Drive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -221,7 +217,7 @@ public class Drive extends MecanumDrive implements Subsystem {
     }
 
     @Override
-    public void start() {
+    public void init() {
         setMotorPowers(0,0,0,0);
     }
 
@@ -419,20 +415,6 @@ public class Drive extends MecanumDrive implements Subsystem {
         turn(positionProvider.getTargetRelativeHeading());
     }
 
-//    public Target getTarget() {
-//        return target;
-//    }
-//    public void setTarget(Target target) {
-//        this.target = target;
-//    }
-//
-//    public Alliance getAlliance() {
-//        return alliance;
-//    }
-//    public void setAlliance(Alliance alliance) {
-//        this.alliance = alliance;
-//    }
-
 
 
     public void setMode(DcMotor.RunMode runMode) {
@@ -440,13 +422,11 @@ public class Drive extends MecanumDrive implements Subsystem {
             motor.setMode(runMode);
         }
     }
-
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
             motor.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
-
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
@@ -456,7 +436,6 @@ public class Drive extends MecanumDrive implements Subsystem {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);
         }
     }
-
     public void setWeightedDrivePower(Pose2d drivePower) {
         Pose2d vel = drivePower;
 
@@ -502,11 +481,6 @@ public class Drive extends MecanumDrive implements Subsystem {
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
-    }
-
-    @Override
-    public void updateMotorsAndServos() {
-
     }
 
     @Override
