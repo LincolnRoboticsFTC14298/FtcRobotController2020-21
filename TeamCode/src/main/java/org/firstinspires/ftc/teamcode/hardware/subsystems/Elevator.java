@@ -8,8 +8,9 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import robotlib.hardware.Subsystem;
 
 @Config
-public class Elevator implements Subsystem {
-    private static final int RADIUS = 5; // inches
+public class Elevator extends Subsystem {
+    private static final double RADIUS = 5; // inches
+    private static final double GEAR_RATIO = 1; // output revs / input revs
 
     private static final int TICKS_PER_REV = 0;
 
@@ -18,7 +19,7 @@ public class Elevator implements Subsystem {
     public static PIDFCoefficients POS_PIDF = new PIDFCoefficients(0,0,0,0);
 
     private static final String ELEVATOR_MOTOR_NAME = "elevator";
-    private static final double HEIGHT_MIN_ERROR = .1;
+    private static final double HEIGHT_MIN_ERROR = .1; // inches
 
     DcMotorEx elevatorMotor;
 
@@ -71,7 +72,7 @@ public class Elevator implements Subsystem {
     }
 
     @Override
-    public void updateMotorsAndServos() {
+    public void updateMotorAndServoValues() {
         switch (mode) {
             case RAISING:
             case LOWERING:
@@ -97,7 +98,7 @@ public class Elevator implements Subsystem {
         raise();
         while (!isUp() && !Thread.currentThread().isInterrupted()) {
             update();
-            updateMotorsAndServos();
+            updateMotorAndServoValues();
         }
     }
 
@@ -109,7 +110,7 @@ public class Elevator implements Subsystem {
         lowerAsync();
         while (!isDown() && !Thread.currentThread().isInterrupted()) {
             update();
-            updateMotorsAndServos();
+            updateMotorAndServoValues();
         }
     }
 
@@ -118,13 +119,13 @@ public class Elevator implements Subsystem {
     }
 
     private void setPlatformHeight(double height) {
-        double targetRevs = height / (2 * Math.PI * RADIUS);
+        double targetRevs = height / (2 * Math.PI * RADIUS * GEAR_RATIO);
         int targetTicks = (int) (targetRevs * TICKS_PER_REV);
         elevatorMotor.setTargetPosition(targetTicks);
     }
     private double getPlatformHeight() {
         double revs = getMotorRevs();
-        return 2 * Math.PI * RADIUS * revs;
+        return 2 * Math.PI * RADIUS * GEAR_RATIO * revs;
     }
 
     private double getMotorRevs() {
