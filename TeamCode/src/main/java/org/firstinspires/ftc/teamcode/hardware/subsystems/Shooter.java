@@ -12,7 +12,7 @@ import robotlib.hardware.Subsystem;
 import robotlib.util.MathUtil;
 
 @Config
-public class Shooter implements Subsystem {
+public class Shooter extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     //private static final Telemetry telemetry = new Telemetry("Shooter");
@@ -26,7 +26,7 @@ public class Shooter implements Subsystem {
     // In radians
     public static double FLAP_MIN_ERROR = .03;
     public static double FLAP_MIN_ANGLE = 0;
-    public static double FLAP_MAX_ANGLE = 0;
+    public static double FLAP_MAX_ANGLE = Math.PI/2.0;
 
     public static double LAUNCH_FLAP_RETRACTED_MIN_ERROR = 0.1;
     public static double LAUNCH_FLAP_EXTENDED_MIN_ERROR = 0.2;
@@ -73,8 +73,12 @@ public class Shooter implements Subsystem {
     }
 
     @Override
-    public void start() {
+    public void init() {
         stopAiming();
+    }
+
+    @Override
+    public void start() {
         setFlapAngle(Math.toRadians(45));
         retractLaunchFlap();
     }
@@ -113,7 +117,7 @@ public class Shooter implements Subsystem {
     }
 
     @Override
-    public void updateMotorsAndServos() {
+    public void updateMotorAndServoValues() {
         shooterMotor1.setPower(shooterMotor1Power);
         shooterMotor2.setPower(shooterMotor2Power);
 
@@ -167,7 +171,7 @@ public class Shooter implements Subsystem {
     public void launch() {
         extendLaunchFlap();
         while (!isExtended() && !Thread.currentThread().isInterrupted()) {
-            updateMotorsAndServos();
+            updateMotorAndServoValues();
         }
         retractLaunchFlap();
     }

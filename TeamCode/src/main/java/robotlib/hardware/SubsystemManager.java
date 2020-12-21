@@ -9,24 +9,43 @@ public class SubsystemManager {
         subsystems.add(subsystem);
     }
 
+    public void init() {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.getSensorValues();
+            subsystem.init();
+            subsystem.updateMotorAndServoValues();
+        }
+    }
+
+    public void initUpdate() {
+        for (Subsystem subsystem : subsystems) {
+            subsystem.getSensorValues();
+            subsystem.initUpdate();
+            subsystem.updateMotorAndServoValues();
+        }
+    }
+
     public void start() {
         for (Subsystem subsystem : subsystems) {
+            subsystem.getSensorValues();
             subsystem.start();
-            subsystem.updateMotorsAndServos();
+            subsystem.updateMotorAndServoValues();
         }
     }
 
     public void update() {
         for (Subsystem subsystem : subsystems) {
+            subsystem.getSensorValues();
             subsystem.update();
-            subsystem.updateMotorsAndServos();
+            subsystem.updateMotorAndServoValues();
         }
     }
 
     public void stop() {
         for (Subsystem subsystem : subsystems) {
+            subsystem.getSensorValues();
             subsystem.stop();
-            subsystem.updateMotorsAndServos();
+            subsystem.updateMotorAndServoValues();
         }
     }
 }

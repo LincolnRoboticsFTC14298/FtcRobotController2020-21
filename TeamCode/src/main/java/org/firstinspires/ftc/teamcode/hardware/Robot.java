@@ -22,11 +22,11 @@ public class Robot extends RobotBase {
 
     // Subsystems
     public Vision vision;
+    public Arm arm;
     public Intake intake;
-    public Shooter shooter;
     public Elevator elevator;
     public Turret turret;
-    public Arm arm;
+    public Shooter shooter;
     public Drive drive;
 
     public Target target = Target.HIGH_GOAL;
@@ -38,26 +38,38 @@ public class Robot extends RobotBase {
         positionProvider = new PositionProvider();
 
         vision = new Vision(hardwareMap);
+        arm = new Arm(hardwareMap);
         intake = new Intake(hardwareMap);
-        shooter = new Shooter(hardwareMap, positionProvider);
         elevator = new Elevator(hardwareMap);
         turret = new Turret(hardwareMap, positionProvider);
-        arm = new Arm(hardwareMap);
+        shooter = new Shooter(hardwareMap, positionProvider);
         drive = new Drive(hardwareMap, positionProvider);
 
         subsystemManager.add(vision);
+        subsystemManager.add(arm);
         subsystemManager.add(intake);
-        subsystemManager.add(shooter);
         subsystemManager.add(elevator);
         subsystemManager.add(turret);
-        subsystemManager.add(arm);
+        subsystemManager.add(shooter);
         subsystemManager.add(drive);
+    }
+
+    @Override
+    public void init() {
+        telemetry.setMsTransmissionInterval(50);
+        subsystemManager.init();
+        telemetry.update();
+    }
+
+    @Override
+    public void initUpdate() {
+        subsystemManager.initUpdate();
+        telemetry.update();
     }
 
     @Override
     public void start() {
         subsystemManager.start();
-        telemetry.setMsTransmissionInterval(50);
         telemetry.update();
     }
 
@@ -115,7 +127,6 @@ public class Robot extends RobotBase {
     boolean launching = false;
     public void updateShooting() {
         // Maybe only want to aim when shootScheduler > 0
-        elevator.raiseAsync();
         turret.aimAtTargetAsync();
         shooter.aimAsync();
 
@@ -128,7 +139,7 @@ public class Robot extends RobotBase {
             //drive.pointAtTargetAsync();
             shooter.turnOnShooterMotor();
             elevator.raiseAsync();
-            if (positionProvider.readyToShoot() && shooter.readyToLaunch()
+            if (positionProvider.readyToShoot() && !launching && shooter.readyToLaunch()
                     && turret.isAligned() && elevator.isUp()) {
                 shooter.launchAsync();
                 launching = true;

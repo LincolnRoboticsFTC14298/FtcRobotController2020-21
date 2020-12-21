@@ -9,8 +9,8 @@ import robotlib.hardware.Subsystem;
 import robotlib.util.MathUtil;
 
 @Config
-public class Turret implements Subsystem {
-    private static final double GEAR_RATIO = .1; // turret output / motor input
+public class Turret extends Subsystem {
+    private static final double GEAR_RATIO = .1; // turret output revs / motor input revs
 
     private static final int INITIAL_LOCAL_HEADING = 0; // 0 local heading is aligned with heading of drive
 
@@ -50,7 +50,7 @@ public class Turret implements Subsystem {
     }
 
     @Override
-    public void start() {
+    public void init() {
         stopAiming();
     }
 
@@ -72,7 +72,7 @@ public class Turret implements Subsystem {
     }
 
     @Override
-    public void updateMotorsAndServos() {
+    public void updateMotorAndServoValues() {
         switch (mode) {
             case AUTO_AIMING:
             case AIMING:
@@ -102,7 +102,7 @@ public class Turret implements Subsystem {
     public void aim(double globalHeading) {
         aimAsync(globalHeading);
         while (!isAligned() && !Thread.currentThread().isInterrupted()) {
-            updateMotorsAndServos();
+            updateMotorAndServoValues();
         }
         stopAiming();
     }

@@ -58,7 +58,7 @@ public class VisionTunerWithDrive extends OpMode {
         }
 
         drive.update();
-        drive.updateMotorsAndServos();
+        drive.updateMotorAndServoValues();
         vision.update();
 
         telemetry.addData("Viewport: ", vision.getViewport());

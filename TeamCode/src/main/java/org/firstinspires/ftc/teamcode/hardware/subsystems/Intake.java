@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import robotlib.hardware.Subsystem;
 
 @Config
-public class Intake implements Subsystem {
+public class Intake extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -30,7 +30,7 @@ public class Intake implements Subsystem {
     }
 
     @Override
-    public void start() {
+    public void init() {
         turnOff();
     }
 
@@ -45,7 +45,7 @@ public class Intake implements Subsystem {
     }
 
     @Override
-    public void updateMotorsAndServos() {
+    public void updateMotorAndServoValues() {
         front.setPower(frontPower);
         rear.setPower(rearPower);
 

@@ -21,7 +21,7 @@ import robotlib.hardware.Subsystem;
 
 import static org.opencv.android.Utils.matToBitmap;
 
-public class Vision implements Subsystem {
+public class Vision extends Subsystem {
     public static final int width = 320;
     public static final int height = 240;
 
@@ -48,10 +48,6 @@ public class Vision implements Subsystem {
         );
     }
 
-    @Override
-    public void start() {
-
-    }
 
     @Override
     public void update() {
@@ -61,11 +57,6 @@ public class Vision implements Subsystem {
     @Override
     public void stop() {
         stopStreaming();
-    }
-
-    @Override
-    public void updateMotorsAndServos() {
-
     }
 
     public void analyze() {
