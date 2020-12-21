@@ -53,6 +53,8 @@ public class Shooter extends Subsystem {
     private boolean loading = false;
 
     public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
+        super("Old Shooter");
+
         // Initialize motors and servos //
         motor1 = hardwareMap.get(DcMotor.class, MOTOR1_NAME);
         motor2 = hardwareMap.get(DcMotor.class, MOTOR2_NAME);

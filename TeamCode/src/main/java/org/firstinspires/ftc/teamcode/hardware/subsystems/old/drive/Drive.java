@@ -35,6 +35,8 @@ public class Drive extends Subsystem {
     public boolean aligning = false;
 
     public Drive(HardwareMap hardwareMap) {
+        super("Old Drive");
+
         // Initialize motors //
         frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
         frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");

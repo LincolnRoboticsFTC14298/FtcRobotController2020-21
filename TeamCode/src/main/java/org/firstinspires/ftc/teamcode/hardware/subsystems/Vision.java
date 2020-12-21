@@ -37,6 +37,8 @@ public class Vision extends Subsystem {
     private boolean processed = false;
 
     public Vision(HardwareMap hardwareMap) {
+        super("Vision");
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDeviceAsync(

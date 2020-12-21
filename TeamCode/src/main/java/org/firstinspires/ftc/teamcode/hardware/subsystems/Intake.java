@@ -24,6 +24,8 @@ public class Intake extends Subsystem {
     private double frontPower = 0, rearPower = 0;
 
     public Intake(HardwareMap hardwareMap) {
+        super("Intake");
+
         front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
         rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
         rear.setDirection(DcMotorSimple.Direction.REVERSE);

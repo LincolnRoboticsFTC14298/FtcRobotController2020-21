@@ -18,13 +18,14 @@ import com.acmerobotics.roadrunner.util.Angle
  * @param lateralMultiplier lateral multiplier
  */
 open abstract class MecanumDrive constructor(
+        name: String?,
         private val kV: Double,
         private val kA: Double,
         private val kStatic: Double,
         private val trackWidth: Double,
         private val wheelBase: Double = trackWidth,
         private val lateralMultiplier: Double = 1.0
-) : Drive() {
+) : Drive(name) {
 
     /**
      * Default localizer for mecanum drives based on the drive encoders and (optionally) a heading sensor.

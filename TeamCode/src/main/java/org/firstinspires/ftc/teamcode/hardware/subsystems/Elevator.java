@@ -34,6 +34,8 @@ public class Elevator extends Subsystem {
     Mode mode = Mode.IDLE;
 
     public Elevator(HardwareMap hardwareMap) {
+        super("Elevator");
+
         elevatorMotor = hardwareMap.get(DcMotorEx.class, ELEVATOR_MOTOR_NAME);
 
         // Needs to move clockwise

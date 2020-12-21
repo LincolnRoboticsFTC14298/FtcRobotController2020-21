@@ -1,5 +1,8 @@
 package robotlib.hardware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import java.util.ArrayList;
 
 public class SubsystemManager {
@@ -14,7 +17,10 @@ public class SubsystemManager {
             subsystem.getSensorValues();
             subsystem.init();
             subsystem.updateMotorAndServoValues();
+            subsystem.updateTelemetry();
+            subsystem.updateLogging();
         }
+        pushTelemetry();
     }
 
     public void initUpdate() {
@@ -22,7 +28,10 @@ public class SubsystemManager {
             subsystem.getSensorValues();
             subsystem.initUpdate();
             subsystem.updateMotorAndServoValues();
+            subsystem.updateTelemetry();
+            subsystem.updateLogging();
         }
+        pushTelemetry();
     }
 
     public void start() {
@@ -30,7 +39,10 @@ public class SubsystemManager {
             subsystem.getSensorValues();
             subsystem.start();
             subsystem.updateMotorAndServoValues();
+            subsystem.updateTelemetry();
+            subsystem.updateLogging();
         }
+        pushTelemetry();
     }
 
     public void update() {
@@ -38,7 +50,10 @@ public class SubsystemManager {
             subsystem.getSensorValues();
             subsystem.update();
             subsystem.updateMotorAndServoValues();
+            subsystem.updateTelemetry();
+            subsystem.updateLogging();
         }
+        pushTelemetry();
     }
 
     public void stop() {
@@ -46,6 +61,17 @@ public class SubsystemManager {
             subsystem.getSensorValues();
             subsystem.stop();
             subsystem.updateMotorAndServoValues();
+            subsystem.updateTelemetry();
+            subsystem.updateLogging();
         }
+        pushTelemetry();
+    }
+
+    private void pushTelemetry() {
+        TelemetryPacket packet = new TelemetryPacket();
+        for (Subsystem subsystem : subsystems) {
+            packet.putAll(subsystem.getTelemetryData());
+        }
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
 }

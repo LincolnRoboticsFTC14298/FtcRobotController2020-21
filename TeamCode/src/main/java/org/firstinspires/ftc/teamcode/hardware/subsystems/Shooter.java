@@ -58,6 +58,8 @@ public class Shooter extends Subsystem {
     private AimingStatus aimingStatus = AimingStatus.IDLE;
 
     public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
+        super("Shooter");
+
         // Initialize motors and servos //
         shooterMotor1 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR1_NAME);
         shooterMotor2 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR2_NAME);

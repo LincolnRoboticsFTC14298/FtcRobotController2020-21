@@ -38,6 +38,8 @@ public class Turret extends Subsystem {
     private Mode mode;
 
     public Turret(HardwareMap hardwareMap, PositionProvider positionProvider) {
+        super("Turret");
+
         turretMotor = hardwareMap.get(DcMotorEx.class, TURRET_MOTOR_NAME);
 
         // Needs to move clockwise

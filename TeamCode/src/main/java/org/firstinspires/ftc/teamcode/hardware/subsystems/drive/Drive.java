@@ -59,7 +59,7 @@ public class Drive extends MecanumDrive {
     private static final String RIGHT_REAR_NAME = "rightRear";
     private static final String RIGHT_FRONT_NAME = "rightFront";
 
-    public static double DRIVER_TARGET_ANGLE_MIN_ERROR = 1; // In degrees
+    //public static double DRIVER_TARGET_ANGLE_MIN_ERROR = 1; // In degrees
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
@@ -103,7 +103,7 @@ public class Drive extends MecanumDrive {
     private PositionProvider positionProvider;
 
     public Drive(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -159,7 +159,7 @@ public class Drive extends MecanumDrive {
     }
 
     public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);

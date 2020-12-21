@@ -16,15 +16,7 @@ public class TelemetryData {
         data.put(prefix + ": " + label, value);
     }
 
-    public Map<String, Object> getData () {
+    public Map<String, Object> getData() {
         return data;
     }
-
-
-    // Levels
-
-    //
-
-
-
 }

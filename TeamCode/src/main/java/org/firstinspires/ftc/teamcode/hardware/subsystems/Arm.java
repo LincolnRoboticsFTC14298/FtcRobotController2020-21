@@ -37,6 +37,8 @@ public class Arm extends Subsystem {
     private double armAngle, clawPosition;
 
     public Arm(HardwareMap hardwareMap) {
+        super("Arm");
+
         clawServo = hardwareMap.get(Servo.class, CLAW_SERVO_NAME);
 
         armMotor = hardwareMap.get(DcMotorEx.class, ARM_MOTOR_NAME);

@@ -85,7 +85,7 @@ public class RoadRunnerDrive extends MecanumDrive {
     private Pose2d lastPoseOnTurn;
 
     public RoadRunnerDrive(HardwareMap hardwareMap, Drive drive) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super("RoadRunner Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         this.drive = drive;
 
         dashboard = FtcDashboard.getInstance();
