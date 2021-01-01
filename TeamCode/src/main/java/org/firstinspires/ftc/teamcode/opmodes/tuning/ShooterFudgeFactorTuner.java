@@ -23,13 +23,13 @@ import robotlib.hardware.gamepad.RadicalGamepad;
 import static robotlib.util.MathUtil.squareError;
 
 @Config
-@TeleOp(name="Fudge Factor Tuner", group="Tuner")
-public class FudgeFactorTuner extends OpMode {
+@TeleOp(name="Shooter Fudge Factor Tuner", group="Tuner")
+public class ShooterFudgeFactorTuner extends OpMode {
     public static double angle = 45.0;
     public static double fudgeFactor = 1;
 
-    private ArrayList<Pose2d> poses = new ArrayList<>();
-    private ArrayList<Field.Target> targets = new ArrayList<>();
+
+    private ArrayList<Double> predictedAngles = new ArrayList<>();
     private ArrayList<Double> actualAngles = new ArrayList<>();
 
     private Robot robot;
@@ -45,6 +45,7 @@ public class FudgeFactorTuner extends OpMode {
     public void start() {
         robot.start();
         robot.setPoseEstimate(new Pose2d(0,0,0));
+        robot.positionProvider.fudgeFactor = 1;
     }
 
     @Override
@@ -76,15 +77,15 @@ public class FudgeFactorTuner extends OpMode {
         if (gamepad.a) {
             robot.shoot(1);
         } else if (gamepad.b) {
-            poses.add(robot.positionProvider.getPoseEstimate());
-            targets.add(robot.getTarget());
+            predictedAngles.add(robot.positionProvider.getTargetLaunchAngle());
             actualAngles.add(robot.shooter.getTargetAngle());
             fudgeFactor = findLambda();
         }
 
         robot.update();
 
-        telemetry.addData("Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
+        telemetry.addData("Set Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
+        telemetry.addData("Predicted Angle: ", Math.toDegrees(fudgeFactor*robot.positionProvider.getTargetLaunchAngle()));
         telemetry.addData("Pose: ", robot.positionProvider.getPoseEstimate().toString());
         telemetry.addData("Target: ", robot.getTarget().toString());
         telemetry.addLine();
@@ -108,19 +109,13 @@ public class FudgeFactorTuner extends OpMode {
     private class ErrorFunction implements UnivariateFunction {
         @Override
         public double value(double x) {
-            robot.positionProvider.fudgeFactor = x;
             double totalError = 0.0;
-            Field.Target lastTarget = robot.getTarget();
-            Pose2d lastPose = robot.positionProvider.getPoseEstimate();
-            for (int i = 0; i < targets.size(); i++) {
-                robot.setTarget(targets.get(i));
-                robot.positionProvider.setPoseEstimate(poses.get(i));
-                robot.positionProvider.update();
-                double predicted = robot.positionProvider.getTargetLaunchAngle();
+
+            for (int i = 0; i < predictedAngles.size(); i++) {
+                double predicted = x * predictedAngles.get(i);
                 totalError += squareError(predicted, actualAngles.get(i));
             }
-            robot.setTarget(lastTarget);
-            robot.positionProvider.setPoseEstimate(lastPose);
+
             return totalError;
         }
     }
