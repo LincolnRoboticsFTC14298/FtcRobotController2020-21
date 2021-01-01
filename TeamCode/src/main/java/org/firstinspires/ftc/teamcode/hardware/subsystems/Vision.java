@@ -20,11 +20,14 @@ import java.util.List;
 
 import robotlib.hardware.Subsystem;
 
+import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 import static org.opencv.android.Utils.matToBitmap;
 
 public class Vision extends Subsystem {
-    public static final int width = 320;
-    public static final int height = 240;
+    public static final int WIDTH = 320;
+    public static final int HEIGHT = 240;
+    public static final double FOV = 27.3; // degrees
+    public static final double FUDGE_FACTOR = 1;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -72,7 +75,7 @@ public class Vision extends Subsystem {
     }
 
     public void startStreaming() {
-        phoneCam.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
     public void stopStreaming() {
         phoneCam.stopStreaming();
@@ -120,5 +123,23 @@ public class Vision extends Subsystem {
 
     public List<RingData> getRings() {
         return rings;
+    }
+
+    public double getRingAngle(RingData ring) {
+        // Assumes a centered camera
+        // Alternative: angle = atan( atan(fov/2) * (2cx / w - 1) ))
+        double cx = ring.centroid.x;
+        int w = WIDTH;
+        double x = cx - w/2; // centered at w/2
+        return -Math.atan(Math.tan( Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
+    }
+    public double getRingDistance(RingData ring) {
+        // inches
+        double cx = ring.centroid.x;
+        int w = WIDTH;
+        double xpx = cx - w/2;
+        double angle = getRingAngle(ring);
+        double dpx = ring.boxSize.width;
+        return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
     }
 }
