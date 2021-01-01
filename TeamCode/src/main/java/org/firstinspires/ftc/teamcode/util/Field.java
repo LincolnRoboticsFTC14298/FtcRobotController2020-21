@@ -7,6 +7,9 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 public class Field {
     // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
 
+    public static final double RING_RADIUS = 5.0; // inches
+    public static final double RING_DIAMETER = 2 * RING_RADIUS; // inches
+
     // X IS FROM BACK TO FRONT AND Y IS FROM LEFT TO RIGHT
     public static final double FIELD_WIDTH = 141.0;
     public static final int NUM_OF_TILES = 6;
