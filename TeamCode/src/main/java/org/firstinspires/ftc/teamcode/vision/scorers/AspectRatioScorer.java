@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.vision.scorers;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.opencv.core.MatOfPoint;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
 
 import robotlib.vision.VisionScorer;
 
@@ -32,8 +32,8 @@ public class AspectRatioScorer extends VisionScorer {
     }
 
     @Override
-    public double score(MatOfPoint contour) {
-        Rect rect = Imgproc.boundingRect(contour);
+    public double score(RingData ringData) {
+        Rect rect = ringData.boundingRect;
         // Get w/h or h/w, whichever is bigger just incase rotation of phone.
         double ratio = ((double) rect.width) / rect.height;
         ratio = Math.max(ratio, 1.0/ratio);

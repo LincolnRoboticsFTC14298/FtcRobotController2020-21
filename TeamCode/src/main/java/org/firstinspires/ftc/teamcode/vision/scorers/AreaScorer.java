@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.opencv.core.MatOfPoint;
-import org.opencv.imgproc.Imgproc;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import robotlib.vision.VisionScorer;
 
@@ -32,8 +31,8 @@ public class AreaScorer extends VisionScorer {
     }
 
     @Override
-    public double score(MatOfPoint contour) {
-        double area = Imgproc.contourArea(contour);
+    public double score(RingData ringData) {
+        double area = ringData.contourArea;
         dashboard.getTelemetry().addLine("area = " + area);
         return squareError(area/1000.0, optimalArea/1000.0) * weight;
     }

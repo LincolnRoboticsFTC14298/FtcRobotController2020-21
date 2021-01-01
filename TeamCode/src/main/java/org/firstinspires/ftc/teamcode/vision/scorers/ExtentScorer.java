@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import robotlib.vision.VisionScorer;
 
@@ -33,9 +31,8 @@ public class ExtentScorer extends VisionScorer {
     }
 
     @Override
-    public double score(MatOfPoint contour) {
-        Rect rect = Imgproc.boundingRect(contour);
-        double ratio = Imgproc.contourArea(contour) / rect.area();
+    public double score(RingData ringData) {
+        double ratio = ringData.contourArea / ringData.boxArea;
         dashboard.getTelemetry().addLine("extent ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
     }

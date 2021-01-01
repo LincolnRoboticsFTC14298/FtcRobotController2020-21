@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.imgproc.Imgproc;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import robotlib.vision.VisionScorer;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
 import static robotlib.util.MathUtil.squareError;
 
 @Config
@@ -35,11 +31,8 @@ public class SolidityScorer extends VisionScorer {
     }
 
     @Override
-    public double score(MatOfPoint contour) {
-        MatOfInt hullIndices = new MatOfInt();
-        Imgproc.convexHull(contour, hullIndices);
-        MatOfPoint2f hull = pickPoints(contour, hullIndices);
-        double ratio = Imgproc.contourArea(contour) / Imgproc.contourArea(hull);
+    public double score(RingData ringData) {
+        double ratio = ringData.contourArea / ringData.convexHullArea;
         dashboard.getTelemetry().addLine("solidity ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
     }

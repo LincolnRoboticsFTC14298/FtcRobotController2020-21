@@ -9,13 +9,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.List;
 
 import robotlib.hardware.Subsystem;
 
@@ -31,7 +32,7 @@ public class Vision extends Subsystem {
     private OpenCvInternalCamera2 phoneCam;
     private RingCountPipeline ringCountPipeline;
 
-    private int rings;
+    private List<RingData> rings;
 
     // TODO: Possibly delete later
     private boolean processed = false;
@@ -62,7 +63,8 @@ public class Vision extends Subsystem {
     }
 
     public void analyze() {
-        rings = ringCountPipeline.getNumRingsFound();
+        rings = ringCountPipeline.getRings();
+
         processed = true;
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Number of Rings: ", rings);
@@ -107,17 +109,16 @@ public class Vision extends Subsystem {
 
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
-        if (processed && Arrays.asList(new int[]{0,1,4}).contains(rings)) {
-            return rings;
-        } else if (processed) {
-            packet.addLine("Ring is not 0,1,4!");
-            dashboard.sendTelemetryPacket(packet);
-            return 0;
+        if (processed) {
+            return rings.size();
         } else {
             packet.addLine("ERROR: IMAGE NOT PROCESSED");
             dashboard.sendTelemetryPacket(packet);
             return 0;
         }
+    }
 
+    public List<RingData> getRings() {
+        return rings;
     }
 }

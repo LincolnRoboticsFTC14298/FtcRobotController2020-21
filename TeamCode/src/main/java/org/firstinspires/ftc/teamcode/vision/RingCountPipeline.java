@@ -17,24 +17,24 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import robotlib.vision.VisionScorer;
-
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.getBoundingRects;
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
 public class RingCountPipeline extends OpenCvPipeline {
     private OpenCvInternalCamera2 cam;
     private boolean viewportPaused = false;
     private static final double SCORE_THRESHOLD = 3;
     private static final int THICKNESS = 4;
+    private static final int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
-    private static Scalar foundColor = new Scalar(0,255,0);
-    private static Scalar falseColor = new Scalar(0,0,255);
-    private int rings = 0;
+    private static Scalar foundColor = new Scalar(0  , 255, 0  );
+    private static Scalar falseColor = new Scalar(0  , 0  , 255);
 
     private ArrayList<VisionScorer> scorers = new ArrayList<>();
+
+    private ArrayList<RingData> rings = new ArrayList<>();
 
     public AreaScorer areaScorer = new AreaScorer();
     public AspectRatioScorer aspectRatioSCorer = new AspectRatioScorer();
@@ -110,34 +110,39 @@ public class RingCountPipeline extends OpenCvPipeline {
         Mat dist1 = croppedWorkingMat.clone();
         Mat dist2 = croppedWorkingMat.clone();
         List<MatOfPoint> potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
-        Rect[] potentialRects = getBoundingRects(potentialContours);
+        List<RingData> potentialRings = contoursToRingData(potentialContours);
 
         // Score and Threshold //
-        ArrayList<Rect> finalRects = new ArrayList<>();
+        ArrayList<RingData> finalRings = new ArrayList<>();
         ArrayList<MatOfPoint> finalContours = new ArrayList<>();
         ArrayList<Point> centers = new ArrayList<>();
-        for (int i = 0; i < potentialContours.size(); i++) {
-            double score = calculateScore(potentialContours.get(i));
+
+        for (int i = 0; i < potentialRings.size(); i++) {
+            double score = calculateScore(potentialRings.get(i));
             if (score <= SCORE_THRESHOLD) {
                 //System.out.println("Final score: " + score);
-                finalRects.add(potentialRects[i]);
-                finalContours.add(potentialContours.get(i));
-                centers.add(rectCenter(potentialRects[i]));
+                finalRings.add(potentialRings.get(i));
+                finalContours.add(potentialRings.get(i).contour);
+                centers.add(potentialRings.get(i).centroidPoint);
             }
         }
 
-        rings = finalRects.size();
-        if (rings == 3) rings = 4;
-        //System.out.println(rings);
+        rings = finalRings;
+        Collections.sort(rings);
+        Collections.reverse(rings);
 
         // Draw contours //
         Imgproc.drawContours(croppedWorkingMat, potentialContours, -1, falseColor, THICKNESS);
         Imgproc.drawContours(croppedWorkingMat, finalContours, -1, foundColor, THICKNESS);
 
+        // Draw contour centers //
+        for (Point center: centers) {
+            Imgproc.circle(croppedWorkingMat, center, RADIUS, foundColor, THICKNESS);
+        }
+
         // Draw rect on input //
         //drawRectangles(croppedWorkingMat, potentialRects, falseColor, THICKNESS); // Wrong rings will be red
         //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
-
 
         Imgproc.rectangle(workingMat, rectCrop, foundColor, THICKNESS);
 
@@ -172,10 +177,10 @@ public class RingCountPipeline extends OpenCvPipeline {
         return displayMat;
     }
 
-    private double calculateScore(MatOfPoint contour) {
+    private double calculateScore(RingData ringData) {
         double score = 0.0;
         for (VisionScorer scorer : scorers) {
-            score += scorer.score(contour);
+            score += scorer.score(ringData);
         }
         //System.out.println(score);
         return score;
@@ -193,7 +198,15 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
     }
 
-    public int getNumRingsFound() {
+    public ArrayList<RingData> getRings() {
         return rings;
+    }
+
+    public List<RingData> contoursToRingData(List<MatOfPoint> contours) {
+        List<RingData> ringData = new ArrayList<>();
+        for (MatOfPoint contour : contours) {
+            ringData.add(new RingData(contour));
+        }
+        return ringData;
     }
 }
