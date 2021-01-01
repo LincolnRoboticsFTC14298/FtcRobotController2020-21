@@ -21,11 +21,6 @@ public class SolidityScorer extends VisionScorer {
     }
     public SolidityScorer(double optimalRatio, double weight) {
         dashboard = FtcDashboard.getInstance();
-        updateVals(optimalRatio, weight);
-    }
-
-    @Override
-    public void updateVals(double optimalRatio, double weight) {
         this.optimalRatio = optimalRatio;
         this.weight = weight;
     }

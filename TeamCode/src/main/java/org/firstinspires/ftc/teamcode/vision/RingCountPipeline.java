@@ -123,7 +123,7 @@ public class RingCountPipeline extends OpenCvPipeline {
                 //System.out.println("Final score: " + score);
                 finalRings.add(potentialRings.get(i));
                 finalContours.add(potentialRings.get(i).contour);
-                centers.add(potentialRings.get(i).centroidPoint);
+                centers.add(potentialRings.get(i).centroid);
             }
         }
 
@@ -146,7 +146,7 @@ public class RingCountPipeline extends OpenCvPipeline {
 
         Imgproc.rectangle(workingMat, rectCrop, foundColor, THICKNESS);
 
-        Mat displayMat = input.clone();
+        Mat displayMat;
         switch (viewport) {
             case RAW_IMAGE:
                 displayMat = rawImage;
@@ -182,7 +182,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         for (VisionScorer scorer : scorers) {
             score += scorer.score(ringData);
         }
-        //System.out.println(score);
         return score;
     }
 
