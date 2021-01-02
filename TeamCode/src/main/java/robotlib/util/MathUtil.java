@@ -1,9 +1,37 @@
 package robotlib.util;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 public class MathUtil {
+    public static Vector2D poseToVector2D(Pose2d pose) {
+        return new Vector2D(pose.getX(), pose.getY());
+    }
+    public static Vector3D poseToVector3D(Pose2d pose) {
+        return new Vector3D(pose.getX(), pose.getY(), 0);
+    }
+
+    public static Vector2D vector3DToVector2D(Vector3D vector) {
+        return new Vector2D(vector.getX(), vector.getY());
+    }
+    public static Vector3D vector2DToVector3D(Vector2D vector) {
+        return new Vector3D(vector.getX(), vector.getY(),0);
+    }
+
+    public static Vector2D vectorFromAngle(double angle) {
+        return new Vector2D(Math.cos(angle), Math.sin(angle));
+    }
+    public static Vector2D vectorFromAngle(double angle, double magnitude) {
+        return new Vector2D(Math.cos(angle), Math.sin(angle)).scalarMultiply(magnitude);
+    }
+
+    public static Vector2D rotateVector(Vector2D vector, double angle) {
+        return new Vector2D(vector.getX() * Math.cos(angle), vector.getY() * Math.sin(angle));
+    }
+
+
     public static double inchesToMeters(double inches) {
         return .0254*inches;
     }
