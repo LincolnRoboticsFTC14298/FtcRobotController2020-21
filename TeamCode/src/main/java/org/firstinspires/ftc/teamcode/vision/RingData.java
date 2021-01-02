@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import org.jetbrains.annotations.NotNull;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -13,7 +12,7 @@ import org.opencv.imgproc.Moments;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
-public class RingData implements Comparable<RingData> {
+public class RingData {
     public MatOfPoint contour;
     public double contourArea;
     public Point centroid;
@@ -42,10 +41,5 @@ public class RingData implements Comparable<RingData> {
         boxArea = boundingRect.area();
         boxCenter = rectCenter(boundingRect);
         boxSize = boundingRect.size();
-    }
-
-    @Override
-    public int compareTo(@NotNull RingData r1) {
-        return (int) (this.contourArea - r1.contourArea);
     }
 }
