@@ -50,6 +50,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
+import static robotlib.util.MathUtil.angleWrapRadians;
 
 @Config
 public class Drive extends MecanumDrive {
@@ -366,10 +367,10 @@ public class Drive extends MecanumDrive {
         return Math.abs(getPoseEstimate().getHeading() - localizer.getTargetHeading()) < HEADING_MIN_ERROR;
     }
     public void pointAtTargetAsync() {
-        turnAsync(localizer.getTargetRelativeHeading());
+        turnToAsync(localizer.getTargetHeading());
     }
     public void pointAtTarget() {
-        turn(localizer.getTargetRelativeHeading());
+        turnTo(localizer.getTargetHeading());
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -400,6 +401,14 @@ public class Drive extends MecanumDrive {
     }
     public void turn(double angle) {
         turnAsync(angle);
+        waitForIdle();
+    }
+
+    public void turnToAsync(double angle) {
+        turnAsync(angleWrapRadians(angle - getPoseEstimate().getHeading()));
+    }
+    public void turnTo(double angle) {
+        turnToAsync(angle);
         waitForIdle();
     }
 
