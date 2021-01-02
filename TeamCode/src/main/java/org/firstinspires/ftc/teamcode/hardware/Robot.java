@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
@@ -18,7 +18,7 @@ import robotlib.hardware.RobotBase;
 
 
 public class Robot extends RobotBase {
-    public PositionProvider positionProvider;
+    public Localizer localizer;
 
     // Subsystems
     public Vision vision;
@@ -35,15 +35,15 @@ public class Robot extends RobotBase {
     public Robot(OpMode opMode) {
         super(opMode);
 
-        positionProvider = new PositionProvider();
+        localizer = new Localizer(hardwareMap);
 
         vision = new Vision(hardwareMap);
         arm = new Arm(hardwareMap);
         intake = new Intake(hardwareMap);
         elevator = new Elevator(hardwareMap);
-        turret = new Turret(hardwareMap, positionProvider);
-        shooter = new Shooter(hardwareMap, positionProvider);
-        drive = new Drive(hardwareMap, positionProvider);
+        turret = new Turret(hardwareMap, localizer);
+        shooter = new Shooter(hardwareMap, localizer);
+        drive = new Drive(hardwareMap, localizer);
 
         subsystemManager.add(vision);
         subsystemManager.add(arm);
@@ -75,7 +75,7 @@ public class Robot extends RobotBase {
 
     @Override
     public void update() {
-        positionProvider.update();
+        localizer.update();
 
         updateShooting();
 
@@ -139,7 +139,7 @@ public class Robot extends RobotBase {
             //drive.pointAtTargetAsync();
             shooter.turnOnShooterMotor();
             elevator.raiseAsync();
-            if (positionProvider.readyToShoot() && !launching && shooter.readyToLaunch()
+            if (localizer.readyToShoot() && !launching && shooter.readyToLaunch()
                     && turret.isAligned() && elevator.isUp()) {
                 shooter.launchAsync();
                 launching = true;
@@ -151,8 +151,7 @@ public class Robot extends RobotBase {
     }
 
     public void setPoseEstimate(Pose2d pose) {
-        drive.setPoseEstimate(pose);
-        positionProvider.setPoseEstimate(pose);
+        localizer.setPoseEstimate(pose);
     }
 
     public Target getTarget() {
@@ -160,7 +159,7 @@ public class Robot extends RobotBase {
     }
     public void setTarget(Target target) {
         this.target = target;
-        positionProvider.setTarget(target);
+        localizer.setTarget(target);
     }
 
     public Alliance getAlliance() {
@@ -168,6 +167,6 @@ public class Robot extends RobotBase {
     }
     public void setAlliance(Alliance alliance) {
         this.alliance = alliance;
-        positionProvider.setAlliance(alliance);
+        localizer.setAlliance(alliance);
     }
 }

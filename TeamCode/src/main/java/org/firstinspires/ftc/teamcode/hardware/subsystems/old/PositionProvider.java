@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.old;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -13,6 +13,7 @@ import robotlib.util.MathUtil;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 @Config
+@Deprecated
 public class PositionProvider {
     private static Pose2d poseEstimate;
     private static Pose2d velEstimate;
@@ -51,7 +52,7 @@ public class PositionProvider {
         return new Vector3D(
                 poseEstimate.getX() + SHOOTER_LOCATION.getX(),
                 poseEstimate.getY() + SHOOTER_LOCATION.getY(),
-                   SHOOTER_LOCATION.getZ()
+                SHOOTER_LOCATION.getZ()
         );
     }
     public Vector3D getTargetRelativeLocation() {
@@ -129,7 +130,6 @@ public class PositionProvider {
         } catch (Exception e) {
             recentlyUpdated = false;
         }
-
     }
 
     public boolean readyToShoot() {

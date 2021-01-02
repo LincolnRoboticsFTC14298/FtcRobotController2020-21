@@ -45,7 +45,7 @@ public class ShooterFudgeFactorTuner extends OpMode {
     public void start() {
         robot.start();
         robot.setPoseEstimate(new Pose2d(0,0,0));
-        robot.positionProvider.fudgeFactor = 1;
+        robot.localizer.fudgeFactor = 1;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ShooterFudgeFactorTuner extends OpMode {
         if (gamepad.a) {
             robot.shoot(1);
         } else if (gamepad.b) {
-            predictedAngles.add(robot.positionProvider.getTargetLaunchAngle());
+            predictedAngles.add(robot.localizer.getTargetLaunchAngle());
             actualAngles.add(robot.shooter.getTargetAngle());
             fudgeFactor = findLambda();
         }
@@ -85,8 +85,8 @@ public class ShooterFudgeFactorTuner extends OpMode {
         robot.update();
 
         telemetry.addData("Set Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
-        telemetry.addData("Predicted Angle: ", Math.toDegrees(fudgeFactor*robot.positionProvider.getTargetLaunchAngle()));
-        telemetry.addData("Pose: ", robot.positionProvider.getPoseEstimate().toString());
+        telemetry.addData("Predicted Angle: ", Math.toDegrees(fudgeFactor*robot.localizer.getTargetLaunchAngle()));
+        telemetry.addData("Pose: ", robot.localizer.getPoseEstimate().toString());
         telemetry.addData("Target: ", robot.getTarget().toString());
         telemetry.addLine();
         telemetry.addData("Fudge Factor: ", fudgeFactor);

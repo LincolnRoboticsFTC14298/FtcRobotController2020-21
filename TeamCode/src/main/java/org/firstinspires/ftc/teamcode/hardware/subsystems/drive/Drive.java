@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems.drive;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -29,14 +31,13 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.hardware.subsystems.PositionProvider;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import robotlib.hardware.roadrunner.MecanumDrive;
 import robotlib.util.DashboardUtil;
 import robotlib.util.LynxModuleUtil;
@@ -100,7 +101,7 @@ public class Drive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    private PositionProvider positionProvider;
+    private Localizer localizer;
 
     public Drive(HardwareMap hardwareMap) {
         super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -152,10 +153,11 @@ public class Drive extends MecanumDrive {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        localizer = new Localizer(hardwareMap);
+        setLocalizer(localizer);
     }
 
-    public Drive(HardwareMap hardwareMap, PositionProvider positionProvider) {
+    public Drive(HardwareMap hardwareMap, Localizer localizer) {
         super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         clock = NanoClock.system();
@@ -205,9 +207,8 @@ public class Drive extends MecanumDrive {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-
-        this.positionProvider = positionProvider;
+        this.localizer = localizer;
+        setLocalizer(localizer);
     }
 
     @Override
@@ -226,9 +227,6 @@ public class Drive extends MecanumDrive {
         if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst();
         }
-
-        positionProvider.setPoseEstimate(currentPose);
-        positionProvider.setVelEstimate(getPoseVelocity());
 
         switch (mode) {
             case IDLE:
@@ -365,13 +363,13 @@ public class Drive extends MecanumDrive {
     }
 
     public boolean readyToShoot() {
-        return Math.abs(getPoseEstimate().getHeading() - positionProvider.getTargetHeading()) < HEADING_MIN_ERROR;
+        return Math.abs(getPoseEstimate().getHeading() - localizer.getTargetHeading()) < HEADING_MIN_ERROR;
     }
     public void pointAtTargetAsync() {
-        turnAsync(positionProvider.getTargetRelativeHeading());
+        turnAsync(localizer.getTargetRelativeHeading());
     }
     public void pointAtTarget() {
-        turn(positionProvider.getTargetRelativeHeading());
+        turn(localizer.getTargetRelativeHeading());
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

@@ -26,7 +26,7 @@ public class Turret extends Subsystem {
     private static final String TURRET_MOTOR_NAME = "turret";
     private static final double TURRET_MIN_ERROR = .1;
 
-    private PositionProvider positionProvider;
+    private Localizer localizer;
 
     private DcMotorEx turretMotor;
 
@@ -40,7 +40,7 @@ public class Turret extends Subsystem {
 
     private Mode mode;
 
-    public Turret(HardwareMap hardwareMap, PositionProvider positionProvider) {
+    public Turret(HardwareMap hardwareMap, Localizer localizer) {
         super("Turret");
 
         turretMotor = hardwareMap.get(DcMotorEx.class, TURRET_MOTOR_NAME);
@@ -51,7 +51,7 @@ public class Turret extends Subsystem {
         turretMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, POS_PIDF);
         turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        this.positionProvider = positionProvider;
+        this.localizer = localizer;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Turret extends Subsystem {
     }
 
     public void aimAtTargetAsync() {
-        aimAsync(positionProvider.getTargetHeading());
+        aimAsync(localizer.getTargetHeading());
         mode = Mode.AUTO_AIMING;
     }
 
@@ -130,7 +130,7 @@ public class Turret extends Subsystem {
         turn(heading - getTurretGlobalHeading());
     }
     private double getTurretGlobalHeading() {
-        return getTurretLocalHeading() + positionProvider.getPoseEstimate().getHeading();
+        return getTurretLocalHeading() + localizer.getPoseEstimate().getHeading();
     }
 
     // Local heading x axis is aligned with robot,

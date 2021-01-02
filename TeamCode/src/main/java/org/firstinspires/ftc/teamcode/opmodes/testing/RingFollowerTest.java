@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 
 @TeleOp(name="Ring Follower Test", group="Test")
-public class RingFollower extends OpMode {
+public class RingFollowerTest extends OpMode {
     private Robot robot;
 
     @Override

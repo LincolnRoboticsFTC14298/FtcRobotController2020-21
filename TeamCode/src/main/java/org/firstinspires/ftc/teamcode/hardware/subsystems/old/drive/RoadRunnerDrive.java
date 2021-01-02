@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -133,7 +133,7 @@ public class RoadRunnerDrive extends MecanumDrive {
         }
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new Localizer(hardwareMap));
     }
 
     public void update() {

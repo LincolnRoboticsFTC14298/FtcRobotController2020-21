@@ -38,7 +38,7 @@ public class Shooter extends Subsystem {
     private double flapAngle, launchFlapPos;
     private double targetAngle = 0;
 
-    private PositionProvider positionProvider;
+    private Localizer localizer;
 
     public enum LaunchStatus {
         EXTENDING,
@@ -54,7 +54,7 @@ public class Shooter extends Subsystem {
     private LaunchStatus launchStatus = LaunchStatus.RETRACTED;
     private AimingMode aimingMode = AimingMode.IDLE;
 
-    public Shooter(HardwareMap hardwareMap, PositionProvider positionProvider) {
+    public Shooter(HardwareMap hardwareMap, Localizer localizer) {
         super("Shooter");
 
         // Initialize motors and servos //
@@ -68,7 +68,7 @@ public class Shooter extends Subsystem {
 //        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.positionProvider = positionProvider;
+        this.localizer = localizer;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class Shooter extends Subsystem {
     public void aimAsync() {
         // TODO: Make update every update()
         aimingMode = AimingMode.AIMING;
-        setFlapAngle(positionProvider.getTargetLaunchAngle());
+        setFlapAngle(localizer.getTargetLaunchAngle());
     }
     public void stopAiming() {
         aimingMode = AimingMode.IDLE;
@@ -163,7 +163,7 @@ public class Shooter extends Subsystem {
 
     public boolean readyToLaunch() {
         return doneAiming() &&
-                MathUtil.withinRange(positionProvider.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
+                MathUtil.withinRange(localizer.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
                 Math.abs(shooterMotor1.getPower() - shooterMotor1Power) < SHOOTER_MIN_ERROR &&
                 Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
                 isRetractedStatus(); // Could use isRetracted();
