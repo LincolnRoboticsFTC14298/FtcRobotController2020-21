@@ -17,9 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import robotlib.hardware.Encoder;
-import robotlib.util.MathUtil;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
+import static robotlib.util.MathUtil.inchesToMeters;
+import static robotlib.util.MathUtil.poseToVector3D;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -80,37 +81,17 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     }
 
     public Vector3D getShooterLocation() {
-        return new Vector3D(
-                getPoseEstimate().getX() + SHOOTER_LOCATION.getX(),
-                getPoseEstimate().getY() + SHOOTER_LOCATION.getY(),
-                SHOOTER_LOCATION.getZ()
-        );
+        return poseToVector3D(getPoseEstimate()).add(SHOOTER_LOCATION);
     }
     public Vector3D getTargetRelativeLocation() {
-        // Rel pose of target in reference to the shooter
-        // TargetPos - shooterPos
+        // (0,0,0) is shooter position
         Vector3D targetPos = target.getLocation(alliance);
         Vector3D shooterPos = getShooterLocation();
-        return new Vector3D(targetPos.getX() - shooterPos.getX(),
-                targetPos.getY() - shooterPos.getY(),
-                targetPos.getZ() - shooterPos.getZ());
-    }
-    public Pose2d getTargetRelativePose2d() {
-        Vector3D targetRelLoc = getTargetRelativeLocation();
-        double heading = getTargetRelativeHeading();
-        return new Pose2d(targetRelLoc.getX(), targetRelLoc.getY(), heading);
+        return targetPos.subtract(shooterPos);
     }
 
-    public double getTargetDistance() {
-        Vector3D diff = getTargetRelativeLocation();
-        return Math.hypot(diff.getX(), diff.getY());
-    }
     public double getTargetHeading() {
         return targetHeading; // Happens to be in the heading frame
-    }
-    public double getTargetRelativeHeading() {
-        // In reference to the the heading of the robot
-        return MathUtil.angleWrapRadians(getTargetHeading() - getPoseEstimate().getHeading());
     }
     public double getTargetLaunchAngle() {
         return targetLaunchAngle; // Happens to be in the heading frame
@@ -122,29 +103,29 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     private final static double absoluteAccuracy = 1.0e-6;
     private final static LaguerreSolver solver = new LaguerreSolver(relativeAccuracy, absoluteAccuracy);
     private Vector3D estimatedRingPosition(double t) {
-        Vector3D velR = new Vector3D(getPoseVelocity().getX(),getPoseVelocity().getY(),0);
+        Vector3D robotVelocity = inchesToMeters(poseToVector3D(getPoseVelocity()));
+        Vector3D velocityVector = robotVelocity.add(targetLaunchVector(t));
         return G.scalarMultiply(t*t)
                 .add(
-                        velR.add(
-                                targetLaunchVector(t)
-                        ).scalarMultiply(t));
+                        velocityVector.scalarMultiply(t)
+                );
     }
     private Vector3D targetLaunchVector(double t) {
-        Vector3D robotVelocity = new Vector3D(getPoseVelocity().getX(),getPoseVelocity().getY(),0);
-        Vector3D targetVector = getTargetRelativeLocation();
-        // (T/t - VelR - G*t)/v
+        Vector3D robotVelocity = inchesToMeters(poseToVector3D(getPoseVelocity()));
+        Vector3D targetVector = inchesToMeters(getTargetRelativeLocation());
+        // T/t - VelR - G*t
         return targetVector.scalarMultiply(1/t)
                 .subtract(robotVelocity)
                 .subtract(G.scalarMultiply(t));
     }
     private double findTimeHitTarget() {
-        Vector3D target = getTargetRelativeLocation();
-        Vector3D robotVel = new Vector3D(getPoseVelocity().getX(), getPoseVelocity().getY(),0);
+        Vector3D target = inchesToMeters(getTargetRelativeLocation());
+        Vector3D robotVelocity = inchesToMeters(poseToVector3D(getPoseVelocity()));
 
         double[] coefficients = new double[5];
         coefficients[0] = target.dotProduct(target);
-        coefficients[1] = -2.0 * (target.dotProduct(robotVel));
-        coefficients[2] = robotVel.dotProduct(robotVel) + g*target.getZ() - launchVel*launchVel;
+        coefficients[1] = -2.0 * (target.dotProduct(robotVelocity));
+        coefficients[2] = robotVelocity.dotProduct(robotVelocity) + g*target.getZ() - launchVel*launchVel;
         coefficients[3] = 0.0;
         coefficients[4] = g*g / 4.0;
         PolynomialFunction function = new PolynomialFunction(coefficients);

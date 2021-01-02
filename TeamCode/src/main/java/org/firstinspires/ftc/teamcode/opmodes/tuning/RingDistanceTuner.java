@@ -46,7 +46,7 @@ public class RingDistanceTuner extends OpMode {
 
     @Override
     public void loop() {
-        RingData ring = robot.vision.getRings().get(0);
+        RingData ring = robot.vision.getRingData().get(0);
         double predDist = robot.vision.getRingDistance(ring);
 
         if (gamepad.a) {

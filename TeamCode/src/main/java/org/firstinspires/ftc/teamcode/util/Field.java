@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.teamcode.util;
 
 
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+import java.util.Comparator;
+import java.util.List;
+
+import static robotlib.util.MathUtil.poseToVector2D;
+
 public class Field {
     // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
-
     public static final double RING_RADIUS = 5.0; // inches
     public static final double RING_DIAMETER = 2 * RING_RADIUS; // inches
 
@@ -80,5 +87,28 @@ public class Field {
     }
     private static Vector2D mirror(Vector2D location) {
         return new Vector2D(location.getX(), -location.getY());
+    }
+
+    public static List<Ring> rings;
+
+    public static double MIN_DISTANCE = 0.5;
+    // Doesn't care about overlap
+    public static void addRing(Ring ring) {
+        rings.add(ring);
+    }
+    public static void addRings(List<Ring> newRings) {
+        rings.addAll(newRings);
+    }
+    public static void drawRings(Canvas canvas) {
+        for (Ring r : rings) {
+            r.draw(canvas);
+        }
+    }
+
+    public static Ring getClosestRing(Vector2D pos) {
+        return rings.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
+    }
+    public static Ring getClosestRing(Pose2d pose) {
+        return getClosestRing(poseToVector2D(pose));
     }
 }

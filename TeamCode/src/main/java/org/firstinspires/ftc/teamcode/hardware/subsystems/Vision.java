@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 import org.firstinspires.ftc.teamcode.vision.RingData;
@@ -20,8 +21,11 @@ import java.util.List;
 
 import robotlib.hardware.Subsystem;
 
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 import static org.opencv.android.Utils.matToBitmap;
+import static robotlib.util.MathUtil.vector3DToVector2D;
+import static robotlib.util.MathUtil.vectorFromAngle;
 
 public class Vision extends Subsystem {
     public static final int WIDTH = 320;
@@ -35,7 +39,7 @@ public class Vision extends Subsystem {
     private OpenCvInternalCamera2 phoneCam;
     private RingCountPipeline ringCountPipeline;
 
-    private List<RingData> rings;
+    private List<RingData> ringData;
 
     // TODO: Possibly delete later
     private boolean processed = false;
@@ -66,11 +70,11 @@ public class Vision extends Subsystem {
     }
 
     public void analyze() {
-        rings = ringCountPipeline.getRings();
+        ringData = ringCountPipeline.getRings();
 
         processed = true;
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Number of Rings: ", rings);
+        packet.put("Number of Rings: ", ringData);
         dashboard.sendTelemetryPacket(packet);
     }
 
@@ -113,7 +117,7 @@ public class Vision extends Subsystem {
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
         if (processed) {
-            return rings.size();
+            return ringData.size();
         } else {
             packet.addLine("ERROR: IMAGE NOT PROCESSED");
             dashboard.sendTelemetryPacket(packet);
@@ -121,8 +125,8 @@ public class Vision extends Subsystem {
         }
     }
 
-    public List<RingData> getRings() {
-        return rings;
+    public List<RingData> getRingData() {
+        return ringData;
     }
 
     public double getRingAngle(RingData ring) {
@@ -141,5 +145,12 @@ public class Vision extends Subsystem {
         double angle = getRingAngle(ring);
         double dpx = ring.boxSize.width;
         return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
+    }
+    public Vector2D getRingLocalPosition(RingData ring) {
+        // in frame of robot
+        double angle = getRingAngle(ring);
+        double distance = getRingDistance(ring);
+        return vector3DToVector2D(CAMERA_LOCATION)
+                .add(vectorFromAngle(angle, distance));
     }
 }
