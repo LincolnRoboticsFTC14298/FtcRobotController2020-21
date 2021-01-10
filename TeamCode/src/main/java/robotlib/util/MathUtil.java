@@ -13,6 +13,10 @@ public class MathUtil {
         return new Vector3D(pose.getX(), pose.getY(), 0);
     }
 
+    public static Pose2d vector2DToPose(Vector2D vector, double heading) {
+        return new Pose2d(vector.getX(), vector.getY(), heading);
+    }
+
     public static Vector2D vector3DToVector2D(Vector3D vector) {
         return new Vector2D(vector.getX(), vector.getY());
     }

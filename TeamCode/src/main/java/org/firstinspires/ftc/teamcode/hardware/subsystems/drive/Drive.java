@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
+import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +104,9 @@ public class Drive extends MecanumDrive {
     private Pose2d lastPoseOnTurn;
 
     private Localizer localizer;
+
+    public static double LAUNCH_X = Field.LAUNCH_LINE_X - .75 * Field.TILE_WIDTH;
+    public static double BEHIND_LINE_ERROR = .5; // inches
 
     public Drive(HardwareMap hardwareMap) {
         super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -371,6 +375,31 @@ public class Drive extends MecanumDrive {
     }
     public void pointAtTarget() {
         turnTo(localizer.getTargetHeading());
+    }
+
+    // TODO: Check this is global not local
+    public void strafeToPointAsync(Pose2d target) {
+        Pose2d pose = getPoseEstimate();
+        Trajectory trajectory = trajectoryBuilder(pose)
+                .lineToSplineHeading(target)
+                .build();
+        followTrajectoryAsync(trajectory);
+    }
+    public void strafeToPoint(Pose2d target) {
+        Pose2d pose = getPoseEstimate();
+        Trajectory trajectory = trajectoryBuilder(pose)
+                .lineToSplineHeading(target)
+                .build();
+        followTrajectory(trajectory);
+    }
+
+    public void goBehindLineAsync() {
+        // TODO: change heading to target shooting
+        double angle = 0;
+        strafeToPointAsync(new Pose2d(LAUNCH_X, localizer.getPoseEstimate().getY(), angle));
+    }
+    public boolean isBehindLine() {
+        return Math.abs(getPoseEstimate().getX() - LAUNCH_X) < BEHIND_LINE_ERROR;
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

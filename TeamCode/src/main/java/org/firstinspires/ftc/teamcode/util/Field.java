@@ -24,6 +24,7 @@ public class Field {
 
     public static final double LAUNCH_LINE_X = .5 * TILE_WIDTH;
 
+    public static double DISTANCE_TILL_DESPAWN = 20; // inches
 
     // Targets are assumed to be blue and are mirrored as necessary.
 
@@ -102,6 +103,14 @@ public class Field {
     public static void drawRings(Canvas canvas) {
         for (Ring r : rings) {
             r.draw(canvas);
+        }
+    }
+    public static void updateRings(Pose2d pose) {
+        for (int i = 0; i < rings.size(); i++) {
+            double distance = rings.get(i).distanceFrom(pose);
+            if (distance < DISTANCE_TILL_DESPAWN) {
+                rings.remove(i);
+            }
         }
     }
 

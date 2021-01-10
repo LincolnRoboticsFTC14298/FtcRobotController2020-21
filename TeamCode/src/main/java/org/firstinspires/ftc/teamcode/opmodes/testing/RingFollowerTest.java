@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,17 +23,8 @@ public class RingFollowerTest extends OpMode {
 
     @Override
     public void loop() {
-        if (robot.vision.getNumRings() != 0) {
-            double angle = robot.vision.getRingAngle(robot.vision.getRingData().get(0));
-            if (angle > 0.1) {
-                robot.drive.turnAsync(-angle);
-            } else {
-                double dist = robot.vision.getRingDistance(robot.vision.getRingData().get(0)) + 5;
-                // aligned, drive forward distance + a bit
-                Trajectory traj = robot.drive.trajectoryBuilder(new Pose2d()).forward(dist).build();
-                robot.drive.followTrajectory(traj);
-            }
-        }
+        robot.vision.scan();
+        robot.goToRing();
 
         robot.update();
     }
