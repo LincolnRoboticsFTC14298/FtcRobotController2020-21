@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
 
 public class RingCountPipeline extends OpenCvPipeline {
     private OpenCvInternalCamera2 cam;

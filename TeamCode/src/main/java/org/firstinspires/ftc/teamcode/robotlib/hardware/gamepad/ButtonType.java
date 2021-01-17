@@ -1,4 +1,4 @@
-package robotlib.hardware.gamepad;
+package org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad;
 
 public enum ButtonType {
     a("a"),

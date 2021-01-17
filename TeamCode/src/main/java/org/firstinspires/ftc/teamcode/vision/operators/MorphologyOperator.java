@@ -6,7 +6,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import robotlib.vision.MatOperator;
+import org.firstinspires.ftc.teamcode.robotlib.vision.MatOperator;
 
 @Config
 public class MorphologyOperator implements MatOperator {

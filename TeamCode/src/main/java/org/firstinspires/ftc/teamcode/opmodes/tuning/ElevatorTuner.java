@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 
-import robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 
 @Config
 @TeleOp(name="Elevator Tuner", group="Tuner")

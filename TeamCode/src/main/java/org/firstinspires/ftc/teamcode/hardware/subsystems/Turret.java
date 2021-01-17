@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import robotlib.hardware.Subsystem;
-import robotlib.util.MathUtil;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.teamcode.robotlib.util.MathUtil;
 
 @Config
 public class Turret extends Subsystem {

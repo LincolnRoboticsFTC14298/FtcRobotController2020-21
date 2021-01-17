@@ -8,7 +8,7 @@ import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.teamcode.util.Field;
 
-import robotlib.util.MathUtil;
+import org.firstinspires.ftc.teamcode.robotlib.util.MathUtil;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 

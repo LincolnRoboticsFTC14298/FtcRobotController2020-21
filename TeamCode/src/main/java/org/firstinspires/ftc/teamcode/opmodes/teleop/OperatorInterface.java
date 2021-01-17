@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
-import robotlib.hardware.gamepad.Button;
-import robotlib.hardware.gamepad.ButtonTrigger;
-import robotlib.hardware.gamepad.ButtonType;
-import robotlib.hardware.gamepad.ToggleButton;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonTrigger;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ToggleButton;
 
 // Operator Interface
 public class OperatorInterface {

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
 
 @Config
 public class RingCounter extends Subsystem {

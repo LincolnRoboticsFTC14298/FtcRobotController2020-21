@@ -39,9 +39,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import robotlib.hardware.roadrunner.MecanumDrive;
-import robotlib.util.DashboardUtil;
-import robotlib.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robotlib.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.robotlib.util.LynxModuleUtil;
 
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
-import static robotlib.util.MathUtil.angleWrapRadians;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.angleWrapRadians;
 
 @Config
 public class Drive extends MecanumDrive {
@@ -325,6 +325,9 @@ public class Drive extends MecanumDrive {
 
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
+
+        Field.drawRings(fieldOverlay);
+        Field.drawWobbleGoal(fieldOverlay, localizer.getAlliance());
 
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }

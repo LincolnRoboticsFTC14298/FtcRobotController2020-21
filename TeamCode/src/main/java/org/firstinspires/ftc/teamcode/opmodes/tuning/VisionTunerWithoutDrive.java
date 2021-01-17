@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
-import robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Vision Without Drive", group="Tuner")
 public class VisionTunerWithoutDrive extends OpMode {

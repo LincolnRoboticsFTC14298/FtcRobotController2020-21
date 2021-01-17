@@ -10,7 +10,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.util.Comparator;
 import java.util.List;
 
-import static robotlib.util.MathUtil.poseToVector2D;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector2D;
 
 public class Field {
     // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
@@ -91,6 +91,7 @@ public class Field {
     }
 
     public static List<Ring> rings;
+    public static List<WobbleGoal> wobbleGoals;
 
     public static double MIN_DISTANCE = 0.5;
     // Doesn't care about overlap
@@ -113,11 +114,28 @@ public class Field {
             }
         }
     }
-
     public static Ring getClosestRing(Vector2D pos) {
         return rings.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
     }
     public static Ring getClosestRing(Pose2d pose) {
         return getClosestRing(poseToVector2D(pose));
+    }
+
+    public static void addWobbleGoal(WobbleGoal wobbleGoal) {
+        wobbleGoals.add(wobbleGoal);
+    }
+    public static void addWobbleGoal(List<Ring> wobbleGoals) {
+        wobbleGoals.addAll(wobbleGoals);
+    }
+    public static void drawWobbleGoal(Canvas canvas, Field.Alliance alliance) {
+        for (WobbleGoal w : wobbleGoals) {
+            w.draw(canvas, alliance);
+        }
+    }
+    public static WobbleGoal getClosestWobbleGoal(Vector2D pos) {
+        return wobbleGoals.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
+    }
+    public static WobbleGoal getClosestWobbleGoal(Pose2d pose) {
+        return getClosestWobbleGoal(poseToVector2D(pose));
     }
 }

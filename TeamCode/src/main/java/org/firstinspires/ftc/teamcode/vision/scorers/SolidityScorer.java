@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
-import robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
 
-import static robotlib.util.MathUtil.squareError;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
 
 @Config
 public class SolidityScorer extends VisionScorer {

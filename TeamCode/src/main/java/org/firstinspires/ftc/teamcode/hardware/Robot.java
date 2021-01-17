@@ -17,11 +17,12 @@ import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 import org.firstinspires.ftc.teamcode.util.Ring;
+import org.firstinspires.ftc.teamcode.util.WobbleGoal;
 
-import robotlib.hardware.RobotBase;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.RobotBase;
 
-import static robotlib.util.MathUtil.poseToVector2D;
-import static robotlib.util.MathUtil.vector2DToPose;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector2D;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.vector2DToPose;
 
 
 public class Robot extends RobotBase {
@@ -38,6 +39,8 @@ public class Robot extends RobotBase {
     public Drive drive;
 
     public Target target = Target.HIGH_GOAL;
+
+    // TODO: Maybe alliance in field class?
     public Alliance alliance = Alliance.BLUE;
 
     public enum Mode {
@@ -47,7 +50,6 @@ public class Robot extends RobotBase {
     }
 
     Mode mode = Mode.MANUAL;
-
 
     public Robot(OpMode opMode) {
         super(opMode);
@@ -102,19 +104,21 @@ public class Robot extends RobotBase {
                 break;
             case COLLECTING:
                 if (ringCounter.getNumberOfRings() == 3) {
+                    drive.cancelFollowing();
                     mode = Mode.TRAVELING_TO_SHOOT;
                 } else if (!drive.isBusy()) {
                     vision.scan();
                     if (Field.rings.size() > 0) {
                         goToRing();
                     } else {
-                        // TODO: maybe rotate to find rings?
+                        // TODO: rotate to find rings
                     }
                 }
                 break;
             case TRAVELING_TO_SHOOT:
                 if (drive.isBehindLine()) {
                     // Can make async
+                    // TODO: Check time and shoot target dependent on time
                     shoot(3);
                     mode = Mode.COLLECTING;
                 } else if (!drive.isBusy()) {
@@ -214,6 +218,16 @@ public class Robot extends RobotBase {
             Vector2D targetPos = ringPos.add(ringPos.normalize().scalarMultiply(-5)); // 5 inches before
             drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
         }
+    }
+
+    public void goToWobbleGoal() {
+        WobbleGoal closestWobbleGoal = Field.getClosestWobbleGoal(localizer.getPoseEstimate());
+        Pose2d pose = localizer.getPoseEstimate();
+        Vector2D pos = poseToVector2D(pose);
+        double heading = Vector2D.angle(pos, closestWobbleGoal.getPosition()) - pose.getHeading();
+        Vector2D wobbleGoalPos = closestWobbleGoal.getPosition();
+        Vector2D targetPos = wobbleGoalPos.add(wobbleGoalPos.normalize().scalarMultiply(-5)); // 5 inches before
+        drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
     }
 
     public void setManualMode() {

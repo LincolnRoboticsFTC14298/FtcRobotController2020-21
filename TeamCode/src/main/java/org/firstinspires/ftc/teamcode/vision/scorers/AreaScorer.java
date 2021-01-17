@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
-import robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
 
 @Config
 public class AreaScorer extends VisionScorer {

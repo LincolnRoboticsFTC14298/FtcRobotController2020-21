@@ -18,9 +18,9 @@ import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
 
-import robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 
-import static robotlib.util.MathUtil.squareError;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Shooter Fudge Factor Tuner", group="Tuner")

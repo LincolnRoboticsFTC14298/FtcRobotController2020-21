@@ -13,13 +13,12 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import java.util.ArrayList;
 
-import robotlib.hardware.gamepad.RadicalGamepad;
-
-import static robotlib.util.MathUtil.squareError;
+import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Ring Distance Tuner", group="Tuner")
@@ -47,7 +46,7 @@ public class RingDistanceTuner extends OpMode {
     @Override
     public void loop() {
         RingData ring = robot.vision.getRingData().get(0);
-        double predDist = robot.vision.getRingDistance(ring);
+        double predDist = robot.vision.getRingLocalDistance(ring);
 
         if (gamepad.a) {
             predictedDistances.add(predDist);
@@ -60,7 +59,7 @@ public class RingDistanceTuner extends OpMode {
 
         telemetry.addData("Actual Distance: ", dist);
         telemetry.addData("Predicted Distance: ", fudgeFactor*predDist);
-        telemetry.addData("Ring angle", robot.vision.getRingAngle(ring));
+        telemetry.addData("Ring angle", robot.vision.getRingLocalAngle(ring));
         telemetry.addData("Fudge Factor: ", fudgeFactor);
         telemetry.update();
     }
