@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
-import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 public class SolidityScorer extends VisionScorer {

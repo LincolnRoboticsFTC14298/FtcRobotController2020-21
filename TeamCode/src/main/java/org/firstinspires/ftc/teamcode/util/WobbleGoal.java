@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector2D;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
 import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 
 public class WobbleGoal {

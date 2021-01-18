@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.robotlib.hardware;
+package org.firstinspires.ftc.robotlib.hardware;
 
-import org.firstinspires.ftc.teamcode.robotlib.util.TelemetryData;
+import org.firstinspires.ftc.robotlib.util.TelemetryData;
 
 import java.util.Map;
 

@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 
 @TeleOp(name="Data Writer test", group="Test")

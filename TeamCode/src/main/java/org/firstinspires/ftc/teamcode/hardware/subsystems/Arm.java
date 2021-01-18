@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 
 @Config
 public class Arm extends Subsystem {

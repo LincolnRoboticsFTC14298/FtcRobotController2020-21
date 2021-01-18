@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.robotlib.util.LoggingUtil;
-import org.firstinspires.ftc.teamcode.robotlib.util.RegressionUtil;
+import org.firstinspires.ftc.robotlib.util.LoggingUtil;
+import org.firstinspires.ftc.robotlib.util.RegressionUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 
 import java.util.ArrayList;

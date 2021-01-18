@@ -12,13 +12,13 @@ import org.apache.commons.math3.optim.univariate.SearchInterval;
 import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
-import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Ring Distance Tuner", group="Tuner")

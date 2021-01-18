@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner;
+package org.firstinspires.ftc.robotlib.hardware.roadrunner;
 
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.util.Angle;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 
 public abstract class Drive extends Subsystem {
     public Drive(String name) {
@@ -16,6 +16,9 @@ public abstract class Drive extends Subsystem {
      * Localizer used to determine the evolution of [poseEstimate].
      */
     protected Localizer localizer;
+    public Localizer getLocalizer() {
+        return localizer;
+    }
     public void setLocalizer(Localizer localizer) {
         this.localizer = localizer;
     }

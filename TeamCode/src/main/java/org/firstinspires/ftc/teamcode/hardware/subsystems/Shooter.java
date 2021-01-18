@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
-import org.firstinspires.ftc.teamcode.robotlib.util.MathUtil;
+import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.util.MathUtil;
 
 @Config
 public class Shooter extends Subsystem {

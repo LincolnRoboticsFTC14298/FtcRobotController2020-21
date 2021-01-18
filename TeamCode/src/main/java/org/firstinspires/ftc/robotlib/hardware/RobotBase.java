@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robotlib.hardware;
+package org.firstinspires.ftc.robotlib.hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;

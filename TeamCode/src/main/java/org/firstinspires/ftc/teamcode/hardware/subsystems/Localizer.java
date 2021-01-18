@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Encoder;
+import org.firstinspires.ftc.robotlib.hardware.Encoder;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.inchesToMeters;
-import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector3D;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.inchesToMeters;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector3D;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 /*
