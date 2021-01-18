@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.robotlib.hardware;
 
+import org.firstinspires.ftc.teamcode.robotlib.util.TelemetryData;
+
 import java.util.Map;
 
-import org.firstinspires.ftc.teamcode.robotlib.util.TelemetryData;
 
 public abstract class Subsystem {
     private String name;

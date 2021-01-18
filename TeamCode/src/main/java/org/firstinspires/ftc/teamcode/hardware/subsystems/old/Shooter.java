@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-
 import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.TIMEOUT;
@@ -36,8 +35,10 @@ public class Shooter extends Subsystem {
 
     private static final double LAMBDA = 1; // = g / (2*v0*v0) optimal lambda will be found and used
 
-    private DcMotor motor1, motor2, loadMotor;
-    private Servo flap;
+    private final DcMotor motor1;
+    private final DcMotor motor2;
+    private final DcMotor loadMotor;
+    private final Servo flap;
 
     private double motor1Power, motor2Power, loadMotorPower;
     private double flapAngle;
@@ -46,7 +47,7 @@ public class Shooter extends Subsystem {
 //    private Target target = Target.HIGH_GOAL;
 //    private Alliance alliance = Alliance.BLUE;
 
-    private PositionProvider positionProvider;
+    private final PositionProvider positionProvider;
 
     private double shootScheduler = 0;
     private boolean loading = false;

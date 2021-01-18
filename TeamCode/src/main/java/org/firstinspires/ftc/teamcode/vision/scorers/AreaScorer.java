@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
-import org.firstinspires.ftc.teamcode.vision.RingData;
-
 import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.teamcode.vision.RingData;
 
 @Config
 public class AreaScorer extends VisionScorer {
-    private FtcDashboard dashboard;
+    private final FtcDashboard dashboard;
     public static double weight = .4;
 
     public AreaScorer() {
@@ -17,7 +16,7 @@ public class AreaScorer extends VisionScorer {
     }
     public AreaScorer(double weight) {
         dashboard = FtcDashboard.getInstance();
-        this.weight = weight;
+        AreaScorer.weight = weight;
     }
 
     @Override

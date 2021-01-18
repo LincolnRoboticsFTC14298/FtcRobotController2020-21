@@ -20,7 +20,7 @@ public class CameraRingDetection {
     public static final Scalar UPPER_THRESH = new Scalar(20, 255, 255);
 
 
-    private static Random rng = new Random(12345);
+    private static final Random rng = new Random(12345);
 
     public static Mat mask(Mat img, Size size, boolean morphOpen) {
         // Create Mask //

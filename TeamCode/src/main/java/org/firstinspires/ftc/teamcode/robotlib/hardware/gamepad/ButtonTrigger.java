@@ -8,7 +8,7 @@ public class ButtonTrigger extends Button {
     private Gamepad gamepad;
     private double threshold = 0.5;
 
-    public ButtonTrigger(Gamepad gamepad, ButtonType buttonType) {
+    public ButtonTrigger(Gamepad gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType buttonType) {
         super(gamepad, buttonType);
         this.gamepad = gamepad;
     }

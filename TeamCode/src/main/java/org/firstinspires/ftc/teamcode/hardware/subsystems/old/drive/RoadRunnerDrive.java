@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
@@ -7,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -26,15 +29,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.robotlib.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.robotlib.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robotlib.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.robotlib.util.LynxModuleUtil;
 
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
@@ -47,7 +47,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 @Config
 @Deprecated
 public class RoadRunnerDrive extends MecanumDrive {
-    private Drive drive;
+    private final Drive drive;
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
@@ -66,26 +66,26 @@ public class RoadRunnerDrive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
-    private FtcDashboard dashboard;
-    private NanoClock clock;
+    private final FtcDashboard dashboard;
+    private final NanoClock clock;
 
     private Mode mode;
 
-    private PIDFController turnController;
+    private final PIDFController turnController;
     private MotionProfile turnProfile;
     private double turnStart;
 
-    private DriveConstraints constraints;
-    private TrajectoryFollower follower;
+    private final DriveConstraints constraints;
+    private final TrajectoryFollower follower;
 
-    private LinkedList<Pose2d> poseHistory;
+    private final LinkedList<Pose2d> poseHistory;
 
-    private VoltageSensor batteryVoltageSensor;
+    private final VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
 
     public RoadRunnerDrive(HardwareMap hardwareMap, Drive drive) {
-        super("RoadRunner Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         this.drive = drive;
 
         dashboard = FtcDashboard.getInstance();
@@ -222,11 +222,6 @@ public class RoadRunnerDrive extends MecanumDrive {
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
         dashboard.sendTelemetryPacket(packet);
-    }
-
-    @Override
-    public void stop() {
-
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

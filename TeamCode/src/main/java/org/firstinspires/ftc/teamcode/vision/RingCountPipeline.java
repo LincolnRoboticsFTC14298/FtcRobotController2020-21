@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
 import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
@@ -20,19 +21,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
-
 public class RingCountPipeline extends OpenCvPipeline {
-    private OpenCvInternalCamera2 cam;
+    private final OpenCvInternalCamera2 cam;
     private boolean viewportPaused = false;
     private static final double SCORE_THRESHOLD = 3;
     private static final int THICKNESS = 4;
     private static final int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
-    private static Scalar foundColor = new Scalar(0  , 255, 0  );
-    private static Scalar falseColor = new Scalar(0  , 0  , 255);
+    private static final Scalar foundColor = new Scalar(0  , 255, 0  );
+    private static final Scalar falseColor = new Scalar(0  , 0  , 255);
 
-    private ArrayList<VisionScorer> scorers = new ArrayList<>();
+    private final ArrayList<VisionScorer> scorers = new ArrayList<>();
     public double totalWeight = 0;
 
     private ArrayList<RingData> rings = new ArrayList<>();

@@ -22,11 +22,11 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 import java.io.File;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector2D;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.rotateVector;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.vector3DToVector2D;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.vectorFromAngle;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 import static org.opencv.android.Utils.matToBitmap;
 
@@ -39,7 +39,7 @@ public class Vision extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private OpenCvInternalCamera2 phoneCam;
+    private final OpenCvInternalCamera2 phoneCam;
     private RingCountPipeline ringCountPipeline;
 
     private List<RingData> ringData;

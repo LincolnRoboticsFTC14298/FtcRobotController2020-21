@@ -6,14 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem;
 
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
@@ -24,7 +23,10 @@ public class Drive extends Subsystem {
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
 
-    private DcMotorEx frontLeft, frontRight,  backLeft,backRight;
+    private final DcMotorEx frontLeft;
+    private final DcMotorEx frontRight;
+    private final DcMotorEx backLeft;
+    private final DcMotorEx backRight;
     public List<DcMotorEx> motors;
 
     private double frontLeftPower = 0, frontRightPower = 0, backLeftPower = 0, backRightPower = 0;

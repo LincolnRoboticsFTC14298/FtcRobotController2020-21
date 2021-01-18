@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class SubsystemManager {
     private FtcDashboard dashboard;
-    private ArrayList<Subsystem> subsystems = new ArrayList<>();
+    private ArrayList<org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem> subsystems = new ArrayList<>();
 
-    public void add(Subsystem subsystem) {
+    public void add(org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem) {
         subsystems.add(subsystem);
     }
 
@@ -17,7 +17,7 @@ public class SubsystemManager {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
-        for (Subsystem subsystem : subsystems) {
+        for (org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.init();
             subsystem.updateMotorAndServoValues();
@@ -28,7 +28,7 @@ public class SubsystemManager {
     }
 
     public void initUpdate() {
-        for (Subsystem subsystem : subsystems) {
+        for (org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.initUpdate();
             subsystem.updateMotorAndServoValues();
@@ -39,7 +39,7 @@ public class SubsystemManager {
     }
 
     public void start() {
-        for (Subsystem subsystem : subsystems) {
+        for (org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.start();
             subsystem.updateMotorAndServoValues();
@@ -50,7 +50,7 @@ public class SubsystemManager {
     }
 
     public void update() {
-        for (Subsystem subsystem : subsystems) {
+        for (org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.update();
             subsystem.updateMotorAndServoValues();
@@ -61,7 +61,7 @@ public class SubsystemManager {
     }
 
     public void stop() {
-        for (Subsystem subsystem : subsystems) {
+        for (org.firstinspires.ftc.teamcode.robotlib.hardware.Subsystem subsystem : subsystems) {
             subsystem.getSensorValues();
             subsystem.stop();
             subsystem.updateMotorAndServoValues();

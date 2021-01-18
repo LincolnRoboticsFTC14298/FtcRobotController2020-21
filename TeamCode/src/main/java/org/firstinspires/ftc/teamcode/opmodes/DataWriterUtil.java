@@ -8,7 +8,7 @@ import java.util.prefs.Preferences;
 
 public abstract class DataWriterUtil {
     // May not work, make sure userNodeForPackage works
-    private static Preferences prefs = Preferences.userNodeForPackage(DataWriterUtil.class);
+    private static final Preferences prefs = Preferences.userNodeForPackage(DataWriterUtil.class);
 
     public static Field.Alliance readAlliance() {
         String alliance = prefs.get("alliance", "BLUE");

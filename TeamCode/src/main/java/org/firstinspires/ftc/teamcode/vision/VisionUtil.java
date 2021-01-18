@@ -174,7 +174,7 @@ public class VisionUtil {
         return new MatOfPoint2f(pickedPoints);
     }
 
-    private static Random rng = new Random(12345);
+    private static final Random rng = new Random(12345);
     public static Scalar generateColor() {
         return new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
     }

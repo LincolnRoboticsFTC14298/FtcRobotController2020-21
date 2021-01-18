@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner
+package org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner.kotlin
 
 import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.geometry.Pose2d
@@ -17,8 +17,8 @@ import com.acmerobotics.roadrunner.util.Angle
  * @param wheelBase distance between pairs of wheels on the same side of the robot
  * @param lateralMultiplier lateral multiplier
  */
-open abstract class MecanumDrive constructor(
-        name: String?,
+abstract class MecanumDrive constructor(
+        name: String,
         private val kV: Double,
         private val kA: Double,
         private val kStatic: Double,
@@ -30,11 +30,11 @@ open abstract class MecanumDrive constructor(
     /**
      * Default localizer for mecanum drives based on the drive encoders and (optionally) a heading sensor.
      *
-     * @param drive drive
+     * @param drive1 drive
      * @param useExternalHeading use external heading provided by an external sensor (e.g., IMU, gyroscope)
      */
     class MecanumLocalizer @JvmOverloads constructor(
-            private val drive: MecanumDrive,
+            private val drive1: MecanumDrive,
             private val useExternalHeading: Boolean = true
     ) : Localizer {
         private var _poseEstimate = Pose2d()
@@ -43,7 +43,7 @@ open abstract class MecanumDrive constructor(
             set(value) {
                 lastWheelPositions = emptyList()
                 lastExtHeading = Double.NaN
-                if (useExternalHeading) drive.externalHeading = value.heading
+                if (useExternalHeading) drive1.externalHeading = value.heading
                 _poseEstimate = value
             }
         override var poseVelocity: Pose2d? = null
@@ -52,14 +52,14 @@ open abstract class MecanumDrive constructor(
         private var lastExtHeading = Double.NaN
 
         override fun update() {
-            val wheelPositions = drive.getWheelPositions()
-            val extHeading = if (useExternalHeading) drive.externalHeading else Double.NaN
+            val wheelPositions = drive1.getWheelPositions()
+            val extHeading = if (useExternalHeading) drive1.externalHeading else Double.NaN
             if (lastWheelPositions.isNotEmpty()) {
                 val wheelDeltas = wheelPositions
                         .zip(lastWheelPositions)
                         .map { it.first - it.second }
                 val robotPoseDelta = MecanumKinematics.wheelToRobotVelocities(
-                        wheelDeltas, drive.trackWidth, drive.wheelBase, drive.lateralMultiplier
+                        wheelDeltas, drive1.trackWidth, drive1.wheelBase, drive1.lateralMultiplier
                 )
                 val finalHeadingDelta = if (useExternalHeading)
                     Angle.normDelta(extHeading - lastExtHeading)
@@ -71,11 +71,11 @@ open abstract class MecanumDrive constructor(
                 )
             }
 
-            val wheelVelocities = drive.getWheelVelocities()
-            val extHeadingVel = drive.getExternalHeadingVelocity()
+            val wheelVelocities = drive1.getWheelVelocities()
+            val extHeadingVel = drive1.getExternalHeadingVelocity()
             if (wheelVelocities != null) {
                 poseVelocity = MecanumKinematics.wheelToRobotVelocities(
-                        wheelVelocities, drive.trackWidth, drive.wheelBase, drive.lateralMultiplier
+                        wheelVelocities, drive1.trackWidth, drive1.wheelBase, drive1.lateralMultiplier
                 )
                 if (useExternalHeading && extHeadingVel != null) {
                     poseVelocity = Pose2d(poseVelocity!!.vec(), extHeadingVel)

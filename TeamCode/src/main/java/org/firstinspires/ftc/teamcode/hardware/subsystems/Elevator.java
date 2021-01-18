@@ -26,7 +26,7 @@ public class Elevator extends Subsystem {
 
     DcMotorEx elevatorMotor;
 
-    private double topHeight = 10; // inches
+    private final double topHeight = 10; // inches
 
     enum Mode {
         IDLE,

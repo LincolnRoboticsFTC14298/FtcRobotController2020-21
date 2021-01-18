@@ -26,9 +26,9 @@ public class Turret extends Subsystem {
     private static final String TURRET_MOTOR_NAME = "turret";
     private static final double TURRET_MIN_ERROR = .1;
 
-    private Localizer localizer;
+    private final Localizer localizer;
 
-    private DcMotorEx turretMotor;
+    private final DcMotorEx turretMotor;
 
     private double targetGlobalHeading;
 

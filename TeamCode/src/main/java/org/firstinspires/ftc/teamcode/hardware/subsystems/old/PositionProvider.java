@@ -6,9 +6,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.firstinspires.ftc.teamcode.util.Field;
-
 import org.firstinspires.ftc.teamcode.robotlib.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.Field;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
@@ -31,14 +30,14 @@ public class PositionProvider {
     private static boolean recentlyUpdated = true;
 
     public void setPoseEstimate(Pose2d poseEstimate) {
-        this.poseEstimate = poseEstimate;
+        PositionProvider.poseEstimate = poseEstimate;
     }
     public Pose2d getPoseEstimate() {
         return poseEstimate;
     }
 
     public void setVelEstimate(Pose2d velEstimate) {
-        this.velEstimate = velEstimate;
+        PositionProvider.velEstimate = velEstimate;
     }
     public Pose2d getVelEstimate() {
         return velEstimate;
@@ -142,13 +141,13 @@ public class PositionProvider {
         return target;
     }
     public void setTarget(Field.Target target) {
-        this.target = target;
+        PositionProvider.target = target;
     }
 
     public Field.Alliance getAlliance() {
         return alliance;
     }
     public void setAlliance(Field.Alliance alliance) {
-        this.alliance = alliance;
+        PositionProvider.alliance = alliance;
     }
 }

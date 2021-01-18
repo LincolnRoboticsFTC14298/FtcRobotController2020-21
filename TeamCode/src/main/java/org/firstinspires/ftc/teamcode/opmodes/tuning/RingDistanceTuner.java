@@ -12,8 +12,8 @@ import org.apache.commons.math3.optim.univariate.SearchInterval;
 import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
+import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ public class RingDistanceTuner extends OpMode {
     public static double fudgeFactor = 1;
     public static double dist = 1; // inches
 
-    private ArrayList<Double> predictedDistances = new ArrayList<>();
-    private ArrayList<Double> actualDistances = new ArrayList<>();
+    private final ArrayList<Double> predictedDistances = new ArrayList<>();
+    private final ArrayList<Double> actualDistances = new ArrayList<>();
 
     private Robot robot;
     private RadicalGamepad gamepad;

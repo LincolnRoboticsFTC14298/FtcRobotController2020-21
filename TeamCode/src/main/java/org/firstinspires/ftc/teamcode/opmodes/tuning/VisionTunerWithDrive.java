@@ -5,15 +5,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
-
 @TeleOp(name="Vision With Drive", group="Tuner")
 public class VisionTunerWithDrive extends OpMode {
-    private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private Drive drive;
     private Vision vision;
     private RadicalGamepad gamepad;

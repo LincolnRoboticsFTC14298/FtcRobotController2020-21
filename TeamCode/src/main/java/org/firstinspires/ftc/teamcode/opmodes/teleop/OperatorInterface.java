@@ -3,21 +3,20 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.util.Field.Target;
-
 import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button;
 import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonTrigger;
 import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType;
 import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ToggleButton;
+import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 // Operator Interface
 public class OperatorInterface {
     public static final double DEBOUNCER_PERIOD = 0.5;
 
     private final Robot robot;
-    private Gamepad gamepad1;
-    private Gamepad gamepad2;
+    private final Gamepad gamepad1;
+    private final Gamepad gamepad2;
 
     // Use toggle when you want to use the same button for up and down
     ToggleButton autoAimToggleButton, fieldCentricToggleButton, liftArmToggleButton,

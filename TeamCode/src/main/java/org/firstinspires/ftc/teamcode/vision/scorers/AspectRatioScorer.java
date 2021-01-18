@@ -3,16 +3,16 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 import org.opencv.core.Rect;
 
-import org.firstinspires.ftc.teamcode.robotlib.vision.VisionScorer;
-
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
+
 
 @Config
 public class AspectRatioScorer extends VisionScorer {
-    private FtcDashboard dashboard;
+    private final FtcDashboard dashboard;
 
     public static double optimalRatio = 5.0 / 0.75;
     public static double weight = .5;
@@ -22,8 +22,8 @@ public class AspectRatioScorer extends VisionScorer {
     }
     public AspectRatioScorer(double optimalRatio, double weight) {
         dashboard = FtcDashboard.getInstance();
-        this.optimalRatio = optimalRatio;
-        this.weight = weight;
+        AspectRatioScorer.optimalRatio = optimalRatio;
+        AspectRatioScorer.weight = weight;
     }
 
     @Override

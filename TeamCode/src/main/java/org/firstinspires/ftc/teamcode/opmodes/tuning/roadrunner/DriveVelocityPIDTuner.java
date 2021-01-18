@@ -53,7 +53,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 public class DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
-    private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private Drive drive;
 

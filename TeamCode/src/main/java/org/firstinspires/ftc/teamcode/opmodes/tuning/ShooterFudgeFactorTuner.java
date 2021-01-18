@@ -13,12 +13,12 @@ import org.apache.commons.math3.optim.univariate.SearchInterval;
 import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariateOptimizer;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
-
-import org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.RadicalGamepad;
 
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.squareError;
 
@@ -29,8 +29,8 @@ public class ShooterFudgeFactorTuner extends OpMode {
     public static double fudgeFactor = 1;
 
 
-    private ArrayList<Double> predictedAngles = new ArrayList<>();
-    private ArrayList<Double> actualAngles = new ArrayList<>();
+    private final ArrayList<Double> predictedAngles = new ArrayList<>();
+    private final ArrayList<Double> actualAngles = new ArrayList<>();
 
     private Robot robot;
     private RadicalGamepad gamepad;
@@ -45,7 +45,7 @@ public class ShooterFudgeFactorTuner extends OpMode {
     public void start() {
         robot.start();
         robot.setPoseEstimate(new Pose2d(0,0,0));
-        robot.localizer.fudgeFactor = 1;
+        Localizer.fudgeFactor = 1;
     }
 
     @Override

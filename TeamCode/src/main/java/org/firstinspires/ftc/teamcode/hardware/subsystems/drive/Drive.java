@@ -32,6 +32,9 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robotlib.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.robotlib.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
@@ -39,18 +42,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robotlib.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.robotlib.util.LynxModuleUtil;
-
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kV;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.angleWrapRadians;
 
 @Config
@@ -83,33 +79,36 @@ public class Drive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
-    private NanoClock clock;
+    private final NanoClock clock;
 
     private Mode mode;
 
-    private PIDFController turnController;
+    private final PIDFController turnController;
     private MotionProfile turnProfile;
     private double turnStart;
 
-    private DriveConstraints constraints;
-    private TrajectoryFollower follower;
+    private final DriveConstraints constraints;
+    private final TrajectoryFollower follower;
 
-    private LinkedList<Pose2d> poseHistory;
+    private final LinkedList<Pose2d> poseHistory;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private List<DcMotorEx> motors;
+    private final DcMotorEx leftFront;
+    private final DcMotorEx leftRear;
+    private final DcMotorEx rightRear;
+    private final DcMotorEx rightFront;
+    private final List<DcMotorEx> motors;
 
-    private VoltageSensor batteryVoltageSensor;
+    private final VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
 
-    private Localizer localizer;
+    private final Localizer localizer;
 
     public static double LAUNCH_X = Field.LAUNCH_LINE_X - .75 * Field.TILE_WIDTH;
     public static double BEHIND_LINE_ERROR = .5; // inches
 
     public Drive(HardwareMap hardwareMap) {
-        super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super("Drive", DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         clock = NanoClock.system();
 
@@ -163,7 +162,7 @@ public class Drive extends MecanumDrive {
     }
 
     public Drive(HardwareMap hardwareMap, Localizer localizer) {
-        super("Drive", kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        super("Drive", DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         clock = NanoClock.system();
 

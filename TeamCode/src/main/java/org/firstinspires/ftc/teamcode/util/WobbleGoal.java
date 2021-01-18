@@ -5,11 +5,11 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector2D;
+import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 
 public class WobbleGoal {
-    private Vector2D position;
+    private final Vector2D position;
 
     public WobbleGoal(Vector2D position) {
         this.position = position;

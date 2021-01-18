@@ -11,10 +11,10 @@ public class RadicalGamepad {
     public boolean left_bumper, right_bumper;
     public boolean left_stick_button, right_stick_button;
 
-    private Button dpadUp, dpadDown, dpadLeft, dpadRight;
-    private Button A, B, X, Y;
-    private Button leftBumper, rightBumper;
-    private Button leftStickButton, rightStickButton;
+    private org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button dpadUp, dpadDown, dpadLeft, dpadRight;
+    private org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button A, B, X, Y;
+    private org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button leftBumper, rightBumper;
+    private org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button leftStickButton, rightStickButton;
 
     // FLOAT VALUES ADDED
     public float left_stick_x, left_stick_y, right_stick_x, right_stick_y;
@@ -23,19 +23,19 @@ public class RadicalGamepad {
 
     public RadicalGamepad(Gamepad gamepad) {
         this.gamepad = gamepad;
-        dpadUp = new Button(gamepad, ButtonType.dpad_up);
-        dpadDown = new Button(gamepad, ButtonType.dpad_down);
-        dpadLeft = new Button(gamepad, ButtonType.dpad_left);
-        dpadRight = new Button(gamepad, ButtonType.dpad_right);
+        dpadUp = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.dpad_up);
+        dpadDown = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.dpad_down);
+        dpadLeft = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.dpad_left);
+        dpadRight = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.dpad_right);
 
-        A = new Button(gamepad, ButtonType.a);
-        B = new Button(gamepad, ButtonType.b);
-        X = new Button(gamepad, ButtonType.x);
-        Y = new Button(gamepad, ButtonType.y);
+        A = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.a);
+        B = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.b);
+        X = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.x);
+        Y = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.y);
 
-        leftBumper = new Button(gamepad, ButtonType.left_bumper);
-        rightBumper = new Button(gamepad, ButtonType.right_bumper);
-        leftStickButton = new Button(gamepad, ButtonType.left_stick_button);
+        leftBumper = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.left_bumper);
+        rightBumper = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.right_bumper);
+        leftStickButton = new org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.teamcode.robotlib.hardware.gamepad.ButtonType.left_stick_button);
         rightStickButton = new Button(gamepad, ButtonType.right_stick_button);
     }
 

@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.vision.operators;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.robotlib.vision.MatOperator;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-
-import org.firstinspires.ftc.teamcode.robotlib.vision.MatOperator;
 
 @Config
 public class HSVRangeFilter implements MatOperator {

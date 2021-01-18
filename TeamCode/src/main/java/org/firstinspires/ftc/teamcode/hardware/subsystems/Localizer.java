@@ -11,16 +11,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.firstinspires.ftc.teamcode.robotlib.hardware.Encoder;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.firstinspires.ftc.teamcode.robotlib.hardware.Encoder;
-
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.inchesToMeters;
 import static org.firstinspires.ftc.teamcode.robotlib.util.MathUtil.poseToVector3D;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -47,7 +46,9 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     public static double X_MULTIPLIER = 1; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
-    private Encoder leftEncoder, rightEncoder, frontEncoder;
+    private final Encoder leftEncoder;
+    private final Encoder rightEncoder;
+    private final Encoder frontEncoder;
 
     public Localizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -180,13 +181,13 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         return target;
     }
     public void setTarget(Field.Target target) {
-        this.target = target;
+        Localizer.target = target;
     }
 
     public Field.Alliance getAlliance() {
         return alliance;
     }
     public void setAlliance(Field.Alliance alliance) {
-        this.alliance = alliance;
+        Localizer.alliance = alliance;
     }
 }
