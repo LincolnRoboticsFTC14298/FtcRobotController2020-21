@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.ToggleButton;
 
 @TeleOp(name="Button test", group="Test")
+@Disabled
 public class ButtonTest extends OpMode {
     Button b;
     ToggleButton x, y;

@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 
 @TeleOp(name="Drive test", group="Test")
+@Disabled
 public class DriveTestOpmode extends OpMode {
     Drive drive;
 

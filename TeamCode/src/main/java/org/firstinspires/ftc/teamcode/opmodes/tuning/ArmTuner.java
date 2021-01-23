@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.hardware.Robot;
 
 @Config
 @TeleOp(name="Arm Tuner", group="Tuner")
+@Deprecated
 public class ArmTuner extends OpMode {
     private Robot robot;
     private RadicalGamepad gamepad;

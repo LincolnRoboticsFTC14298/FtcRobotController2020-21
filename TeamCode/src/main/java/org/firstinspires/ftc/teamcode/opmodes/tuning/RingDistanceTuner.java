@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -22,6 +23,7 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Ring Distance Tuner", group="Tuner")
+@Disabled
 public class RingDistanceTuner extends OpMode {
     public static double fudgeFactor = 1;
     public static double dist = 1; // inches

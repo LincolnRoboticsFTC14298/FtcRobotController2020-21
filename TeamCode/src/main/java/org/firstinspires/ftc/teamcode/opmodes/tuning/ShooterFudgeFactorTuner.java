@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -24,10 +25,10 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 @TeleOp(name="Shooter Fudge Factor Tuner", group="Tuner")
+@Disabled
 public class ShooterFudgeFactorTuner extends OpMode {
     public static double angle = 45.0;
     public static double fudgeFactor = 1;
-
 
     private final ArrayList<Double> predictedAngles = new ArrayList<>();
     private final ArrayList<Double> actualAngles = new ArrayList<>();

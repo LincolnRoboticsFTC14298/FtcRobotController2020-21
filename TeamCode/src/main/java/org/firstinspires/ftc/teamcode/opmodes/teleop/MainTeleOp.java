@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 
 @TeleOp(name="Main TeleOp", group="TeleOp")
+@Disabled
 public class MainTeleOp extends OpMode {
     Robot robot;
     OperatorInterface operatorInterface = new OperatorInterface(robot, gamepad1, gamepad2);
