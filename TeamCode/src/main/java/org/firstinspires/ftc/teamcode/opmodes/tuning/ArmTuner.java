@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.hardware.Robot;
 
 @Config
 @TeleOp(name="Arm Tuner", group="Tuner")
-@Deprecated
+@Disabled
 public class ArmTuner extends OpMode {
     private Robot robot;
     private RadicalGamepad gamepad;
