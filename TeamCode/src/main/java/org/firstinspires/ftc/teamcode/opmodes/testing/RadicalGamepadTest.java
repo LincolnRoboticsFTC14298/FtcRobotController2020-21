@@ -19,7 +19,7 @@ public class RadicalGamepadTest extends OpMode {
     public void loop() {
         gamepad.update();
         if (gamepad.a) at++;
-        telemetry.addData("Times a has been pressed: ", gamepad.a);
+        telemetry.addData("Times a has been pressed: ", at);
         telemetry.addData("lx: ", gamepad.left_stick_y);
         telemetry.addData("ry: ", gamepad.right_stick_y);
         telemetry.update();
