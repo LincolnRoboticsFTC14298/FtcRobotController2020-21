@@ -10,4 +10,5 @@ dependencies {
     implementation 'com.acmerobotics.roadrunner:core:0.5.2'
     implementation 'com.acmerobotics.dashboard:dashboard:0.3.10'
     implementation 'com.google.flogger:flogger:0.5.1'
+    implementation 'com.google.flogger:flogger-system-backend:0.5.1'
 }
