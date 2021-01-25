@@ -21,7 +21,7 @@ public class DriveToLine extends OpMode {
 
     @Override
     public void init() {
-        DataWriterUtil.saveAlliance(Field.Alliance.RED);
+        DataWriterUtil.setAlliance(Field.Alliance.RED);
         robot = new Robot(this);
         robot.start();
     }
@@ -46,7 +46,7 @@ public class DriveToLine extends OpMode {
 
         robot.drive.followTrajectory(traj2);
 
-        DataWriterUtil.saveLastPose(robot.drive.getPoseEstimate());
+        DataWriterUtil.setLastPose(robot.drive.getPoseEstimate());
 //
 //        setPower(1);
 //        try {

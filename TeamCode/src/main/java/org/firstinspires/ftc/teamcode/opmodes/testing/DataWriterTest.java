@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 public class DataWriterTest extends OpMode {
     RadicalGamepad radicalGamepad;
     Pose2d pose2d = new Pose2d(-50.2, 47.2, 1.1);
+    boolean finished = false;
 
     @Override
     public void init() {
@@ -22,11 +23,12 @@ public class DataWriterTest extends OpMode {
         radicalGamepad.update();
 
         if (radicalGamepad.a) {
-            DataWriterUtil.saveLastPose(pose2d);
+            DataWriterUtil.setLastPose(pose2d);
             telemetry.addData("Wrote pose", pose2d.toString());
+            telemetry.addLine("Please close teleop and reopen, then press b.");
         }
-        if (radicalGamepad.b) {
-            Pose2d read = DataWriterUtil.readLastPose();
+        if (radicalGamepad.b && !finished) {
+            Pose2d read = DataWriterUtil.getLastPose();
             telemetry.addData("Read pose", read.toString());
         }
 
