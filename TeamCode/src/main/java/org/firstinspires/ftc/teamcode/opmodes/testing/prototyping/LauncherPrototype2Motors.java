@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import static com.qualcomm.robotcore.util.Range.clip;
+
 
 @TeleOp(name="Launcher 2 Motors", group="Prototype")
 public class LauncherPrototype2Motors extends LinearOpMode {
@@ -42,6 +44,9 @@ public class LauncherPrototype2Motors extends LinearOpMode {
             } if (gamepad1.dpad_left) {
                 mSpeed2 -= MOTOR_STEP;
             }
+
+            mSpeed1 = clip(mSpeed1, -1, 1);
+            mSpeed2 = clip(mSpeed2, -1, 1);
 
             motor1.setPower(mSpeed1);
             motor2.setPower(mSpeed2);
