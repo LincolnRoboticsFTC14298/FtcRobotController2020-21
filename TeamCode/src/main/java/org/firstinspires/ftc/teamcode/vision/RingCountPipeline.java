@@ -23,6 +23,9 @@ import java.util.List;
 
 public class RingCountPipeline extends OpenCvPipeline {
     private final OpenCvInternalCamera2 cam;
+    private double widthRatio = 3.0 / 10;
+    private double heightRatio = 3.0 / 10;
+
     private boolean viewportPaused = false;
     private static final double SCORE_THRESHOLD = 3;
     private static final int THICKNESS = 4;
@@ -72,6 +75,21 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
     }
 
+    public RingCountPipeline(OpenCvInternalCamera2 cam, double widthRatio, double heightRatio) {
+        this.cam = cam;
+        this.widthRatio = widthRatio;
+        this.heightRatio = heightRatio;
+
+        scorers.add(areaScorer);
+        scorers.add(aspectRatioSCorer);
+        scorers.add(extentScorer);
+        scorers.add(solidityScorer);
+
+        for (VisionScorer scorer : scorers) {
+            totalWeight += scorer.weight;
+        }
+    }
+
     public Viewport getViewport() {
         return viewport;
     }
@@ -92,7 +110,9 @@ public class RingCountPipeline extends OpenCvPipeline {
         Mat workingMat = input.clone();
 
         // Crop //
-        int x = 3 * input.width() / 10, y = 3 * input.height() / 10, w = input.width() - 2 * x, h = input.height() - 2 * y;
+        int w = (int) (input.width() * widthRatio);
+        int h = (int) (input.height() * heightRatio);
+        int x = input.width()/2 - w/2, y = input.width()/2 - h/2;
         Rect rectCrop = new Rect(x, y, w, h);
         Mat croppedWorkingMat = workingMat.submat(rectCrop); // For submat, modifying sub modifies that rect region in parent
 
