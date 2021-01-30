@@ -35,7 +35,7 @@ public class SegmentationOperator {
         Mat imgResult = img.clone();
 
         // convert back to 8bits gray scale
-        // imgResult.convertTo(imgResult, CvType.CV_8UC3);
+        imgResult.convertTo(imgResult, CvType.CV_8UC3);
 
         // Create binary image from source image
         Mat bw = new Mat();
