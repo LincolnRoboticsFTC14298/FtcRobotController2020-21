@@ -37,12 +37,16 @@ public class LauncherPrototype2Motors extends LinearOpMode {
             // Left and right updates the second motor speed
             if (gamepad1.dpad_up) {
                 mSpeed1 += MOTOR_STEP;
-            } if (gamepad1.dpad_down) {
+            } else if (gamepad1.dpad_down) {
                 mSpeed1 -= MOTOR_STEP;
-            } if (gamepad1.dpad_right) {
+            } else if (gamepad1.dpad_right) {
                 mSpeed2 += MOTOR_STEP;
-            } if (gamepad1.dpad_left) {
+            } else if (gamepad1.dpad_left) {
                 mSpeed2 -= MOTOR_STEP;
+            } else if (gamepad1.a) {
+                mSpeed1 = 0;
+            } else if (gamepad1.b) {
+                mSpeed2 = 0;
             }
 
             mSpeed1 = clip(mSpeed1, -1, 1);
