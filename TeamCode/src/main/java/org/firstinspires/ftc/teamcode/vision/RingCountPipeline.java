@@ -33,6 +33,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
     private CroppedRectMode croppedRectMode = CroppedRectMode.WIDE;
+    private Rect croppedRect;
     private boolean watershed = false;
 
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
@@ -83,6 +84,8 @@ public class RingCountPipeline extends OpenCvPipeline {
     public RingCountPipeline(OpenCvInternalCamera2 cam) {
         this.cam = cam;
 
+        setCroppedRectMode(croppedRectMode);
+
         scorers.add(areaScorer);
         scorers.add(aspectRatioSCorer);
         scorers.add(extentScorer);
@@ -108,36 +111,32 @@ public class RingCountPipeline extends OpenCvPipeline {
         saveMatToDisk(latestMat, filename);
     }
 
+    Mat rawImage;
+    Mat workingMat;
+    Mat croppedWorkingMat; // For submat, modifying sub modifies that rect region in parent
+    Mat rawMask;
+    Mat mask;
+    Mat masked = new Mat();
+    Mat markers = new Mat();
+    Mat dist1 = new Mat();
+    Mat dist2 = new Mat();
+    List<MatOfPoint> potentialContours = new ArrayList<>();
+    ArrayList<RingData> finalRings = new ArrayList<>();
+    ArrayList<MatOfPoint> finalContours = new ArrayList<>();
+    ArrayList<Point> centers = new ArrayList<>();
     @Override
     public Mat processFrame(Mat input) {
-        // TODO: investigate skipping segmentation and not doing morph_close
-        Mat rawImage = input.clone();
-        Mat workingMat = input.clone();
-
-        // Crop //
-        int w = (int) (input.width() * croppedRectMode.widthRatio);
-        int h = (int) (input.height() * croppedRectMode.heightRatio);
-        int x = input.width()/2 - w/2, y = input.height()/2 - h/2;
-        Rect rectCrop = new Rect(x, y, w, h);
-        Mat croppedWorkingMat = workingMat.submat(rectCrop); // For submat, modifying sub modifies that rect region in parent
-
+        input.copyTo(rawImage);
+        input.copyTo(workingMat);
 
         // MatOperator //
-        Mat rawMask = hsvRangeFilter.process(croppedWorkingMat);
-        Mat mask = morphologyOperator.process(rawMask);
+        rawMask = hsvRangeFilter.process(croppedWorkingMat);
+        mask = morphologyOperator.process(rawMask);
 
-        Mat masked = new Mat();
         croppedWorkingMat.copyTo(masked, mask);
 
 
         // Segment //
-        Mat markers = croppedWorkingMat.clone();
-        Mat dist1 = croppedWorkingMat.clone();
-        Mat dist2 = croppedWorkingMat.clone();
-
-        List<MatOfPoint> potentialContours = new ArrayList<>();
-
-
         if (watershed) {
             potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
         } else {
@@ -150,10 +149,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         List<RingData> potentialRings = contoursToRingData(potentialContours);
 
         // Score and Threshold //
-        ArrayList<RingData> finalRings = new ArrayList<>();
-        ArrayList<MatOfPoint> finalContours = new ArrayList<>();
-        ArrayList<Point> centers = new ArrayList<>();
-
         for (int i = 0; i < potentialRings.size(); i++) {
             double score = calculateScore(potentialRings.get(i));
             if (score <= SCORE_THRESHOLD) {
@@ -181,7 +176,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         //drawRectangles(croppedWorkingMat, potentialRects, falseColor, THICKNESS); // Wrong rings will be red
         //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
 
-        Imgproc.rectangle(workingMat, rectCrop, foundColor, THICKNESS);
+        Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS);
 
         Mat displayMat;
         switch (viewport) {
@@ -241,6 +236,11 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     public void setCroppedRectMode(CroppedRectMode croppedRectMode) {
         this.croppedRectMode = croppedRectMode;
+        int w = (int) (rawImage.width() * croppedRectMode.widthRatio);
+        int h = (int) (rawImage.height() * croppedRectMode.heightRatio);
+        int x = rawImage.width()/2 - w/2, y = rawImage.height()/2 - h/2;
+        croppedRect = new Rect(x, y, w, h);
+        croppedWorkingMat = workingMat.submat(croppedRect);
     }
 
     public ArrayList<RingData> getRingData() {
