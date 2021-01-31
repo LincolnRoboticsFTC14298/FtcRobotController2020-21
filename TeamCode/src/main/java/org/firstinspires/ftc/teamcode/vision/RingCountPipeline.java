@@ -111,19 +111,16 @@ public class RingCountPipeline extends OpenCvPipeline {
         saveMatToDisk(latestMat, filename);
     }
 
-    Mat rawImage;
-    Mat workingMat;
+    Mat rawImage = new Mat();
+    Mat workingMat = new Mat();
     Mat croppedWorkingMat; // For submat, modifying sub modifies that rect region in parent
-    Mat rawMask;
-    Mat mask;
+    Mat rawMask = new Mat();
+    Mat mask = new Mat();
     Mat masked = new Mat();
     Mat markers = new Mat();
     Mat dist1 = new Mat();
     Mat dist2 = new Mat();
-    List<MatOfPoint> potentialContours = new ArrayList<>();
-    ArrayList<RingData> finalRings = new ArrayList<>();
-    ArrayList<MatOfPoint> finalContours = new ArrayList<>();
-    ArrayList<Point> centers = new ArrayList<>();
+
     @Override
     public Mat processFrame(Mat input) {
         input.copyTo(rawImage);
@@ -135,6 +132,7 @@ public class RingCountPipeline extends OpenCvPipeline {
 
         croppedWorkingMat.copyTo(masked, mask);
 
+        List<MatOfPoint> potentialContours = new ArrayList<>();
 
         // Segment //
         if (watershed) {
@@ -144,9 +142,14 @@ public class RingCountPipeline extends OpenCvPipeline {
             // Consider using chain approx none
             Imgproc.findContours(mask, potentialContours, hierarchy,
                     Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+            hierarchy.release();
         }
 
         List<RingData> potentialRings = contoursToRingData(potentialContours);
+
+        ArrayList<RingData> finalRings = new ArrayList<>();
+        ArrayList<MatOfPoint> finalContours = new ArrayList<>();
+        ArrayList<Point> centers = new ArrayList<>();
 
         // Score and Threshold //
         for (int i = 0; i < potentialRings.size(); i++) {

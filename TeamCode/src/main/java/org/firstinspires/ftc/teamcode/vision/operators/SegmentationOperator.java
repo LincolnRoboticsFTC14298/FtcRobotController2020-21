@@ -45,12 +45,14 @@ public class SegmentationOperator {
         // Perform the distance transform algorithm
         Mat dist = new Mat();
         Imgproc.distanceTransform(bw, dist, Imgproc.DIST_L2, 3);
+        bw.release();
         // Normalize the distance image for range = {0.0, 1.0}
         // so we can visualize and threshold it
         Core.normalize(dist, dist, 0.0, 1.0, Core.NORM_MINMAX);
         Mat distDisplayScaled = new Mat();
         Core.multiply(dist, new Scalar(255), distDisplayScaled);
         distDisplayScaled.convertTo(dist1Dst, CvType.CV_8U);
+        distDisplayScaled.release();
         // Threshold to obtain the peaks
         // This will be the markers for the foreground objects
         Imgproc.threshold(dist, dist, distThresh, 1.0, Imgproc.THRESH_BINARY);
@@ -58,6 +60,7 @@ public class SegmentationOperator {
         // Originally dilate but changed open to insure distinct rings
         Mat kernel1 = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, openSize);
         Imgproc.morphologyEx(dist, dist, Imgproc.MORPH_OPEN, kernel1);
+        kernel1.release();
         dist.convertTo(dist2Dst, CvType.CV_8U);
         Core.multiply(dist2Dst, new Scalar(255), dist2Dst);
 
@@ -69,8 +72,11 @@ public class SegmentationOperator {
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
         Imgproc.findContours(dist_8u, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        dist_8u.release();
+        hierarchy.release();
         // Create the marker image for the watershed algorithm
         Mat markers = Mat.zeros(dist.size(), CvType.CV_32S);
+        dist.release();
         // Draw the foreground markers
         for (int i = 0; i < contours.size(); i++) {
             Imgproc.drawContours(markers, contours, i, new Scalar(i + 1), -1);
@@ -83,15 +89,19 @@ public class SegmentationOperator {
         Imgproc.circle(markersScaled, new Point(5, 5), 3, new Scalar(255, 255, 255), -1);
         Mat markersDisplay = new Mat();
         markersScaled.convertTo(markersDisplay, CvType.CV_8U);
+        markersScaled.release();
+        markersDisplay.release();
         Imgproc.circle(markers, new Point(5, 5), 3, new Scalar(255, 255, 255), -1);
 
 
         // Perform the watershed algorithm
         imgResult.convertTo(imgResult, CvType.CV_8UC3);
         Imgproc.watershed(imgResult, markers);
+        imgResult.release();
         Mat mark = Mat.zeros(markers.size(), CvType.CV_8U);
         markers.convertTo(mark, CvType.CV_8UC1);
         Core.bitwise_not(mark, mark);
+        mark.release();
         // image looks like at that point
         // Generate random colors
         List<Scalar> colors = new ArrayList<>(contours.size());
@@ -149,9 +159,13 @@ public class SegmentationOperator {
             Mat hierarchyp = new Mat();
             // Consider using chain approx none
             Imgproc.findContours(contourMat, contourp, hierarchyp, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            contourMat.release();
+            hierarchyp.release();
             finalContours.addAll(contourp);
         }
         collage.put(0,0,collageData);
+        markers.release();
+        collage.release();
         //HighGui.imshow("si", fin);
 
 //        Mat masked = new Mat();

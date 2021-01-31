@@ -40,7 +40,6 @@ public class MorphologyOperator implements MatOperator {
 
         // Closes gaps //
         if (close) {
-
             Imgproc.morphologyEx(finalMask, finalMask, Imgproc.MORPH_CLOSE, se);
         }
         return finalMask;
