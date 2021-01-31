@@ -20,7 +20,6 @@ public class RingFollowerTest extends OpMode {
     @Override
     public void start() {
         robot.start();
-        robot.vision.startStreaming();
     }
 
     @Override

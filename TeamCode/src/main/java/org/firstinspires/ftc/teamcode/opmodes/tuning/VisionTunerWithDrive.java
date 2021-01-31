@@ -28,7 +28,6 @@ public class VisionTunerWithDrive extends OpMode {
     public void start() {
         drive.start();
         vision.start();
-        vision.startStreaming();
     }
 
     @Override
