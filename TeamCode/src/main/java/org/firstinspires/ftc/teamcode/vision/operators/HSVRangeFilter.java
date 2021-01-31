@@ -29,9 +29,9 @@ public class HSVRangeFilter implements MatOperator {
         HSVRangeFilter.blur = blur;
     }
 
+    Mat mask = new Mat();
     @Override
     public Mat process(Mat img) {
-        Mat mask = new Mat();
         Imgproc.cvtColor(img, mask, Imgproc.COLOR_RGB2HSV);
 
         Imgproc.GaussianBlur(mask, mask, blur, blurSigma);

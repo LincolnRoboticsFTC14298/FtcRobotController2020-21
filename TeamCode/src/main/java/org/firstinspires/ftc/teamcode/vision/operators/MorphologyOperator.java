@@ -21,23 +21,26 @@ public class MorphologyOperator implements MatOperator {
         MorphologyOperator.closeSize = closeSize;
     }
 
+    Mat finalMask = new Mat();
+    Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, openSize);
+    Mat se = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, closeSize);
     @Override
     public Mat process(Mat mask) {
         // Denoising //
         //Imgproc.GaussianBlur(mask, finalMask, new Size(101,101), 10);
 
-        Mat finalMask = new Mat();
+
 
         // Remove isolated pixels using morphological operations
         // Preparing the kernel matrix object
         //Mat kernel = Mat.ones(openSize, CvType.CV_32F);
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, openSize);
+
         // Applying dilate on the Image
         Imgproc.morphologyEx(mask, finalMask, Imgproc.MORPH_OPEN, kernel);
 
         // Closes gaps //
         if (close) {
-            Mat se = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, closeSize);
+
             Imgproc.morphologyEx(finalMask, finalMask, Imgproc.MORPH_CLOSE, se);
         }
         return finalMask;
