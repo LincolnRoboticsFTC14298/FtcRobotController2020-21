@@ -126,6 +126,12 @@ public class RingCountPipeline extends OpenCvPipeline {
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
+        int w = (int) (rawImage.width() * croppedRectMode.widthRatio);
+        int h = (int) (rawImage.height() * croppedRectMode.heightRatio);
+        int x = rawImage.width()/2 - w/2, y = rawImage.height()/2 - h/2;
+        croppedRect = new Rect(x, y, w, h);
+        croppedWorkingMat = workingMat.submat(croppedRect);
+
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
         mask = morphologyOperator.process(rawMask);
