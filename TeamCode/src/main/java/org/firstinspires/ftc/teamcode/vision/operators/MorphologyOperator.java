@@ -11,6 +11,7 @@ import org.opencv.imgproc.Imgproc;
 public class MorphologyOperator implements MatOperator {
     public static Size openSize = new Size(15,15);
     public static Size closeSize = new Size(30,30);
+    private boolean close = false;
 
     public MorphologyOperator() {
 
@@ -33,9 +34,16 @@ public class MorphologyOperator implements MatOperator {
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, openSize);
         // Applying dilate on the Image
         Imgproc.morphologyEx(mask, finalMask, Imgproc.MORPH_OPEN, kernel);
+
         // Closes gaps //
-        Mat se = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, closeSize);
-        Imgproc.morphologyEx(finalMask, finalMask, Imgproc.MORPH_CLOSE, se);
+        if (close) {
+            Mat se = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, closeSize);
+            Imgproc.morphologyEx(finalMask, finalMask, Imgproc.MORPH_CLOSE, se);
+        }
         return finalMask;
+    }
+
+    public void setClose(boolean close) {
+        this.close = close;
     }
 }

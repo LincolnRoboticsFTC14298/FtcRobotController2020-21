@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
+import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 
 @Config
 @Autonomous(name="Drive to line", group="Autonomous")
@@ -28,10 +29,9 @@ public class DriveToLine extends OpMode {
 
     @Override
     public void start() {
-        robot.vision.startStreaming();
+        robot.vision.setWatershed(true);
+        robot.vision.setCroppedRectMode(RingCountPipeline.CroppedRectMode.SMALL);
         robot.vision.analyze();
-        robot.vision.stopStreaming();
-
 
         Trajectory traj1 = robot.drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(STRAFE_DISTANCE)

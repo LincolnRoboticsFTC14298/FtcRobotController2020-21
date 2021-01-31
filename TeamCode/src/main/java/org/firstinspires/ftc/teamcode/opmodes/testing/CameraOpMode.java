@@ -40,7 +40,7 @@ public class CameraOpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("Number of Rings", ringCountPipeline.getRings().size());
+            telemetry.addData("Number of Rings", ringCountPipeline.getRingData().size());
             telemetry.addData("Frame Count", phoneCam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
             telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());

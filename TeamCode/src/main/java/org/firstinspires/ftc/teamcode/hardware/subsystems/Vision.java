@@ -46,7 +46,7 @@ public class Vision extends Subsystem {
 
     // TODO: Possibly delete later
     private boolean processed = false;
-    private boolean streaming = false;
+    private boolean viewportOn = false;
 
     Localizer localizer;
 
@@ -76,6 +76,7 @@ public class Vision extends Subsystem {
                     phoneCam.setSensorFps(30);
                 }
         );
+        phoneCam.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
 
@@ -86,32 +87,25 @@ public class Vision extends Subsystem {
 
     @Override
     public void stop() {
-        stopStreaming();
+        phoneCam.stopStreaming();
     }
 
     public void analyze() {
-        startStreaming();
-        ringData = ringCountPipeline.getRings();
+        ringData = ringCountPipeline.getRingData();
 
         processed = true;
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Number of Rings: ", ringData);
         dashboard.sendTelemetryPacket(packet);
-        stopStreaming();
     }
 
-    public void startStreaming() {
-        if (!streaming) {
-            phoneCam.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
-            streaming = true;
-        }
+    public void resumeViewport() {
+        phoneCam.resumeViewport();
     }
-    public void stopStreaming() {
-        if (streaming) {
-            streaming = false;
-            phoneCam.stopStreaming();
-        }
+    public void pauseViewport() {
+        phoneCam.pauseViewport();
     }
+
 
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
@@ -170,6 +164,13 @@ public class Vision extends Subsystem {
     }
     public void setViewport(RingCountPipeline.Viewport viewport) {
         ringCountPipeline.setViewport(viewport);
+    }
+
+    public void setWatershed(boolean watershed) {
+        ringCountPipeline.setWatershed(watershed);
+    }
+    public void setCroppedRectMode(RingCountPipeline.CroppedRectMode croppedRectMode) {
+        ringCountPipeline.setCroppedRectMode(croppedRectMode);
     }
 
     public Bitmap getOutput() {

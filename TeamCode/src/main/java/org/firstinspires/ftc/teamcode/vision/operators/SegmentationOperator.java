@@ -87,6 +87,7 @@ public class SegmentationOperator {
 
 
         // Perform the watershed algorithm
+        imgResult.convertTo(imgResult, CvType.CV_8UC3);
         Imgproc.watershed(imgResult, markers);
         Mat mark = Mat.zeros(markers.size(), CvType.CV_8U);
         markers.convertTo(mark, CvType.CV_8UC1);

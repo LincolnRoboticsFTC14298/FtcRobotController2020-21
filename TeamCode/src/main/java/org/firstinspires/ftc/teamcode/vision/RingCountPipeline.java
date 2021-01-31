@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
@@ -21,16 +23,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Config
 public class RingCountPipeline extends OpenCvPipeline {
     private final OpenCvInternalCamera2 cam;
-    private double widthRatio = 3.0 / 10;
-    private double heightRatio = 3.0 / 10;
 
     private boolean viewportPaused = false;
-    private static final double SCORE_THRESHOLD = 3;
-    private static final int THICKNESS = 4;
-    private static final int RADIUS = 8;
+    public static double SCORE_THRESHOLD = 3;
+    public static int THICKNESS = 4;
+    public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
+    private CroppedRectMode croppedRectMode = CroppedRectMode.WIDE;
+    private boolean watershed = false;
+
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
     private static final Scalar falseColor = new Scalar(0  , 0  , 255);
 
@@ -62,6 +66,20 @@ public class RingCountPipeline extends OpenCvPipeline {
         ANNOTATED
     }
 
+    public enum CroppedRectMode {
+        SMALL(3.0 / 10, 3.0 / 10),
+        WIDE(5.0 / 10, 3.0 / 10);
+
+        public double widthRatio;
+        public double heightRatio;
+
+        CroppedRectMode(double widthRatio, double heightRatio) {
+            this.widthRatio = widthRatio;
+            this.heightRatio = heightRatio;
+        }
+    }
+
+
     public RingCountPipeline(OpenCvInternalCamera2 cam) {
         this.cam = cam;
 
@@ -75,20 +93,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
     }
 
-    public RingCountPipeline(OpenCvInternalCamera2 cam, double widthRatio, double heightRatio) {
-        this.cam = cam;
-        this.widthRatio = widthRatio;
-        this.heightRatio = heightRatio;
 
-        scorers.add(areaScorer);
-        scorers.add(aspectRatioSCorer);
-        scorers.add(extentScorer);
-        scorers.add(solidityScorer);
-
-        for (VisionScorer scorer : scorers) {
-            totalWeight += scorer.weight;
-        }
-    }
 
     public Viewport getViewport() {
         return viewport;
@@ -110,9 +115,9 @@ public class RingCountPipeline extends OpenCvPipeline {
         Mat workingMat = input.clone();
 
         // Crop //
-        int w = (int) (input.width() * widthRatio);
-        int h = (int) (input.height() * heightRatio);
-        int x = input.width()/2 - w/2, y = input.width()/2 - h/2;
+        int w = (int) (input.width() * croppedRectMode.widthRatio);
+        int h = (int) (input.height() * croppedRectMode.heightRatio);
+        int x = input.width()/2 - w/2, y = input.height()/2 - h/2;
         Rect rectCrop = new Rect(x, y, w, h);
         Mat croppedWorkingMat = workingMat.submat(rectCrop); // For submat, modifying sub modifies that rect region in parent
 
@@ -126,14 +131,22 @@ public class RingCountPipeline extends OpenCvPipeline {
 
 
         // Segment //
-        //ArrayList<MatOfPoint> potentialContours = new ArrayList<>();
-        //Mat hierarchy = new Mat();
-        // Consider using chain approx none
-        //Imgproc.findContours(mask, potentialContours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         Mat markers = croppedWorkingMat.clone();
         Mat dist1 = croppedWorkingMat.clone();
         Mat dist2 = croppedWorkingMat.clone();
-        List<MatOfPoint> potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
+
+        List<MatOfPoint> potentialContours = new ArrayList<>();
+
+
+        if (watershed) {
+            potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
+        } else {
+            Mat hierarchy = new Mat();
+            // Consider using chain approx none
+            Imgproc.findContours(mask, potentialContours, hierarchy,
+                    Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        }
+
         List<RingData> potentialRings = contoursToRingData(potentialContours);
 
         // Score and Threshold //
@@ -221,7 +234,16 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
     }
 
-    public ArrayList<RingData> getRings() {
+    public void setWatershed(boolean watershed) {
+        this.watershed = watershed;
+        morphologyOperator.setClose(watershed);
+    }
+
+    public void setCroppedRectMode(CroppedRectMode croppedRectMode) {
+        this.croppedRectMode = croppedRectMode;
+    }
+
+    public ArrayList<RingData> getRingData() {
         return rings;
     }
 
