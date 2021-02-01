@@ -26,7 +26,7 @@ public class SolidityScorer extends VisionScorer {
 
     @Override
     public double score(RingData ringData) {
-        double ratio = ringData.contourArea / ringData.convexHullArea;
+        double ratio = ringData.getContourArea() / ringData.getConvexHullArea();
         dashboard.getTelemetry().addLine("solidity ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
     }

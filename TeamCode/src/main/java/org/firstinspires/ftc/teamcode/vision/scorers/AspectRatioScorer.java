@@ -28,7 +28,7 @@ public class AspectRatioScorer extends VisionScorer {
 
     @Override
     public double score(RingData ringData) {
-        Rect rect = ringData.boundingRect;
+        Rect rect = ringData.getBoundingRect();
         // Get w/h or h/w, whichever is bigger just incase rotation of phone.
         double ratio = ((double) rect.width) / rect.height;
         ratio = Math.max(ratio, 1.0/ratio);

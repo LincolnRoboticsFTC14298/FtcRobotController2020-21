@@ -26,7 +26,7 @@ public class ExtentScorer extends VisionScorer {
 
     @Override
     public double score(RingData ringData) {
-        double ratio = ringData.contourArea / ringData.boxArea;
+        double ratio = ringData.getContourArea() / ringData.getBoxArea();
         dashboard.getTelemetry().addLine("extent ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
     }

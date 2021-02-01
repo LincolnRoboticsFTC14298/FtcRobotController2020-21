@@ -13,16 +13,16 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
 public class RingData {
-    public MatOfPoint contour;
-    public double contourArea;
-    public Point centroid;
+    private MatOfPoint contour;
+    private double contourArea;
+    private Point centroid;
 
-    public double convexHullArea;
+    private double convexHullArea;
 
-    public Rect boundingRect;
-    public double boxArea;
-    public Point boxCenter;
-    public Size boxSize;
+    private Rect boundingRect;
+    private double boxArea;
+    private Point boxCenter;
+    private Size boxSize;
 
     public RingData(MatOfPoint contour) {
         this.contour = contour;
@@ -41,5 +41,30 @@ public class RingData {
         boxArea = boundingRect.area();
         boxCenter = rectCenter(boundingRect);
         boxSize = boundingRect.size();
+    }
+
+    public MatOfPoint getContour() {
+        return contour;
+    }
+    public double getContourArea() {
+        return contourArea;
+    }
+    public Point getCentroid() {
+        return centroid;
+    }
+    public double getConvexHullArea() {
+        return convexHullArea;
+    }
+    public Rect getBoundingRect() {
+        return boundingRect;
+    }
+    public double getBoxArea() {
+        return boxArea;
+    }
+    public Point getBoxCenter() {
+        return boxCenter;
+    }
+    public Size getBoxSize() {
+        return boxSize;
     }
 }

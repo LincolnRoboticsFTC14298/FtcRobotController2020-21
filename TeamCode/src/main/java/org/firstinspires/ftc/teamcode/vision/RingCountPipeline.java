@@ -163,13 +163,13 @@ public class RingCountPipeline extends OpenCvPipeline {
             if (score <= SCORE_THRESHOLD) {
                 //System.out.println("Final score: " + score);
                 finalRings.add(potentialRings.get(i));
-                finalContours.add(potentialRings.get(i).contour);
-                centers.add(potentialRings.get(i).centroid);
+                finalContours.add(potentialRings.get(i).getContour());
+                centers.add(potentialRings.get(i).getCentroid());
             }
         }
 
         rings = finalRings;
-        Collections.sort(rings, (r1, r2) -> (int) (r1.contourArea - r2.contourArea));
+        Collections.sort(rings, (r1, r2) -> (int) (r1.getContourArea() - r2.getContourArea()));
         Collections.reverse(rings);
 
         // Draw contours //

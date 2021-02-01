@@ -21,7 +21,7 @@ public class AreaScorer extends VisionScorer {
 
     @Override
     public double score(RingData ringData) {
-        double area = ringData.contourArea;
+        double area = ringData.getContourArea();
         dashboard.getTelemetry().addLine("area = " + area);
         return -area / 1000 * weight;
     }
