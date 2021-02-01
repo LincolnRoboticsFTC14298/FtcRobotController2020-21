@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -49,9 +50,11 @@ public class VisionTunerWithoutDrive extends OpMode {
         }
 
         vision.update();
-
+        vision.updateTelemetry();
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.putAll(vision.getTelemetryData());
+        dashboard.sendTelemetryPacket(packet);
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
-        dashboard.sendImage(vision.getOutput());
     }
 }

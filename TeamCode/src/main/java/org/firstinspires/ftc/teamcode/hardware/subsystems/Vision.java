@@ -93,13 +93,15 @@ public class Vision extends Subsystem {
         camera.stopStreaming();
     }
 
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("Number of Rings: ", ringData.size());
+        dashboard.sendImage(getOutput());
+    }
+
     public void analyze() {
         ringData = ringCountPipeline.getRingData();
-
         processed = true;
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Number of Rings: ", ringData);
-        dashboard.sendTelemetryPacket(packet);
     }
 
     public void resumeViewport() {
@@ -128,18 +130,18 @@ public class Vision extends Subsystem {
     public double getRingLocalAngle(RingData ring) {
         // Assumes a centered camera
         // Alternative: angle = atan( atan(fov/2) * (2cx / w - 1) ))
-        double cx = ring.centroid.x;
+        double cx = ring.getCentroid().x;
         int w = WIDTH;
         double x = cx - w/2; // centered at w/2
         return -Math.atan(Math.tan( Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
     }
     public double getRingLocalDistance(RingData ring) {
         // inches
-        double cx = ring.centroid.x;
+        double cx = ring.getCentroid().x;
         int w = WIDTH;
         double xpx = cx - w/2;
         double angle = getRingLocalAngle(ring);
-        double dpx = ring.boxSize.width;
+        double dpx = ring.getBoxSize().width;
         return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
     }
     public Vector2D getRingLocalPosition(RingData ring) {
