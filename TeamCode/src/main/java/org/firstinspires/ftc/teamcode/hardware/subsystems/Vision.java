@@ -39,7 +39,7 @@ public class Vision extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private final OpenCvInternalCamera2 phoneCam;
+    private final OpenCvInternalCamera2 camera;
     private RingCountPipeline ringCountPipeline;
 
     private List<RingData> ringData;
@@ -54,12 +54,14 @@ public class Vision extends Subsystem {
         super("Vision");
         this.localizer = null;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDeviceAsync(
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
+
+        ringCountPipeline = new RingCountPipeline(camera);
+        camera.setPipeline(ringCountPipeline);
+        camera.setSensorFps(30);
+        camera.openCameraDeviceAsync(
                 () -> {
-                    ringCountPipeline = new RingCountPipeline(phoneCam);
-                    phoneCam.setPipeline(ringCountPipeline);
-                    phoneCam.setSensorFps(30);
+                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
                 }
         );
     }
@@ -68,15 +70,16 @@ public class Vision extends Subsystem {
         super("Vision");
         this.localizer = localizer;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDeviceAsync(
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
+
+        ringCountPipeline = new RingCountPipeline(camera);
+        camera.setPipeline(ringCountPipeline);
+        camera.setSensorFps(30);
+        camera.openCameraDeviceAsync(
                 () -> {
-                    ringCountPipeline = new RingCountPipeline(phoneCam);
-                    phoneCam.setPipeline(ringCountPipeline);
-                    phoneCam.setSensorFps(30);
+                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
                 }
         );
-        phoneCam.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
 
@@ -87,7 +90,7 @@ public class Vision extends Subsystem {
 
     @Override
     public void stop() {
-        phoneCam.stopStreaming();
+        camera.stopStreaming();
     }
 
     public void analyze() {
@@ -100,10 +103,10 @@ public class Vision extends Subsystem {
     }
 
     public void resumeViewport() {
-        phoneCam.resumeViewport();
+        camera.resumeViewport();
     }
     public void pauseViewport() {
-        phoneCam.pauseViewport();
+        camera.pauseViewport();
     }
 
 

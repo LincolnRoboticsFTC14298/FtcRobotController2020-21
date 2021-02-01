@@ -159,9 +159,9 @@ public class SegmentationOperator {
             Mat hierarchyp = new Mat();
             // Consider using chain approx none
             Imgproc.findContours(contourMat, contourp, hierarchyp, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            finalContours.addAll(contourp);
             contourMat.release();
             hierarchyp.release();
-            finalContours.addAll(contourp);
         }
         collage.put(0,0,collageData);
         markers.release();
