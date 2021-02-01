@@ -78,19 +78,19 @@ public class Robot extends RobotBase {
     public void init() {
         telemetry.setMsTransmissionInterval(50);
         subsystemManager.init();
-        telemetry.update();
+        updateTelemetry();
     }
 
     @Override
     public void initUpdate() {
         subsystemManager.initUpdate();
-        telemetry.update();
+        updateTelemetry();
     }
 
     @Override
     public void start() {
         subsystemManager.start();
-        telemetry.update();
+        updateTelemetry();
     }
 
     @Override
@@ -98,6 +98,7 @@ public class Robot extends RobotBase {
         localizer.update();
         Field.updateRings(localizer.getPoseEstimate());
 
+        vision.scan();
         switch (mode) {
             case MANUAL:
                 break;
@@ -106,7 +107,6 @@ public class Robot extends RobotBase {
                     drive.cancelFollowing();
                     mode = Mode.TRAVELING_TO_SHOOT;
                 } else if (!drive.isBusy()) {
-                    vision.scan();
                     if (Field.rings.size() > 0) {
                         goToRing();
                     } else {
@@ -129,12 +129,20 @@ public class Robot extends RobotBase {
         updateShooting();
 
         subsystemManager.update();
-        telemetry.update();
+        updateTelemetry();
     }
 
     @Override
     public void stop() {
         subsystemManager.stop();
+        updateTelemetry();
+    }
+
+    public void updateTelemetry() {
+        telemetry.addData("Alliance: ", alliance.toString());
+        telemetry.addData("Pose:     ", localizer.getPoseEstimate().toString());
+        telemetry.addData("Mode:     ", mode);
+        telemetry.addData("Target:   ", target.toString());
         telemetry.update();
     }
 
