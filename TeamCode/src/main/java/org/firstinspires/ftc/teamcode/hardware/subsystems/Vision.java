@@ -96,7 +96,7 @@ public class Vision extends Subsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Number of Rings: ", ringData.size());
+        if (ringData != null) telemetry.put("Number of Rings: ", ringData.size());
         dashboard.sendImage(getOutput());
     }
 
