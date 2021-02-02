@@ -27,12 +27,18 @@ public class MathUtil {
     public static Vector2D vectorFromAngle(double angle) {
         return new Vector2D(Math.cos(angle), Math.sin(angle));
     }
-    public static Vector2D vectorFromAngle(double angle, double magnitude) {
+    public static Vector2D vectorFromAngle(double magnitude, double angle) {
         return new Vector2D(Math.cos(angle), Math.sin(angle)).scalarMultiply(magnitude);
     }
 
     public static Vector2D rotateVector(Vector2D vector, double angle) {
         return new Vector2D(vector.getX() * Math.cos(angle), vector.getY() * Math.sin(angle));
+    }
+
+    public static double angle(Vector2D v1, Vector2D v2) {
+        // Angle from v1 to v2
+        double angle = Vector2D.angle(v1, v2);
+        return angle * Math.signum(v1.normalize().getX() - v2.normalize().getX());
     }
 
 
