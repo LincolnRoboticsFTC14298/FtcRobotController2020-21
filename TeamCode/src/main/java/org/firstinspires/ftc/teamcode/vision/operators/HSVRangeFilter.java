@@ -35,7 +35,6 @@ public class HSVRangeFilter implements MatOperator {
         Imgproc.cvtColor(img, mask, Imgproc.COLOR_RGB2HSV);
 
         Imgproc.GaussianBlur(mask, mask, blur, blurSigma);
-
         Core.inRange(mask, lowerThreshold, upperThreshold, mask);
         return mask;
     }
