@@ -25,6 +25,7 @@ public class VisionTunerWithoutDrive extends OpMode {
     @Override
     public void start() {
         vision.start();
+        //vision.setWatershed(true);
     }
 
     @Override

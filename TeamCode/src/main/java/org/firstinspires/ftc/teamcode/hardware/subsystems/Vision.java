@@ -99,7 +99,7 @@ public class Vision extends Subsystem {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
         telemetry.put("Output type", ringCountPipeline.getLatestMat().type());
         telemetry.put("Test", ringData == null);
-        dashboard.sendImage(getOutput());
+        //dashboard.sendImage(getOutput());
     }
 
     public void analyze() {
