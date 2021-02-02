@@ -182,7 +182,7 @@ public class Vision extends Subsystem {
     public Bitmap getOutput() {
         Mat mat = ringCountPipeline.getLatestMat();
         Bitmap bmt = Bitmap.createBitmap(mat.cols(), mat.rows(),
-                Bitmap.Config.ARGB_8888);
+                Bitmap.Config.RGB_565);
         matToBitmap(mat, bmt);
         return bmt;
     }
