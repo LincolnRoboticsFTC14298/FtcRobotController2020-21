@@ -39,7 +39,7 @@ public class Vision extends Subsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private final OpenCvInternalCamera2 camera;
+    private OpenCvInternalCamera2 camera;
     private RingCountPipeline ringCountPipeline;
 
     private List<RingData> ringData;
@@ -58,10 +58,10 @@ public class Vision extends Subsystem {
 
         ringCountPipeline = new RingCountPipeline(camera);
         camera.setPipeline(ringCountPipeline);
-        camera.setSensorFps(30);
         camera.openCameraDeviceAsync(
                 () -> {
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                    camera.setSensorFps(30);
                 }
         );
     }
@@ -74,10 +74,11 @@ public class Vision extends Subsystem {
 
         ringCountPipeline = new RingCountPipeline(camera);
         camera.setPipeline(ringCountPipeline);
-        camera.setSensorFps(30);
+
         camera.openCameraDeviceAsync(
                 () -> {
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                    camera.setSensorFps(30);
                 }
         );
     }
@@ -145,11 +146,11 @@ public class Vision extends Subsystem {
         return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
     }
     public Vector2D getRingLocalPosition(RingData ring) {
-        // in frame of robot
+        // in frame of rotated robot
         double angle = getRingLocalAngle(ring);
         double distance = getRingLocalDistance(ring);
         return vector3DToVector2D(CAMERA_LOCATION)
-                .add(vectorFromAngle(angle, distance));
+                .add(vectorFromAngle(distance, angle));
     }
     public Vector2D getRingPosition(RingData ringData) {
         Pose2d pose = localizer.getPoseEstimate();
