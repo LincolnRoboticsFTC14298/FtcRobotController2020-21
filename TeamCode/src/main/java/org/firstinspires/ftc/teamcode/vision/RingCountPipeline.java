@@ -199,16 +199,20 @@ public class RingCountPipeline extends OpenCvPipeline {
                 displayMat = mask;
                 break;
             case MASKED:
-                displayMat = masked;
+                if (watershed) displayMat = masked;
+                else viewport = Viewport.ANNOTATED;
                 break;
             case DIST1:
-                displayMat = dist1;
+                if (watershed) displayMat = dist1;
+                else viewport = Viewport.ANNOTATED;
                 break;
             case DIST2:
-                displayMat = dist2;
+                if (watershed) displayMat = dist2;
+                else viewport = Viewport.ANNOTATED;
                 break;
             case MARKERS:
-                displayMat = markers;
+                if (watershed) displayMat = markers;
+                else viewport = Viewport.ANNOTATED;
                 break;
             default:
                 displayMat = workingMat;
