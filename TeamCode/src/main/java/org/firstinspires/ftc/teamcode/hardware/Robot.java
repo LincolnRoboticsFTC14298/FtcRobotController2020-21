@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
+import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
@@ -22,6 +23,8 @@ import org.firstinspires.ftc.teamcode.util.WobbleGoal;
 
 import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
 import static org.firstinspires.ftc.robotlib.util.MathUtil.vector2DToPose;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
 
 
 public class Robot extends RobotBase {
@@ -107,7 +110,7 @@ public class Robot extends RobotBase {
                     drive.cancelFollowing();
                     mode = Mode.TRAVELING_TO_SHOOT;
                 } else if (!drive.isBusy()) {
-                    if (Field.rings.size() > 0) {
+                    if (Field.getRings().size() > 0) {
                         goToRing();
                     } else {
                         // TODO: rotate to find rings
@@ -216,25 +219,34 @@ public class Robot extends RobotBase {
     }
 
     public void goToRing() {
-        if (Field.rings.size() > 0) {
+        if (Field.getRings().size() > 0) {
             Ring closestRing = Field.getClosestRing(localizer.getPoseEstimate());
-            Pose2d pose = localizer.getPoseEstimate();
-            Vector2D pos = poseToVector2D(pose);
-            double heading = Vector2D.angle(pos, closestRing.getPosition()) - pose.getHeading();
+            Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
             Vector2D ringPos = closestRing.getPosition();
-            Vector2D targetPos = ringPos.add(ringPos.normalize().scalarMultiply(-5)); // 5 inches before
+
+            Vector2D dp = ringPos.subtract(pos);
+            dp = dp.scalarMultiply(1 - 5.0 / dp.getNorm()); // 5 inches before
+            Vector2D targetPos = pos.add(dp);
+            double heading = MathUtil.angle(new Vector2D(1, 0), dp);
+
             drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
         }
     }
 
     public void goToWobbleGoal() {
-        WobbleGoal closestWobbleGoal = Field.getClosestWobbleGoal(localizer.getPoseEstimate());
-        Pose2d pose = localizer.getPoseEstimate();
-        Vector2D pos = poseToVector2D(pose);
-        double heading = Vector2D.angle(pos, closestWobbleGoal.getPosition()) - pose.getHeading();
-        Vector2D wobbleGoalPos = closestWobbleGoal.getPosition();
-        Vector2D targetPos = wobbleGoalPos.add(wobbleGoalPos.normalize().scalarMultiply(-5)); // 5 inches before
-        drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
+        if (Field.getWobbleGoals().size() > 0) {
+            WobbleGoal closestWobbleGoal = Field.getClosestWobbleGoal(localizer.getPoseEstimate());
+            Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
+            Vector2D ringPos = closestWobbleGoal.getPosition();
+
+            Vector2D dp = ringPos.subtract(pos);
+            Vector2D armPos = vector3DToVector2D(ARM_DOWN_LOCATION);
+            dp = dp.scalarMultiply(1 - armPos.getNorm() / dp.getNorm());
+            Vector2D targetPos = pos.add(dp);
+            double heading = MathUtil.angle(new Vector2D(1, 0), armPos) + MathUtil.angle(new Vector2D(1, 0), dp);
+
+            drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
+        }
     }
 
     public void setManualMode() {
