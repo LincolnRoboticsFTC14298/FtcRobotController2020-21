@@ -187,7 +187,7 @@ public class RingCountPipeline extends OpenCvPipeline {
 
         Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS);
 
-        Mat displayMat;
+        Mat displayMat = rawImage;
         switch (viewport) {
             case RAW_IMAGE:
                 displayMat = rawImage;
@@ -199,20 +199,19 @@ public class RingCountPipeline extends OpenCvPipeline {
                 displayMat = mask;
                 break;
             case MASKED:
-                if (watershed) displayMat = masked;
-                else viewport = Viewport.ANNOTATED;
+                displayMat = masked;
                 break;
             case DIST1:
                 if (watershed) displayMat = dist1;
-                else viewport = Viewport.ANNOTATED;
+                else displayMat = workingMat;
                 break;
             case DIST2:
                 if (watershed) displayMat = dist2;
-                else viewport = Viewport.ANNOTATED;
+                else displayMat = workingMat;
                 break;
             case MARKERS:
                 if (watershed) displayMat = markers;
-                else viewport = Viewport.ANNOTATED;
+                else displayMat = workingMat;
                 break;
             default:
                 displayMat = workingMat;
