@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Ring;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingData;
-import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
@@ -28,7 +27,6 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
 import static org.firstinspires.ftc.robotlib.util.MathUtil.vectorFromAngle;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
-import static org.opencv.android.Utils.matToBitmap;
 
 public class Vision extends Subsystem {
     public static final int WIDTH = 320;
@@ -36,8 +34,7 @@ public class Vision extends Subsystem {
     public static final double FOV = 27.3; // degrees
     public static final double FUDGE_FACTOR = 1;
 
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private OpenCvInternalCamera2 camera;
     private RingCountPipeline ringCountPipeline;
@@ -62,6 +59,7 @@ public class Vision extends Subsystem {
                 () -> {
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
                     camera.setSensorFps(30);
+                    FtcDashboard.getInstance().startCameraStream(camera, 60);
                 }
         );
     }
@@ -79,6 +77,7 @@ public class Vision extends Subsystem {
                 () -> {
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
                     camera.setSensorFps(30);
+                    FtcDashboard.getInstance().startCameraStream(camera, 60);
                 }
         );
     }
@@ -99,7 +98,6 @@ public class Vision extends Subsystem {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
         telemetry.put("Output type", ringCountPipeline.getLatestMat().type());
         telemetry.put("Test", ringData == null);
-        //dashboard.sendImage(getOutput());
     }
 
     public void analyze() {
@@ -121,7 +119,7 @@ public class Vision extends Subsystem {
             return ringData.size();
         } else {
             packet.addLine("ERROR: IMAGE NOT PROCESSED");
-            dashboard.sendTelemetryPacket(packet);
+            //dashboard.sendTelemetryPacket(packet);
             return 0;
         }
     }
@@ -181,18 +179,12 @@ public class Vision extends Subsystem {
         ringCountPipeline.setCroppedRectMode(croppedRectMode);
     }
 
-    public Bitmap getOutput() {
-        Mat mat = ringCountPipeline.getLatestMat();
-        Bitmap bmt = Bitmap.createBitmap(mat.cols(), mat.rows(),
-                Bitmap.Config.RGB_565);
-        matToBitmap(mat, bmt);
-        return bmt;
-    }
     public void saveOutput(String filename) {
         ringCountPipeline.saveLatestMat(filename);
     }
     public void saveOutput() {
         RingCountPipeline.Viewport lastViewport = getViewport();
+        setViewport(RingCountPipeline.Viewport.RAW_IMAGE);
         File f = Environment.getDataDirectory()
                 .getAbsoluteFile()
                 .getParentFile()
