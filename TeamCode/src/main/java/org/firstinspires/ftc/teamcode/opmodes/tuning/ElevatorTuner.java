@@ -6,24 +6,24 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.dream.Elevator;
 
 @Config
 @TeleOp(name="Elevator Tuner", group="Tuner")
 @Disabled
 public class ElevatorTuner extends OpMode {
-    private Robot robot;
+    private Elevator elevator;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        elevator = new Elevator(hardwareMap);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void start() {
-        robot.start();
+
     }
 
     @Override
@@ -31,15 +31,15 @@ public class ElevatorTuner extends OpMode {
         gamepad.update();
 
         if (gamepad.a) {
-            robot.elevator.raise();
+            elevator.raise();
         } else if (gamepad.b) {
-            robot.elevator.lower();
+            elevator.lower();
         }
 
-        robot.update();
+        elevator.update();
 
-        telemetry.addData("IsUp: ", robot.elevator.isUp());
-        telemetry.addData("IsDown: ", robot.elevator.isDown());
+        telemetry.addData("Is Up: ", elevator.isUp());
+        telemetry.addData("Is Down: ", elevator.isDown());
         telemetry.update();
     }
 }
