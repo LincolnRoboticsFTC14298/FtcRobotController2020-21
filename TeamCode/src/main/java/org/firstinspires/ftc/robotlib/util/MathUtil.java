@@ -32,7 +32,9 @@ public class MathUtil {
     }
 
     public static Vector2D rotateVector(Vector2D vector, double angle) {
-        return new Vector2D(vector.getX() * Math.cos(angle), vector.getY() * Math.sin(angle));
+        double x = vector.getX(), y = vector.getY();
+        return new Vector2D(x * Math.cos(angle) - y * Math.sin(angle),
+                            x * Math.sin(angle) + y * Math.cos(angle));
     }
 
     public static double angle(Vector2D v1, Vector2D v2) {

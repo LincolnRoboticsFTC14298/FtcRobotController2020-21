@@ -186,6 +186,7 @@ public class Robot extends RobotBase {
 
     boolean launching = false;
     public void updateShooting() {
+        // TODO: Change to state machine
         shooter.aimAsync();
 
         if (launching && shooter.isRetractedStatus()) {
@@ -196,7 +197,7 @@ public class Robot extends RobotBase {
         if (shootScheduler > 0) {
             drive.pointAtTargetAsync();
             shooter.turnOnShooterMotor();
-            if (!launching && shooter.readyToLaunch()) {
+            if (!launching && localizer.canLaunch() && shooter.readyToLaunch() && drive.readyToShoot()) {
                 shooter.launchAsync();
                 launching = true;
             }

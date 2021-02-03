@@ -9,13 +9,18 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.Encoder;
+import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector3D;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.rotateVector;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
 /*
@@ -47,6 +52,8 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     private final Encoder rightEncoder;
     private final Encoder frontEncoder;
 
+    private boolean canLaunch = true;
+
     public Localizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
@@ -64,29 +71,55 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     private static Field.Target target;
     private static Field.Alliance alliance;
 
-    private static double targetHeading = 0;
-    private static double targetLaunchAngle = 0;
-
     public static double fudgeFactor = 1;
     public static double launchVel = 8;
     private static final double g = 9.8;
 
-    public Vector3D getShooterLocation() {
-        return poseToVector3D(getPoseEstimate()).add(SHOOTER_LOCATION);
+
+    public Vector2D getPosition() {
+        return poseToVector2D(getPoseEstimate());
     }
 
-    public Vector3D getTargetRelativeLocation() {
-        // (0,0,0) is shooter position
+    public Vector2D getTargetRelativeLocation2D() {
+        // In frame of refrence of robot center with axis aligned with global axis
+        Vector2D targetPos = MathUtil.vector3DToVector2D(target.getLocation(alliance));
+        Vector2D pos = getPosition();
+        return targetPos.subtract(pos);
+    }
+    public Vector3D getTargetRelativeLocation3D() {
+        // In frame of refrence of robot center with axis aligned with global axis
         Vector3D targetPos = target.getLocation(alliance);
-        Vector3D shooterPos = getShooterLocation();
-        return targetPos.subtract(shooterPos);
+        Vector3D pos = MathUtil.vector2DToVector3D(getPosition());
+        return targetPos.subtract(pos);
     }
 
     public double getTargetHeading() {
-        return targetHeading; // Happens to be in the heading frame
+        double theta = MathUtil.angle(new Vector2D(1, 0), getTargetRelativeLocation2D());
+        double sy = ARM_DOWN_LOCATION.getY();
+        double targetMag = getTargetRelativeLocation2D().getNorm();
+        double alpha = Math.asin(sy / targetMag);
+        return theta + alpha;
     }
     public double getTargetLaunchAngle() {
-        return targetLaunchAngle; // Happens to be in the heading frame
+        try {
+            final double h = getTargetRelativeLocation3D().getZ() - SHOOTER_LOCATION.getZ();
+            double d = getTargetRelativeLocation2D().subtract(
+                    rotateVector(
+                            vector3DToVector2D(SHOOTER_LOCATION),
+                            getPoseEstimate().getHeading()
+                    )).getNorm();
+            double k = d * d * g / (2 * launchVel * launchVel);
+            return fudgeFactor * Math.atan((d + Math.sqrt(d*d - 4*(h+k)*k))/(2*(h+k))
+            );
+        } catch (Exception e) {
+            canLaunch = false;
+            return Math.toRadians(22);
+        }
+
+    }
+
+    public boolean canLaunch() {
+        return canLaunch;
     }
 
     public static double encoderTicksToInches(double ticks) {
