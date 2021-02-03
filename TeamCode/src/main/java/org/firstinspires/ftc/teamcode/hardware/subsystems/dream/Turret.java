@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.dream;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,7 +8,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 
-@Config
 public class Turret extends Subsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
