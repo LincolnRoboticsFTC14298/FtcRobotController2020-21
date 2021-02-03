@@ -18,8 +18,12 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -31,10 +35,10 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.robotlib.hardware.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.robotlib.util.DashboardUtil;
 import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.ArrayList;
@@ -42,12 +46,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.robotlib.util.MathUtil.angleWrapRadians;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.angleWrapRadians;
 
 @Config
 public class Drive extends MecanumDrive {
@@ -79,30 +86,31 @@ public class Drive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
-    private final NanoClock clock;
+    private NanoClock clock;
 
     private Mode mode;
 
-    private final PIDFController turnController;
+    private PIDFController turnController;
     private MotionProfile turnProfile;
     private double turnStart;
 
-    private final DriveConstraints constraints;
-    private final TrajectoryFollower follower;
+    private TrajectoryVelocityConstraint velConstraint;
+    private TrajectoryAccelerationConstraint accelConstraint;
+    private TrajectoryFollower follower;
 
-    private final LinkedList<Pose2d> poseHistory;
+    private LinkedList<Pose2d> poseHistory;
 
-    private final DcMotorEx leftFront;
-    private final DcMotorEx leftRear;
-    private final DcMotorEx rightRear;
-    private final DcMotorEx rightFront;
-    private final List<DcMotorEx> motors;
+    private DcMotorEx leftFront;
+    private DcMotorEx leftRear;
+    private DcMotorEx rightRear;
+    private DcMotorEx rightFront;
+    private List<DcMotorEx> motors;
 
     private final VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
 
-    private final Localizer localizer;
+    private Localizer localizer;
 
     public static double LAUNCH_X = Field.LAUNCH_LINE_X - .75 * Field.TILE_WIDTH;
     public static double BEHIND_LINE_ERROR = .5; // inches
@@ -117,7 +125,14 @@ public class Drive extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        turnController = new PIDFController(HEADING_PID);
+        turnController.setInputBounds(0, 2 * Math.PI);
+
+        velConstraint = new MinVelocityConstraint(Arrays.asList(
+                new AngularVelocityConstraint(MAX_ANG_VEL),
+                new MecanumVelocityConstraint(MAX_VEL, TRACK_WIDTH)
+        ));
+        accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -171,7 +186,11 @@ public class Drive extends MecanumDrive {
         turnController = new PIDFController(HEADING_PID);
         turnController.setInputBounds(0, 2 * Math.PI);
 
-        constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
+        velConstraint = new MinVelocityConstraint(Arrays.asList(
+                new AngularVelocityConstraint(MAX_ANG_VEL),
+                new MecanumVelocityConstraint(MAX_VEL, TRACK_WIDTH)
+        ));
+        accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -260,7 +279,7 @@ public class Drive extends MecanumDrive {
                 break;
             }
             case FOLLOW_TRAJECTORY: {
-                setDriveSignal(follower.update(currentPose));
+                setDriveSignal(follower.update(currentPose, getPoseVelocity()));
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
@@ -287,7 +306,7 @@ public class Drive extends MecanumDrive {
 
         telemetry.put("x", currentPose.getX());
         telemetry.put("y", currentPose.getY());
-        telemetry.put("heading", currentPose.getHeading());
+        telemetry.put("heading (deg)", Math.toDegrees(currentPose.getHeading()));
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
@@ -340,11 +359,11 @@ public class Drive extends MecanumDrive {
 
         logger.atFine().log("x", currentPose.getX());
         logger.atFine().log("y", currentPose.getY());
-        logger.atFine().log("heading", currentPose.getHeading());
+        logger.atFine().log("heading (deg)", Math.toDegrees(currentPose.getHeading()));
 
         logger.atFine().log("xError", lastError.getX());
         logger.atFine().log("yError", lastError.getY());
-        logger.atFine().log("headingError", lastError.getHeading());
+        logger.atFine().log("headingError (deg)", Math.toDegrees(lastError.getHeading()));
     }
 
     /*
@@ -405,13 +424,13 @@ public class Drive extends MecanumDrive {
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
-        return new TrajectoryBuilder(startPose, constraints);
+        return new TrajectoryBuilder(startPose, velConstraint, accelConstraint);
     }
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
-        return new TrajectoryBuilder(startPose, reversed, constraints);
+        return new TrajectoryBuilder(startPose, reversed, velConstraint, accelConstraint);
     }
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
-        return new TrajectoryBuilder(startPose, startHeading, constraints);
+        return new TrajectoryBuilder(startPose, startHeading, velConstraint, accelConstraint);
     }
 
     public void turnAsync(double angle) {
@@ -422,9 +441,8 @@ public class Drive extends MecanumDrive {
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
-                constraints.maxAngVel,
-                constraints.maxAngAccel,
-                constraints.maxAngJerk
+                MAX_ANG_VEL,
+                MAX_ANG_ACCEL
         );
 
         turnStart = clock.seconds();
@@ -550,16 +568,5 @@ public class Drive extends MecanumDrive {
     @Override
     public double getRawExternalHeading() {
         return 0;
-    }
-
-    double getBatteryVoltage(HardwareMap hardwareMap) {
-        double result = Double.POSITIVE_INFINITY;
-        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
-            double voltage = sensor.getVoltage();
-            if (voltage > 0) {
-                result = Math.min(result, voltage);
-            }
-        }
-        return result;
     }
 }

@@ -36,8 +36,8 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 @Autonomous(group = "drive")
 @Disabled
 public class AutomaticFeedforwardTuner extends LinearOpMode {
-    public static final double MAX_POWER = 0.7;
-    public static final double DISTANCE = 100; // in
+    public static double MAX_POWER = 0.7;
+    public static double DISTANCE = 100; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,7 +49,6 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Drive drive = new Drive(hardwareMap);
-        drive.start();
 
         NanoClock clock = NanoClock.system();
 

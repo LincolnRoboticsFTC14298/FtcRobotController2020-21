@@ -15,10 +15,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants;
 
 import java.util.Objects;
 
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.kStatic;
@@ -47,7 +48,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 public class ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
-    private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private Drive drive;
 
@@ -61,16 +62,11 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
         MotionState goal = new MotionState(movingForward ? DISTANCE : 0, 0, 0, 0);
-        return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,
-                DriveConstants.BASE_CONSTRAINTS.maxVel,
-                DriveConstants.BASE_CONSTRAINTS.maxAccel,
-                DriveConstants.BASE_CONSTRAINTS.maxJerk);
+        return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, MAX_VEL, MAX_ACCEL);
     }
 
     @Override
     public void runOpMode() {
-        drive = new Drive(hardwareMap);
-
         if (RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
@@ -78,7 +74,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive.start();
+        drive = new Drive(hardwareMap);
 
         mode = Mode.TUNING_MODE;
 
@@ -127,8 +123,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
                     // update telemetry
                     telemetry.addData("targetVelocity", motionState.getV());
-                    telemetry.addData("poseVelocity", currentVelo);
-                    telemetry.addData("error", currentVelo - motionState.getV());
+                    telemetry.addData("measuredVelocity", currentVelo);
+                    telemetry.addData("error", motionState.getV() - currentVelo);
                     break;
                 case DRIVER_MODE:
                     if (gamepad1.a) {

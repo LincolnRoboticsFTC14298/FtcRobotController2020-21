@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems.old;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -11,7 +10,6 @@ import org.firstinspires.ftc.teamcode.util.Field;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 
-@Config
 @Deprecated
 public class PositionProvider {
     private static Pose2d poseEstimate;

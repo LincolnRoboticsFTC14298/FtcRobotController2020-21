@@ -18,7 +18,6 @@ public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Drive drive = new Drive(hardwareMap);
-        drive.start();
 
         waitForStart();
 
@@ -39,4 +38,3 @@ public class SplineTest extends LinearOpMode {
         );
     }
 }
-
