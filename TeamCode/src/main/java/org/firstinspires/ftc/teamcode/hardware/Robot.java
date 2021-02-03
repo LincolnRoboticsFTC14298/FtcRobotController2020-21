@@ -7,12 +7,10 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.RingCounter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.util.Field;
@@ -34,9 +32,7 @@ public class Robot extends RobotBase {
     public Vision vision;
     public Arm arm;
     public Intake intake;
-    public Elevator elevator;
     public RingCounter ringCounter;
-    public Turret turret;
     public Shooter shooter;
     public Drive drive;
 
@@ -61,18 +57,14 @@ public class Robot extends RobotBase {
         vision = new Vision(hardwareMap, localizer);
         arm = new Arm(hardwareMap);
         intake = new Intake(hardwareMap);
-        elevator = new Elevator(hardwareMap);
         ringCounter = new RingCounter(hardwareMap);
-        turret = new Turret(hardwareMap, localizer);
         shooter = new Shooter(hardwareMap, localizer);
         drive = new Drive(hardwareMap, localizer);
 
         subsystemManager.add(vision);
         subsystemManager.add(arm);
         subsystemManager.add(intake);
-        subsystemManager.add(elevator);
         subsystemManager.add(ringCounter);
-        subsystemManager.add(turret);
         subsystemManager.add(shooter);
         subsystemManager.add(drive);
     }
@@ -194,8 +186,6 @@ public class Robot extends RobotBase {
 
     boolean launching = false;
     public void updateShooting() {
-        // Maybe only want to aim when shootScheduler > 0
-        turret.aimAtTargetAsync();
         shooter.aimAsync();
 
         if (launching && shooter.isRetractedStatus()) {
@@ -204,17 +194,14 @@ public class Robot extends RobotBase {
         }
 
         if (shootScheduler > 0) {
-            //drive.pointAtTargetAsync();
+            drive.pointAtTargetAsync();
             shooter.turnOnShooterMotor();
-            elevator.raiseAsync();
-            if (localizer.readyToShoot() && !launching && shooter.readyToLaunch()
-                    && turret.isAligned() && elevator.isUp()) {
+            if (!launching && shooter.readyToLaunch()) {
                 shooter.launchAsync();
                 launching = true;
             }
         } else {
             shooter.turnOffShooterMotor();
-            elevator.lowerAsync();
         }
     }
 
