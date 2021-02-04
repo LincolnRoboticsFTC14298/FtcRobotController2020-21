@@ -59,7 +59,7 @@ public class Vision extends Subsystem {
                 () -> {
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
                     camera.setSensorFps(30);
-                    FtcDashboard.getInstance().startCameraStream(camera, 60);
+                    FtcDashboard.getInstance().startCameraStream(camera, 30);
                 }
         );
     }
