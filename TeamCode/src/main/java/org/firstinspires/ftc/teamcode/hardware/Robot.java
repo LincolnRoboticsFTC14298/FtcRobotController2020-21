@@ -41,13 +41,14 @@ public class Robot extends RobotBase {
     // TODO: Maybe alliance in field class?
     public Alliance alliance = Alliance.BLUE;
 
-    public enum Mode {
+    public enum ControlMode {
         MANUAL,
         COLLECTING,
         TRAVELING_TO_SHOOT
     }
 
-    Mode mode = Mode.MANUAL;
+    ControlMode controlMode = ControlMode.MANUAL;
+
 
     public Robot(OpMode opMode) {
         super(opMode);
@@ -94,13 +95,13 @@ public class Robot extends RobotBase {
         Field.updateRings(localizer.getPoseEstimate());
 
         vision.scan();
-        switch (mode) {
+        switch (controlMode) {
             case MANUAL:
                 break;
             case COLLECTING:
                 if (ringCounter.getNumberOfRings() == 3) {
                     drive.cancelFollowing();
-                    mode = Mode.TRAVELING_TO_SHOOT;
+                    controlMode = ControlMode.TRAVELING_TO_SHOOT;
                 } else if (!drive.isBusy()) {
                     if (Field.getRings().size() > 0) {
                         goToRing();
@@ -114,7 +115,7 @@ public class Robot extends RobotBase {
                     // Can make async
                     // TODO: Check time and shoot target dependent on time
                     shoot(3);
-                    mode = Mode.COLLECTING;
+                    controlMode = ControlMode.COLLECTING.COLLECTING;
                 } else if (!drive.isBusy()) {
                     drive.goBehindLineAsync();
                 }
@@ -136,7 +137,7 @@ public class Robot extends RobotBase {
     public void updateTelemetry() {
         telemetry.addData("Alliance: ", alliance.toString());
         telemetry.addData("Pose:     ", localizer.getPoseEstimate().toString());
-        telemetry.addData("Mode:     ", mode);
+        telemetry.addData("Mode:     ", controlMode);
         telemetry.addData("Target:   ", target.toString());
         telemetry.update();
     }
@@ -184,25 +185,40 @@ public class Robot extends RobotBase {
         waitUntilDoneShooting();
     }
 
-    boolean launching = false;
+    public enum ShootingStatus {
+        IDLE,
+        AIMING,
+        SHOOTING
+    }
+
+    ShootingStatus shootingStatus = ShootingStatus.IDLE;
     public void updateShooting() {
-        // TODO: Change to state machine
         shooter.aimAsync();
 
-        if (launching && shooter.isRetractedStatus()) {
-            launching = false;
-            shootScheduler--;
+        if (shootScheduler == 0) {
+            shootingStatus = ShootingStatus.IDLE;
         }
-
-        if (shootScheduler > 0) {
-            drive.pointAtTargetAsync();
-            shooter.turnOnShooterMotor();
-            if (!launching && localizer.canLaunch() && shooter.readyToLaunch() && drive.readyToShoot()) {
-                shooter.launchAsync();
-                launching = true;
-            }
-        } else {
-            shooter.turnOffShooterMotor();
+        switch (shootingStatus) {
+            case IDLE:
+                shooter.turnOffShooterMotor();
+                if (shootScheduler > 0) {
+                    shootingStatus = ShootingStatus.AIMING;
+                }
+                break;
+            case AIMING:
+                drive.pointAtTargetAsync();
+                shooter.turnOnShooterMotor();
+                if (localizer.canLaunch() && shooter.readyToLaunch() && drive.readyToShoot()) {
+                    shootingStatus = ShootingStatus.SHOOTING;
+                    shooter.launchAsync();
+                }
+                break;
+            case SHOOTING:
+                if (shooter.isRetractedStatus()) {
+                    shootScheduler--;
+                    shootingStatus = ShootingStatus.AIMING;
+                }
+                break;
         }
     }
 
@@ -238,13 +254,13 @@ public class Robot extends RobotBase {
     }
 
     public void setManualMode() {
-        mode = Mode.MANUAL;
+        controlMode = ControlMode.MANUAL;
         if (!drive.isBusy()) {
             drive.cancelFollowing();
         }
     }
     public void setAutoMode() {
-        mode = Mode.COLLECTING;
+        controlMode = ControlMode.COLLECTING;
     }
 
     public void setPoseEstimate(Pose2d pose) {
