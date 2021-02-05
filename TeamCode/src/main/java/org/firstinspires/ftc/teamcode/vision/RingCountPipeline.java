@@ -123,6 +123,8 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+        Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
+
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
@@ -137,7 +139,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         mask = morphologyOperator.process(rawMask);
 
         croppedWorkingMat.copyTo(masked, mask);
-        Imgproc.cvtColor(masked,masked,Imgproc.COLOR_RGBA2RGB);
 
         List<MatOfPoint> potentialContours = new ArrayList<>();
 
