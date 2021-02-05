@@ -61,11 +61,11 @@ public class Field {
         }
 
         public Vector3D getLocation(Alliance alliance) {
-            if (alliance == Alliance.RED) {
-                // Mirror if red
-                return mirror(location);
-            } else {
-                return location;
+            switch(alliance) {
+                case RED:
+                    return mirror(location);
+                default:
+                    return location;
             }
         }
     }
@@ -82,10 +82,11 @@ public class Field {
         }
 
         public Vector2D getLocation(Alliance alliance) {
-            if (alliance == Alliance.RED) {
-                return mirror(location);
-            } else {
-                return location;
+            switch(alliance) {
+                case RED:
+                    return mirror(location);
+                default:
+                    return location;
             }
         }
     }
@@ -95,6 +96,19 @@ public class Field {
     }
     private static Vector2D mirror(Vector2D location) {
         return new Vector2D(location.getX(), -location.getY());
+    }
+
+    /*
+     * Assumes pose is blue by default
+     */
+    public static Pose2d conditionalMirror(Pose2d pose, Alliance alliance) {
+        switch(alliance) {
+            case RED:
+                return new Pose2d(pose.getX(), -pose.getY(), pose.getHeading());
+            default:
+                return pose;
+        }
+
     }
 
     private static List<Ring> rings;
