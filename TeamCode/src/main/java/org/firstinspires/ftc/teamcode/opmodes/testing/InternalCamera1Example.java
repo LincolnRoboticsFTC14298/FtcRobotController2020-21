@@ -166,6 +166,7 @@ public class InternalCamera1Example extends LinearOpMode
         @Override
         public Mat processFrame(Mat input)
         {
+            Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
             /*
              * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
              * will only dereference to the same image for the duration of this particular
