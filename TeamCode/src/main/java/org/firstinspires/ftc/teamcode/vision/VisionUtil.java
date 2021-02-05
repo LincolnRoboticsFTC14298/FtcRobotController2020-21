@@ -174,6 +174,16 @@ public class VisionUtil {
         return new MatOfPoint2f(pickedPoints);
     }
 
+    /*
+     * Return true if r1 contains r2
+     */
+    public static boolean contains(Rect r1, Rect r2) {
+        if (r1.contains(r2.tl()) && r1.contains(r2.br()))
+            return true;
+        else
+            return false;
+    }
+
     private static final Random rng = new Random(12345);
     public static Scalar generateColor() {
         return new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
