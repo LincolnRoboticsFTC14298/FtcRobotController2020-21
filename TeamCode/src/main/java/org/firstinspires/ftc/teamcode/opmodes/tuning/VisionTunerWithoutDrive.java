@@ -44,6 +44,8 @@ public class VisionTunerWithoutDrive extends OpMode {
             vision.setViewport(Viewport.MARKERS);
         } else if (gamepad.b) {
             vision.setViewport(Viewport.RAW_IMAGE);
+        } else if (gamepad.y) {
+            vision.setViewport(Viewport.ANNOTATED);
         }
 
         if (gamepad.x) {

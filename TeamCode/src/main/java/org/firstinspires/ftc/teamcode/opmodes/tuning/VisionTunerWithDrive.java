@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -49,16 +50,24 @@ public class VisionTunerWithDrive extends OpMode {
             vision.setViewport(Viewport.MARKERS);
         } else if (gamepad.b) {
             vision.setViewport(Viewport.RAW_IMAGE);
+        } else if (gamepad.y) {
+            vision.setViewport(Viewport.ANNOTATED);
         }
 
         if (gamepad.x) {
             vision.saveOutput();
         }
 
+        vision.update();
+        vision.updateTelemetry();
         drive.update();
         drive.updateMotorAndServoValues();
-        vision.update();
+        drive.updateTelemetry();
 
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.putAll(vision.getTelemetryData());
+        packet.putAll(drive.getTelemetryData());
+        dashboard.sendTelemetryPacket(packet);
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
     }
