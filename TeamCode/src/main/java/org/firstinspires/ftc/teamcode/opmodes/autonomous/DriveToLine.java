@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,14 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
-import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
+
+import static org.firstinspires.ftc.teamcode.util.Field.LAUNCH_LINE_X;
 
 @Config
 @Autonomous(name="Drive to line", group="Autonomous")
 @Disabled
 public class DriveToLine extends OpMode {
-    public static double FORWARD_DISTANCE = 60;
-    public static double STRAFE_DISTANCE = 10;
+    public static Pose2d startPose = new Pose2d(0,0,0);
+
     Robot robot;
 
     @Override
@@ -29,32 +29,12 @@ public class DriveToLine extends OpMode {
 
     @Override
     public void start() {
-        robot.vision.setWatershed(true);
-        robot.vision.setCroppedRectMode(RingCountPipeline.CroppedRectMode.SMALL);
-        robot.vision.analyze();
+        robot.drive.setPoseEstimate(startPose);
 
-        Trajectory traj1 = robot.drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(STRAFE_DISTANCE)
-                .build();
-
-        robot.drive.followTrajectory(traj1);
-
-
-        Trajectory traj2 = robot.drive.trajectoryBuilder(new Pose2d())
-                .forward(FORWARD_DISTANCE)
-                .build();
-
-        robot.drive.followTrajectory(traj2);
+        Pose2d pose = robot.localizer.getPoseEstimate();
+        robot.drive.strafeToPoint(new Pose2d(LAUNCH_LINE_X, pose.getY(), 0));
 
         DataWriterUtil.setLastPose(robot.drive.getPoseEstimate());
-//
-//        setPower(1);
-//        try {
-//            sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        setPower(0);
     }
 
     @Override
@@ -65,10 +45,5 @@ public class DriveToLine extends OpMode {
     @Override
     public void stop() {
         robot.stop();
-    }
-
-    public void setPower(double n) {
-        robot.drive.setMotorPowers(n,n,n,n);
-        robot.update();
     }
 }
