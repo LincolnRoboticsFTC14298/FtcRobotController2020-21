@@ -76,7 +76,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         AnalysisRectMode(double widthRatio, double heightRatio) {
             int w = (int) (width * widthRatio);
             int h = (int) (height * heightRatio);
-            int x = width/2 - w/2, y = height/2 - h/2;
+            int x = (int) (width*(1 - widthRatio)/2), y = (int) (height*(1 - heightRatio)/2);
             rect = new Rect(x, y, w, h);
         }
 
