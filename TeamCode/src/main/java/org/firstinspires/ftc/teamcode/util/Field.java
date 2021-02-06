@@ -104,7 +104,7 @@ public class Field {
     public static Pose2d conditionalMirror(Pose2d pose, Alliance alliance) {
         switch(alliance) {
             case RED:
-                return new Pose2d(pose.getX(), -pose.getY(), pose.getHeading());
+                return new Pose2d(pose.getX(), -pose.getY(), -pose.getHeading());
             default:
                 return pose;
         }
