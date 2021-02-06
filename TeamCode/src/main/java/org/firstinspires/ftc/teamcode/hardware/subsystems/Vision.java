@@ -57,7 +57,7 @@ public class Vision extends Subsystem {
         camera.openCameraDeviceAsync(
                 () -> {
                     //camera.setViewportRenderer(OpenCvInternalCamera2.ViewportRenderer.GPU_ACCELERATED);
-                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
                     camera.setSensorFps(30);
                     FtcDashboard.getInstance().startCameraStream(camera, 30);
                 }
@@ -76,7 +76,7 @@ public class Vision extends Subsystem {
         camera.openCameraDeviceAsync(
                 () -> {
                     //camera.setViewportRenderer(OpenCvInternalCamera2.ViewportRenderer.GPU_ACCELERATED);
-                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
                     camera.setSensorFps(30);
                     FtcDashboard.getInstance().startCameraStream(camera, 60);
                 }
