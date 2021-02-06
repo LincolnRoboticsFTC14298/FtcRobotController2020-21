@@ -69,9 +69,9 @@ public class RingCountPipeline extends OpenCvPipeline {
         SMALL(5.0 / 10, 1),
         WIDE(8.0 / 10, 1);
 
-        private Rect rect;
-        private int width = croppedRect.width;
-        private int height = croppedRect.width;
+        private final Rect rect;
+        private final int width = 2;
+        private final int height = 10;
 
         AnalysisRectMode(double widthRatio, double heightRatio) {
             int w = (int) (width * widthRatio);
