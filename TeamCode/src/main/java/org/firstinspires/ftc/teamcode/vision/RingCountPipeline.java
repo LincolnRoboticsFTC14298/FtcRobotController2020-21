@@ -158,7 +158,6 @@ public class RingCountPipeline extends OpenCvPipeline {
             //if (contains(analysisRect, ring.getBoundingRect())) {
                 double score = calculateScore(ring);
                 if (score <= SCORE_THRESHOLD) {
-                    //System.out.println("Final score: " + score);
                     finalRings.add(ring);
                     finalContours.add(ring.getContour());
                     centers.add(ring.getCentroid());
