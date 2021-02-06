@@ -35,7 +35,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     private boolean watershed = false;
 
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
-    private static final Scalar falseColor = new Scalar(255  , 0  , 0);
+    private static final Scalar falseColor = new Scalar(255, 0  , 0  );
 
     private final ArrayList<VisionScorer> scorers = new ArrayList<>();
     private double totalWeight = 0;
@@ -119,8 +119,7 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
-
+        //Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
@@ -185,7 +184,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
 
         Imgproc.rectangle(workingMat, analysisRect, foundColor, THICKNESS);
-        Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS/2);
+        Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS);
 
         Mat displayMat;
         switch (viewport) {
