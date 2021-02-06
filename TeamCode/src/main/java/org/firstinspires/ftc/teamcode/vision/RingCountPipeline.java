@@ -33,7 +33,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     public static int THICKNESS = 3;
     public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
-    private static Rect croppedRect = new Rect(0, Vision.WIDTH/3, Vision.HEIGHT, Vision.WIDTH/3);
+    private static Rect croppedRect = new Rect(0, Vision.HEIGHT/3, Vision.WIDTH, Vision.HEIGHT/3);
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
     private boolean watershed = false;
 
