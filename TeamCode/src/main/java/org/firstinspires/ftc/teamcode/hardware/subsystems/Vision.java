@@ -29,8 +29,8 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
 
 public class Vision extends Subsystem {
-    public static final int WIDTH = 320;
-    public static final int HEIGHT = 240;
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 720;
     public static final double FOV = 27.3; // degrees
     public static final double FUDGE_FACTOR = 1;
 
