@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
@@ -136,7 +134,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         input.copyTo(workingMat);
 
         croppedWorkingMat = new Mat(workingMat,croppedRect);
-        Log.println(Log.INFO, "Dimensions: ", input.size().toString());
+        //Log.println(Log.INFO, "Dimensions: ", input.size().toString());
 
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
