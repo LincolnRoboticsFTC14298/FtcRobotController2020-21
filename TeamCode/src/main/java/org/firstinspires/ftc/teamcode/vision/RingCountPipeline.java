@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
 import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
@@ -24,13 +23,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
+
 @Config
 public class RingCountPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
     public static int THICKNESS = 3;
     public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
-    private static Rect croppedRect;
+    private static Rect croppedRect = new Rect(0, Vision.HEIGHT/3, Vision.WIDTH, Vision.HEIGHT/3);
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
     private boolean watershed = false;
 
@@ -70,8 +71,8 @@ public class RingCountPipeline extends OpenCvPipeline {
         WIDE(8.0 / 10, 1);
 
         private final Rect rect;
-        private final int width = 2;
-        private final int height = 10;
+        private final int width = croppedRect.width;
+        private final int height = croppedRect.height;
 
         AnalysisRectMode(double widthRatio, double heightRatio) {
             int w = (int) (width * widthRatio);
@@ -126,15 +127,11 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        if (croppedRect == null) {
-            croppedRect = new Rect(0, input.height()/3, input.width(), input.height()/3);
-        }
         Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
         croppedWorkingMat = new Mat(workingMat,croppedRect);
-        Log.println(Log.INFO, "Dimensions: ", input.size().toString());
 
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
@@ -166,14 +163,14 @@ public class RingCountPipeline extends OpenCvPipeline {
             RingData ring = potentialRings.get(i);
             // TODO: FIX!!!
             // Must be within analysisRect to be analyzed
-            //if (contains(analysisRectMode.getRect(), ring.getBoundingRect())) {
+            if (contains(analysisRectMode.getRect(), ring.getBoundingRect())) {
                 double score = calculateScore(ring);
                 if (score <= SCORE_THRESHOLD) {
                     finalRings.add(ring);
                     finalContours.add(ring.getContour());
                     centers.add(ring.getCentroid());
                 }
-            //}
+            }
         }
 
         rings = finalRings;
@@ -193,7 +190,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         //drawRectangles(croppedWorkingMat, potentialRects, falseColor, THICKNESS); // Wrong rings will be red
         //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
 
-        //Imgproc.rectangle(croppedWorkingMat, analysisRectMode.getRect(), foundColor, THICKNESS);
+        Imgproc.rectangle(croppedWorkingMat, analysisRectMode.getRect(), foundColor, THICKNESS);
         Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS/2);
 
         Mat displayMat;
