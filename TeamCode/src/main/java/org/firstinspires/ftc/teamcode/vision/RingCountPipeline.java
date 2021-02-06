@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
@@ -23,15 +25,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
+
 @Config
 public class RingCountPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
     public static int THICKNESS = 3;
     public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
+    private static Rect croppedRect = new Rect(0, Vision.HEIGHT/3, Vision.WIDTH, Vision.HEIGHT/3);
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
-    private Rect analysisRect;
-    private Rect croppedRect = new Rect(0, Vision.HEIGHT/3, Vision.WIDTH, Vision.HEIGHT/3);
     private boolean watershed = false;
 
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
@@ -66,15 +69,22 @@ public class RingCountPipeline extends OpenCvPipeline {
     }
 
     public enum AnalysisRectMode {
-        SMALL(3.0 / 10, 3.0 / 10),
-        WIDE(5.0 / 10, 3.0 / 10);
+        SMALL(5.0 / 10, 1),
+        WIDE(8.0 / 10, 1);
 
-        public double widthRatio;
-        public double heightRatio;
+        private Rect rect;
+        private int width = croppedRect.width;
+        private int height = croppedRect.width;
 
         AnalysisRectMode(double widthRatio, double heightRatio) {
-            this.widthRatio = widthRatio;
-            this.heightRatio = heightRatio;
+            int w = (int) (width * widthRatio);
+            int h = (int) (height * heightRatio);
+            int x = width/2 - w/2, y = height/2 - h/2;
+            rect = new Rect(x, y, w, h);
+        }
+
+        public Rect getRect() {
+            return rect;
         }
     }
 
@@ -119,11 +129,12 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        //Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
+        Imgproc.cvtColor(input,input,Imgproc.COLOR_RGBA2RGB);
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
         croppedWorkingMat = new Mat(workingMat,croppedRect);
+        Log.println(Log.INFO, "Dimensions: ", input.size().toString());
 
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
@@ -155,14 +166,14 @@ public class RingCountPipeline extends OpenCvPipeline {
             RingData ring = potentialRings.get(i);
             // TODO: FIX!!!
             // Must be within analysisRect to be analyzed
-            //if (contains(analysisRect, ring.getBoundingRect())) {
+            if (contains(analysisRectMode.getRect(), ring.getBoundingRect())) {
                 double score = calculateScore(ring);
                 if (score <= SCORE_THRESHOLD) {
                     finalRings.add(ring);
                     finalContours.add(ring.getContour());
                     centers.add(ring.getCentroid());
                 }
-            //}
+            }
         }
 
         rings = finalRings;
@@ -182,8 +193,8 @@ public class RingCountPipeline extends OpenCvPipeline {
         //drawRectangles(croppedWorkingMat, potentialRects, falseColor, THICKNESS); // Wrong rings will be red
         //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
 
-        Imgproc.rectangle(workingMat, analysisRect, foundColor, THICKNESS);
-        Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS);
+        Imgproc.rectangle(croppedWorkingMat, analysisRectMode.getRect(), foundColor, THICKNESS);
+        Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS/2);
 
         Mat displayMat;
         switch (viewport) {
@@ -248,10 +259,6 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     public void setAnalysisRectMode(AnalysisRectMode analysisRectMode) {
         this.analysisRectMode = analysisRectMode;
-        int w = (int) (rawImage.width() * analysisRectMode.widthRatio);
-        int h = (int) (rawImage.height() * analysisRectMode.heightRatio);
-        int x = rawImage.width()/2 - w/2, y = rawImage.height()/2 - h/2;
-        analysisRect = new Rect(x, y, w, h);
     }
 
     public ArrayList<RingData> getRingData() {
