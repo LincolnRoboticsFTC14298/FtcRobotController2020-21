@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
-
 @Config
 public class RingCountPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
@@ -157,7 +155,8 @@ public class RingCountPipeline extends OpenCvPipeline {
         for (int i = 0; i < potentialRings.size(); i++) {
             RingData ring = potentialRings.get(i);
             // TODO: FIX!!!
-            if (contains(analysisRect, ring.getBoundingRect())) {
+            // Must be within analysisRect to be analyzed
+            //if (contains(analysisRect, ring.getBoundingRect())) {
                 double score = calculateScore(ring);
                 if (score <= SCORE_THRESHOLD) {
                     //System.out.println("Final score: " + score);
@@ -165,7 +164,7 @@ public class RingCountPipeline extends OpenCvPipeline {
                     finalContours.add(ring.getContour());
                     centers.add(ring.getCentroid());
                 }
-            }
+            //}
         }
 
         rings = finalRings;
