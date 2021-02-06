@@ -19,7 +19,7 @@ public class CameraOpMode extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        ringCountPipeline = new RingCountPipeline(phoneCam);
+        ringCountPipeline = new RingCountPipeline();
         phoneCam.setPipeline(ringCountPipeline);
 
         /*
