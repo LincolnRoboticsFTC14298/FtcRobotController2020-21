@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,14 +11,17 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
 @TeleOp(name="Vision Without Drive", group="Tuner")
+@Config
 public class VisionTunerWithoutDrive extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    public static int[] val = new int[2];
 
     private Vision vision;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
+        val[0] = 2;
         vision = new Vision(hardwareMap);
         gamepad = new RadicalGamepad(gamepad1);
     }
