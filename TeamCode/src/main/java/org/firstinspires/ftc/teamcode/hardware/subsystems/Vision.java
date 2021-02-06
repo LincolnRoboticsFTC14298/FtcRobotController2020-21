@@ -43,7 +43,6 @@ public class Vision extends Subsystem {
 
     // TODO: Possibly delete later
     private boolean processed = false;
-    private boolean viewportOn = false;
 
     Localizer localizer;
 
@@ -53,7 +52,7 @@ public class Vision extends Subsystem {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
 
-        ringCountPipeline = new RingCountPipeline(camera);
+        ringCountPipeline = new RingCountPipeline();
         camera.setPipeline(ringCountPipeline);
         camera.openCameraDeviceAsync(
                 () -> {
@@ -70,7 +69,7 @@ public class Vision extends Subsystem {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
 
-        ringCountPipeline = new RingCountPipeline(camera);
+        ringCountPipeline = new RingCountPipeline();
         camera.setPipeline(ringCountPipeline);
 
         camera.openCameraDeviceAsync(
@@ -175,8 +174,8 @@ public class Vision extends Subsystem {
     public void setWatershed(boolean watershed) {
         ringCountPipeline.setWatershed(watershed);
     }
-    public void setCroppedRectMode(RingCountPipeline.CroppedRectMode croppedRectMode) {
-        ringCountPipeline.setCroppedRectMode(croppedRectMode);
+    public void setCroppedRectMode(RingCountPipeline.AnalysisRectMode analysisRectMode) {
+        ringCountPipeline.setAnalysisRectMode(analysisRectMode);
     }
 
     public void saveOutput(String filename) {
@@ -185,13 +184,8 @@ public class Vision extends Subsystem {
     public void saveOutput() {
         RingCountPipeline.Viewport lastViewport = getViewport();
         setViewport(RingCountPipeline.Viewport.RAW_IMAGE);
-        File f = Environment.getDataDirectory()
-                .getAbsoluteFile()
-                .getParentFile()
-                .getParentFile()
-                .getParentFile();
-        String path = f.getPath() + "/vision/samples/";
-        String filename = path + "IMG_" + System.currentTimeMillis();
+        File file = new File(Environment.getExternalStorageDirectory() + "/vision/samples/");
+        String filename = file.getPath() + "IMG_" + System.currentTimeMillis();
         saveOutput(filename);
         setViewport(lastViewport);
     }
