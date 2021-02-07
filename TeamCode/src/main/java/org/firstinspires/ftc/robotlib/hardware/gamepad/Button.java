@@ -72,7 +72,7 @@ public class Button {
 
     public boolean isPressed() {
         // TODO: check to see if stickyness should be a part of debounce
-        boolean raw = getRaw();
+        boolean raw = getRawPressed();
 
         if (debounce) {
             raw = debouncePressed(raw);
