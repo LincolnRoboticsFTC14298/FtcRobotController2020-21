@@ -134,13 +134,14 @@ public class RingCountPipeline extends OpenCvPipeline {
         input.copyTo(workingMat);
 
         croppedWorkingMat = new Mat(workingMat,croppedRect);
-        Log.println(Log.INFO, "Dimensions: ", input.size().toString());
+        Log.println(Log.INFO, "Color space: ", String.valueOf(input.type()));
 
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
         mask = morphologyOperator.process(rawMask);
 
         croppedWorkingMat.copyTo(masked, mask);
+        Imgproc.cvtColor(masked,masked,Imgproc.COLOR_RGBA2RGB);
 
         List<MatOfPoint> potentialContours = new ArrayList<>();
 
