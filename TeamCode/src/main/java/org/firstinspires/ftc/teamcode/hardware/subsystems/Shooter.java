@@ -58,7 +58,6 @@ public class Shooter extends Subsystem {
 
     public Shooter(HardwareMap hardwareMap, Localizer localizer) {
         super("Shooter");
-
         // Initialize motors and servos //
         shooterMotor1 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR1_NAME);
         shooterMotor2 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR2_NAME);
