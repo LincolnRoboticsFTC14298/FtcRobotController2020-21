@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 public class Button {
     private Gamepad gamepad;
     private ButtonType buttonType;
+    private Field field;
 
 
     private boolean state;
@@ -57,11 +58,21 @@ public class Button {
     public Button(Gamepad gamepad, ButtonType buttonType) {
         this.gamepad = gamepad;
         this.buttonType = buttonType;
+        try {
+            this.field = Gamepad.class.getField(buttonType.toString());
+        } catch (Exception e) {
+            this.field = null;
+        }
         this.debounce = false;
     }
     public Button(Gamepad gamepad, ButtonType buttonType, double debouncePeriod) {
         this.gamepad = gamepad;
         this.buttonType = buttonType;
+        try {
+            this.field = Gamepad.class.getField(buttonType.toString());
+        } catch (Exception e) {
+            this.field = null;
+        }
         this.debounce = true;
         this.debouncePeriod = debouncePeriod; // Default period
     }
@@ -102,49 +113,10 @@ public class Button {
 
     private boolean getRawPressed() {
         try {
-            Field f = Gamepad.class.getField(buttonType.toString());
-            return (boolean) f.get(gamepad);
-        } catch (NoSuchFieldException e) {
-            //throw new IllegalStateException("Bad field name: " + button.toString(), e);
+            return (boolean) field.get(gamepad);
         } catch (IllegalAccessException e) {
             //throw new IllegalStateException("Failed to access field " + button.toString() + " after making it accessible", e);
         }
         return false;
-    }
-    private boolean getRaw() {
-        switch(buttonType) {
-            case a:
-                return gamepad.a;
-            case b:
-                return gamepad.b;
-            case x:
-                return gamepad.x;
-            case y:
-                return gamepad.y;
-            case dpad_up:
-                return gamepad.dpad_up;
-            case dpad_down:
-                return gamepad.dpad_down;
-            case dpad_right:
-                return gamepad.dpad_right;
-            case dpad_left:
-                return gamepad.dpad_left;
-            case right_bumper:
-                return gamepad.right_bumper;
-            case left_bumper:
-                return gamepad.left_bumper;
-            case right_stick_button:
-                return gamepad.right_stick_button;
-            case left_stick_button:
-                return gamepad.left_stick_button;
-            case start:
-                return gamepad.back;
-            case guide:
-                return gamepad.guide;
-            case back:
-                return gamepad.start;
-            default:
-                return false;
-        }
     }
 }
