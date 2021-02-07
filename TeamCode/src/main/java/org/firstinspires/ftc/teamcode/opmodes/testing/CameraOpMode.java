@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.testing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -25,7 +26,9 @@ public class CameraOpMode extends LinearOpMode {
         /*
          * Start streaming
          */
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+        phoneCam.setViewportRenderingPolicy(OpenCvInternalCamera2.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        phoneCam.setViewportRenderer(OpenCvInternalCamera2.ViewportRenderer.GPU_ACCELERATED);
+        phoneCam.startStreaming(Vision.WIDTH, Vision.HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
 
         /*
          * Demonstrate how to turn on the flashlight
