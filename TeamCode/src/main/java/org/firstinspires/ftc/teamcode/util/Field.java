@@ -1,20 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
 
-import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-
-import java.util.Comparator;
-import java.util.List;
-
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.rotateVector;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
 
 
 @Config
@@ -30,8 +21,8 @@ public class Field {
 
     public static final double LAUNCH_LINE_X = .5 * TILE_WIDTH;
 
-    public static double DISTANCE_TILL_DESPAWN_RINGS = 20; // inches
-    public static double DISTANCE_TILL_DESPAWN_WOBBLE_GOALS = 4;
+    public static RingProvider ringProvider = new RingProvider();
+    public static WobbleGoalProvider wobbleGoalProvider = new WobbleGoalProvider();
 
     // Targets are assumed to be blue and are mirrored as necessary.
 
@@ -108,73 +99,5 @@ public class Field {
             default:
                 return pose;
         }
-
-    }
-
-    private static List<Ring> rings;
-    private static List<WobbleGoal> wobbleGoals;
-
-    public static double MIN_DISTANCE = 0.5;
-    // Doesn't care about overlap
-    public static List<Ring> getRings() {
-        return rings;
-    }
-    public static void addRing(Ring ring) {
-        rings.add(ring);
-    }
-    public static void addRings(List<Ring> newRings) {
-        rings.addAll(newRings);
-    }
-    public static void drawRings(Canvas canvas) {
-        for (Ring r : rings) {
-            r.draw(canvas);
-        }
-    }
-    public static void updateRings(Pose2d pose) {
-        for (int i = 0; i < rings.size(); i++) {
-            double distance = rings.get(i).distanceFrom(pose);
-            if (distance < DISTANCE_TILL_DESPAWN_RINGS) {
-                rings.remove(i);
-            }
-        }
-    }
-    public static Ring getClosestRing(Vector2D pos) {
-        return rings.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
-    }
-    public static Ring getClosestRing(Pose2d pose) {
-        return getClosestRing(poseToVector2D(pose));
-    }
-
-    public static List<WobbleGoal> getWobbleGoals() {
-        return wobbleGoals;
-    }
-    public static void addWobbleGoal(WobbleGoal wobbleGoal) {
-        wobbleGoals.add(wobbleGoal);
-    }
-    public static void addWobbleGoal(List<Ring> wobbleGoals) {
-        wobbleGoals.addAll(wobbleGoals);
-    }
-    public static void drawWobbleGoal(Canvas canvas, Field.Alliance alliance) {
-        for (WobbleGoal w : wobbleGoals) {
-            w.draw(canvas, alliance);
-        }
-    }
-    public static void updateWobbleGoals(Pose2d pose) {
-        for (int i = 0; i < wobbleGoals.size(); i++) {
-            Vector2D pos = poseToVector2D(pose);
-            Vector2D armTip = pos.add(
-                    rotateVector(vector3DToVector2D(ARM_DOWN_LOCATION), pose.getHeading())
-            );
-            double distance = wobbleGoals.get(i).getPosition().distance(armTip);
-            if (distance < DISTANCE_TILL_DESPAWN_WOBBLE_GOALS) {
-                wobbleGoals.remove(i);
-            }
-        }
-    }
-    public static WobbleGoal getClosestWobbleGoal(Vector2D pos) {
-        return wobbleGoals.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
-    }
-    public static WobbleGoal getClosestWobbleGoal(Pose2d pose) {
-        return getClosestWobbleGoal(poseToVector2D(pose));
     }
 }

@@ -344,8 +344,8 @@ public class Drive extends MecanumDrive {
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
-        Field.drawRings(fieldOverlay);
-        Field.drawWobbleGoal(fieldOverlay, localizer.getAlliance());
+        Field.ringProvider.draw(fieldOverlay);
+        Field.wobbleGoalProvider.draw(fieldOverlay, localizer.getAlliance());
 
         FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }

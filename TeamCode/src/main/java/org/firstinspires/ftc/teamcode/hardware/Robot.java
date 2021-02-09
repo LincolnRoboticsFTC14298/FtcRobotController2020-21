@@ -92,7 +92,7 @@ public class Robot extends RobotBase {
     @Override
     public void update() {
         localizer.update();
-        Field.updateRings(localizer.getPoseEstimate());
+        Field.ringProvider.update(localizer.getPoseEstimate());
 
         vision.scan();
         switch (controlMode) {
@@ -103,7 +103,7 @@ public class Robot extends RobotBase {
                     drive.cancelFollowing();
                     controlMode = ControlMode.TRAVELING_TO_SHOOT;
                 } else if (!drive.isBusy()) {
-                    if (Field.getRings().size() > 0) {
+                    if (Field.ringProvider.getRings().size() > 0) {
                         goToRing();
                     } else {
                         // TODO: rotate to find rings
@@ -143,6 +143,8 @@ public class Robot extends RobotBase {
     }
 
 
+
+    // Shooting //
     private int shootScheduler = 0;
     public boolean doneShooting() {
         return shootScheduler == 0;
@@ -159,6 +161,10 @@ public class Robot extends RobotBase {
 
     public void shootAsync(int n) {
         shootScheduler += n;
+    }
+    public void shoot(int n) {
+        shootAsync(n);
+        waitUntilDoneShooting();
     }
     public void shootTarget(Target target, int n) {
         setTarget(target);
@@ -180,10 +186,7 @@ public class Robot extends RobotBase {
         shootTarget(Target.INWARD_POWER_SHOT, 1);
         waitUntilDoneShooting();
     }
-    public void shoot(int n) {
-        shootAsync(n);
-        waitUntilDoneShooting();
-    }
+
 
     public enum ShootingStatus {
         IDLE,
@@ -222,9 +225,12 @@ public class Robot extends RobotBase {
         }
     }
 
+
+
+    // Traveling //
     public void goToRing() {
-        if (Field.getRings().size() > 0) {
-            Ring closestRing = Field.getClosestRing(localizer.getPoseEstimate());
+        if (Field.ringProvider.getRings().size() > 0) {
+            Ring closestRing = Field.ringProvider.getClosest(localizer.getPoseEstimate());
             Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
             Vector2D ringPos = closestRing.getPosition();
 
@@ -238,8 +244,8 @@ public class Robot extends RobotBase {
     }
 
     public void goToWobbleGoal() {
-        if (Field.getWobbleGoals().size() > 0) {
-            WobbleGoal closestWobbleGoal = Field.getClosestWobbleGoal(localizer.getPoseEstimate());
+        if (Field.wobbleGoalProvider.getWobbleGoals().size() > 0) {
+            WobbleGoal closestWobbleGoal = Field.wobbleGoalProvider.getClosest(localizer.getPoseEstimate());
             Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
             Vector2D ringPos = closestWobbleGoal.getPosition();
 
@@ -263,6 +269,9 @@ public class Robot extends RobotBase {
         controlMode = ControlMode.COLLECTING;
     }
 
+
+
+    // Getters and setters //
     public void setPoseEstimate(Pose2d pose) {
         localizer.setPoseEstimate(pose);
     }
