@@ -94,34 +94,7 @@ public class Robot extends RobotBase {
         localizer.update();
         Field.ringProvider.update(localizer.getPoseEstimate());
 
-        vision.scan();
-        switch (controlMode) {
-            case MANUAL:
-                break;
-            case COLLECTING:
-                if (ringCounter.getNumberOfRings() == 3) {
-                    drive.cancelFollowing();
-                    controlMode = ControlMode.TRAVELING_TO_SHOOT;
-                } else if (!drive.isBusy()) {
-                    if (Field.ringProvider.getRings().size() > 0) {
-                        goToRing();
-                    } else {
-                        // TODO: rotate to find rings
-                    }
-                }
-                break;
-            case TRAVELING_TO_SHOOT:
-                if (drive.isBehindLine()) {
-                    // Can make async
-                    // TODO: Check time and shoot target dependent on time
-                    shoot(3);
-                    controlMode = ControlMode.COLLECTING.COLLECTING;
-                } else if (!drive.isBusy()) {
-                    drive.goBehindLineAsync();
-                }
-                break;
-        }
-
+        updateNavigation();
         updateShooting();
 
         subsystemManager.update();
@@ -186,6 +159,9 @@ public class Robot extends RobotBase {
         shootTarget(Target.INWARD_POWER_SHOT, 1);
         waitUntilDoneShooting();
     }
+    public void cancelShot() {
+        shootScheduler = 0;
+    }
 
 
     public enum ShootingStatus {
@@ -200,18 +176,19 @@ public class Robot extends RobotBase {
 
         if (shootScheduler == 0) {
             shootingStatus = ShootingStatus.IDLE;
+            drive.cancelFollowing();
+            shooter.turnOffShooterMotor();
         }
         switch (shootingStatus) {
             case IDLE:
-                shooter.turnOffShooterMotor();
                 if (shootScheduler > 0) {
                     shootingStatus = ShootingStatus.AIMING;
+                    drive.stop();
                 }
                 break;
             case AIMING:
                 if (localizer.canLaunch() && shooter.readyToLaunch() && !drive.isBusy()) {
                     shootingStatus = ShootingStatus.SHOOTING;
-
                     shooter.launchAsync();
                 }
                 break;
@@ -219,7 +196,6 @@ public class Robot extends RobotBase {
                 if (shooter.isRetractedStatus()) {
                     shootScheduler--;
                     shootingStatus = ShootingStatus.AIMING;
-
                     drive.pointAtTargetAsync();
                     shooter.turnOnShooterMotor();
                 }
@@ -244,7 +220,6 @@ public class Robot extends RobotBase {
             drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
         }
     }
-
     public void goToWobbleGoal() {
         if (Field.wobbleGoalProvider.getWobbleGoals().size() > 0) {
             WobbleGoal closestWobbleGoal = Field.wobbleGoalProvider.getClosest(localizer.getPoseEstimate());
@@ -261,6 +236,38 @@ public class Robot extends RobotBase {
         }
     }
 
+    public void updateNavigation() {
+        vision.scan();
+        switch (controlMode) {
+            case MANUAL:
+                break;
+            case COLLECTING:
+                if (ringCounter.getNumberOfRings() == 3) {
+                    drive.cancelFollowing();
+                    controlMode = ControlMode.TRAVELING_TO_SHOOT;
+                } else if (!drive.isBusy()) {
+                    if (Field.ringProvider.getRings().size() > 0) {
+                        goToRing();
+                    } else {
+                        // TODO: rotate to find rings
+                    }
+                }
+                break;
+            case TRAVELING_TO_SHOOT:
+                if (drive.isBehindLine()) {
+                    // Can make async
+                    // TODO: Check time and shoot target dependent on time
+                    shoot(3);
+                    controlMode = ControlMode.COLLECTING.COLLECTING;
+                } else if (!drive.isBusy()) {
+                    drive.goBehindLineAsync();
+                }
+                break;
+        }
+    }
+
+
+    // Getters and setters //
     public void setManualMode() {
         controlMode = ControlMode.MANUAL;
         if (!drive.isBusy()) {
@@ -271,9 +278,6 @@ public class Robot extends RobotBase {
         controlMode = ControlMode.COLLECTING;
     }
 
-
-
-    // Getters and setters //
     public void setPoseEstimate(Pose2d pose) {
         localizer.setPoseEstimate(pose);
     }
