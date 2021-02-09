@@ -67,6 +67,7 @@ public class Intake extends Subsystem {
         logger.atFiner().log("rear target: ", rearPower);
     }
 
+    // Setters //
     public void turnOn() {
         frontPower = FRONT_POWER_ON;
         rearPower = REAR_POWER_ON;
