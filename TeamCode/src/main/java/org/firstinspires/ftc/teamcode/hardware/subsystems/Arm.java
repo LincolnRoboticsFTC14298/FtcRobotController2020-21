@@ -30,8 +30,8 @@ public class Arm extends Subsystem {
 
     public static double TICKS_PER_REV = 0;
 
-    private final DcMotorEx armMotor;
-    private final Servo clawServo;
+    private DcMotorEx armMotor;
+    private Servo clawServo;
     private double armAngle, clawPosition;
 
     public Arm(HardwareMap hardwareMap) {

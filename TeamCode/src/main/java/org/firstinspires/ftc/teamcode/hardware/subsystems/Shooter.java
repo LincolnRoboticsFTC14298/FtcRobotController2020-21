@@ -31,16 +31,16 @@ public class Shooter extends Subsystem {
     public static double LAUNCH_FLAP_EXTENDED_POS = 1;
 
 
-    private final DcMotor shooterMotor1;
-    private final DcMotor shooterMotor2;
-    private final Servo flapServo;
-    private final Servo launchFlapServo;
+    private DcMotor shooterMotor1;
+    private DcMotor shooterMotor2;
+    private Servo flapServo;
+    private Servo launchFlapServo;
 
     private double shooterMotor1Power, shooterMotor2Power;
     private double flapAngle, launchFlapPos;
-    private final double targetAngle = 0;
+    private double targetAngle = 0;
 
-    private final Localizer localizer;
+    private Localizer localizer;
 
     public enum LaunchStatus {
         EXTENDING,
