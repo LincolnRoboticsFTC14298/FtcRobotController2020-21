@@ -54,6 +54,13 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
 
     private boolean canLaunch = true;
 
+    public static double fudgeFactor = 1;
+    public static double launchVel = 8;
+    private static final double g = 9.8;
+
+    private static Field.Target target;
+    private static Field.Alliance alliance;
+
     public Localizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
@@ -68,26 +75,19 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
-    private static Field.Target target;
-    private static Field.Alliance alliance;
-
-    public static double fudgeFactor = 1;
-    public static double launchVel = 8;
-    private static final double g = 9.8;
-
-
     public Vector2D getPosition() {
         return poseToVector2D(getPoseEstimate());
     }
 
+    /*
+     * Frame of refrence: robot center with axis aligned with global axis
+     */
     public Vector2D getTargetRelativeLocation2D() {
-        // In frame of refrence of robot center with axis aligned with global axis
         Vector2D targetPos = MathUtil.vector3DToVector2D(target.getLocation(alliance));
         Vector2D pos = getPosition();
         return targetPos.subtract(pos);
     }
     public Vector3D getTargetRelativeLocation3D() {
-        // In frame of refrence of robot center with axis aligned with global axis
         Vector3D targetPos = target.getLocation(alliance);
         Vector3D pos = MathUtil.vector2DToVector3D(getPosition());
         return targetPos.subtract(pos);
@@ -113,7 +113,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
             );
         } catch (Exception e) {
             canLaunch = false;
-            return Math.toRadians(22);
+            return Math.toRadians(22); // Average launch angle
         }
 
     }
@@ -122,6 +122,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         return canLaunch;
     }
 
+    // RoadRunner Methods //
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
@@ -150,6 +151,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         );
     }
 
+    // Getters and Setters //
     public Field.Target getTarget() {
         return target;
     }
