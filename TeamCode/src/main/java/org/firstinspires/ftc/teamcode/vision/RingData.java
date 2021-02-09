@@ -13,16 +13,16 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
 public class RingData {
-    private MatOfPoint contour;
-    private double contourArea;
-    private Point centroid;
+    private final MatOfPoint contour;
+    private final double contourArea;
+    private final Point centroid;
 
-    private double convexHullArea;
+    private final double convexHullArea;
 
-    private Rect boundingRect;
-    private double boxArea;
-    private Point boxCenter;
-    private Size boxSize;
+    private final Rect boundingRect;
+    private final double boxArea;
+    private final Point boxCenter;
+    private final Size boxSize;
 
     public RingData(MatOfPoint contour) {
         this.contour = contour;
