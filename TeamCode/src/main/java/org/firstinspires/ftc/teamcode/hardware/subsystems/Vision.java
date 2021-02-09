@@ -26,7 +26,7 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.rotateVector;
 import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
 import static org.firstinspires.ftc.robotlib.util.MathUtil.vectorFromAngle;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
-import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
+import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
 public class Vision extends Subsystem {
     public static int WIDTH = 320;
@@ -46,25 +46,6 @@ public class Vision extends Subsystem {
 
     private Localizer localizer;
 
-    public Vision(HardwareMap hardwareMap) {
-        super("Vision");
-        this.localizer = null;
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-
-        ringCountPipeline = new RingCountPipeline();
-        camera.setPipeline(ringCountPipeline);
-        camera.openCameraDeviceAsync(
-                () -> {
-                    camera.setViewportRenderingPolicy(OpenCvInternalCamera2.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-                    camera.setViewportRenderer(OpenCvInternalCamera2.ViewportRenderer.GPU_ACCELERATED);
-                    camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
-                    camera.setSensorFps(30);
-                    FtcDashboard.getInstance().startCameraStream(camera, 30);
-                }
-        );
-    }
-
     public Vision(HardwareMap hardwareMap, Localizer localizer) {
         super("Vision");
         this.localizer = localizer;
@@ -79,10 +60,13 @@ public class Vision extends Subsystem {
                     camera.setViewportRenderingPolicy(OpenCvInternalCamera2.ViewportRenderingPolicy.OPTIMIZE_VIEW);
                     camera.setViewportRenderer(OpenCvInternalCamera2.ViewportRenderer.GPU_ACCELERATED);
                     camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
-                    camera.setSensorFps(30);
-                    FtcDashboard.getInstance().startCameraStream(camera, 30);
+                    setFPS(30);
                 }
         );
+    }
+
+    public Vision(HardwareMap hardwareMap) {
+        this(hardwareMap, null);
     }
 
     @Override
@@ -162,7 +146,6 @@ public class Vision extends Subsystem {
     public List<RingData> getRingData() {
         return ringData;
     }
-
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
         if (processed) {
@@ -172,6 +155,12 @@ public class Vision extends Subsystem {
             //dashboard.sendTelemetryPacket(packet);
             return 0;
         }
+    }
+
+    public void setFPS(int fps) {
+        FtcDashboard.getInstance().stopCameraStream();
+        camera.setSensorFps(fps);
+        FtcDashboard.getInstance().startCameraStream(camera, fps);
     }
 
     public RingCountPipeline.Viewport getViewport() {
