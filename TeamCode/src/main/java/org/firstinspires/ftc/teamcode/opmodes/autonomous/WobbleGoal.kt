@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.hardware.Robot
 import org.firstinspires.ftc.teamcode.util.Field
-import org.firstinspires.ftc.teamcode.util.Field.conditionalMirror
+import org.firstinspires.ftc.teamcode.util.Field.mirror
 
 @Config
 open class WobbleGoal(var alliance: Field.Alliance) : OpMode() {
@@ -22,7 +22,7 @@ open class WobbleGoal(var alliance: Field.Alliance) : OpMode() {
     override fun init() {
         robot = Robot(this)
 
-        robot.setPoseEstimate(conditionalMirror(startPose, alliance))
+        robot.setPoseEstimate(mirror(startPose, alliance))
 
         traj1 = robot.drive.trajectoryBuilder(robot.localizer.poseEstimate)
                 .back(1.0)
