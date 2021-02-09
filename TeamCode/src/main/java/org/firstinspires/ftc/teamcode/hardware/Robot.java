@@ -209,10 +209,9 @@ public class Robot extends RobotBase {
                 }
                 break;
             case AIMING:
-                drive.pointAtTargetAsync();
-                shooter.turnOnShooterMotor();
-                if (localizer.canLaunch() && shooter.readyToLaunch() && drive.readyToShoot()) {
+                if (localizer.canLaunch() && shooter.readyToLaunch() && !drive.isBusy()) {
                     shootingStatus = ShootingStatus.SHOOTING;
+
                     shooter.launchAsync();
                 }
                 break;
@@ -220,6 +219,9 @@ public class Robot extends RobotBase {
                 if (shooter.isRetractedStatus()) {
                     shootScheduler--;
                     shootingStatus = ShootingStatus.AIMING;
+
+                    drive.pointAtTargetAsync();
+                    shooter.turnOnShooterMotor();
                 }
                 break;
         }
@@ -227,7 +229,7 @@ public class Robot extends RobotBase {
 
 
 
-    // Traveling //
+    // Navigation //
     public void goToRing() {
         if (Field.ringProvider.getRings().size() > 0) {
             Ring closestRing = Field.ringProvider.getClosest(localizer.getPoseEstimate());

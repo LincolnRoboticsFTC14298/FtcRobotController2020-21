@@ -388,9 +388,6 @@ public class Drive extends MecanumDrive {
         );
     }
 
-    public boolean readyToShoot() {
-        return Math.abs(getPoseEstimate().getHeading() - localizer.getTargetHeading()) < HEADING_MIN_ERROR;
-    }
     public void pointAtTargetAsync() {
         turnToAsync(localizer.getTargetHeading());
     }
@@ -398,7 +395,6 @@ public class Drive extends MecanumDrive {
         turnTo(localizer.getTargetHeading());
     }
 
-    // TODO: Check this is global not local
     public void strafeToPointAsync(Pose2d target) {
         Pose2d pose = getPoseEstimate();
         Trajectory trajectory = trajectoryBuilder(pose)
@@ -423,6 +419,9 @@ public class Drive extends MecanumDrive {
         return Math.abs(getPoseEstimate().getX() - LAUNCH_X) < BEHIND_LINE_ERROR;
     }
 
+
+
+    // Road Runner Methods //
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, velConstraint, accelConstraint);
     }
