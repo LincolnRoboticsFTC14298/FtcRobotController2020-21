@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive.Drive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.SimpleDrive;
 
 @TeleOp(name="Simple Drive test", group="Test")
 public class SimpleDriveTestOpmode extends OpMode {
-    Drive drive;
+    SimpleDrive drive;
     RadicalGamepad gamepad;
 
     @Override
     public void init() {
-        drive = new Drive(hardwareMap);
+        drive = new SimpleDrive(hardwareMap);
         gamepad = new RadicalGamepad(gamepad1);
     }
 

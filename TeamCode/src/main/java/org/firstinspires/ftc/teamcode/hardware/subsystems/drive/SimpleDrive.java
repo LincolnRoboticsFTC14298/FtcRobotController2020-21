@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware.subsystems.old.drive;
+package org.firstinspires.ftc.teamcode.hardware.subsystems.drive;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
 @Deprecated
-public class Drive extends Subsystem {
+public class SimpleDrive extends Subsystem {
     // Mecanum drive //
 
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -36,7 +36,7 @@ public class Drive extends Subsystem {
 
     public boolean aligning = false;
 
-    public Drive(HardwareMap hardwareMap) {
+    public SimpleDrive(HardwareMap hardwareMap) {
         super("Old Drive");
 
         // Initialize motors //
