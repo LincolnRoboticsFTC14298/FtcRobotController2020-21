@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 
+@Deprecated
 public class Elevator extends Subsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 

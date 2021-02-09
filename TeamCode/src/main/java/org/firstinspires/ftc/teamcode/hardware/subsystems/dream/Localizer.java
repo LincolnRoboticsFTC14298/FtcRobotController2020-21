@@ -33,6 +33,7 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
  *    \--------------/
  *
  */
+@Deprecated
 public class Localizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 0;
     public static double WHEEL_RADIUS = 2; // in

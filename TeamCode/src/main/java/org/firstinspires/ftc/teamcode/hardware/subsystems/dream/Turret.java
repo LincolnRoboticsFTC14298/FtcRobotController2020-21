@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 
+@Deprecated
 public class Turret extends Subsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
