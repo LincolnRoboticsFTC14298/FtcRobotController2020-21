@@ -44,7 +44,7 @@ public class Vision extends Subsystem {
     // TODO: Possibly delete later
     private boolean processed = false;
 
-    Localizer localizer;
+    private Localizer localizer;
 
     public Vision(HardwareMap hardwareMap) {
         super("Vision");
@@ -85,7 +85,6 @@ public class Vision extends Subsystem {
         );
     }
 
-
     @Override
     public void update() {
 
@@ -107,6 +106,50 @@ public class Vision extends Subsystem {
         ringData = ringCountPipeline.getRingData();
         processed = true;
     }
+    public void scan() {
+        analyze();
+        for (RingData r : ringData) {
+            Ring ring = new Ring(getRingPosition(r));
+            Field.ringProvider.add(ring);
+        }
+    }
+
+    /*
+     * Frame of reference: camera center and axis is local
+     */
+    public double getCameraRingAngle(RingData ring) {
+        double cx = ring.getCentroid().x;
+        int w = WIDTH;
+        double x = cx - w/2; // centered at w/2
+        return -Math.atan(Math.tan( Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
+    }
+    public double getCameraRingDistance(RingData ring) {
+        double cx = ring.getCentroid().x;
+        int w = WIDTH;
+        double xpx = cx - w/2;
+        double angle = getCameraRingAngle(ring);
+        double dpx = ring.getBoxSize().width;
+        return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
+    }
+
+    /*
+     * Frame of reference: robot at center and axis is local
+     */
+    public Vector2D getRingLocalPosition(RingData ring) {
+        double angle = getCameraRingAngle(ring);
+        double distance = getCameraRingDistance(ring);
+        return vector3DToVector2D(CAMERA_LOCATION)
+                .add(vectorFromAngle(distance, angle));
+    }
+
+    /*
+     * Frame of reference: global
+     */
+    public Vector2D getRingPosition(RingData ringData) {
+        Pose2d pose = localizer.getPoseEstimate();
+        return rotateVector(getRingLocalPosition(ringData), pose.getHeading())
+                .add(poseToVector2D(pose));
+    }
 
     public void resumeViewport() {
         camera.resumeViewport();
@@ -115,6 +158,10 @@ public class Vision extends Subsystem {
         camera.pauseViewport();
     }
 
+    // Getters and Setters //
+    public List<RingData> getRingData() {
+        return ringData;
+    }
 
     public int getNumRings() {
         TelemetryPacket packet = new TelemetryPacket();
@@ -124,47 +171,6 @@ public class Vision extends Subsystem {
             packet.addLine("ERROR: IMAGE NOT PROCESSED");
             //dashboard.sendTelemetryPacket(packet);
             return 0;
-        }
-    }
-
-    public List<RingData> getRingData() {
-        return ringData;
-    }
-
-    public double getRingLocalAngle(RingData ring) {
-        // Assumes a centered camera
-        // Alternative: angle = atan( atan(fov/2) * (2cx / w - 1) ))
-        double cx = ring.getCentroid().x;
-        int w = WIDTH;
-        double x = cx - w/2; // centered at w/2
-        return -Math.atan(Math.tan( Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
-    }
-    public double getRingLocalDistance(RingData ring) {
-        // inches
-        double cx = ring.getCentroid().x;
-        int w = WIDTH;
-        double xpx = cx - w/2;
-        double angle = getRingLocalAngle(ring);
-        double dpx = ring.getBoxSize().width;
-        return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
-    }
-    public Vector2D getRingLocalPosition(RingData ring) {
-        // in frame of rotated robot
-        double angle = getRingLocalAngle(ring);
-        double distance = getRingLocalDistance(ring);
-        return vector3DToVector2D(CAMERA_LOCATION)
-                .add(vectorFromAngle(distance, angle));
-    }
-    public Vector2D getRingPosition(RingData ringData) {
-        Pose2d pose = localizer.getPoseEstimate();
-        return rotateVector(getRingLocalPosition(ringData), pose.getHeading())
-                .add(poseToVector2D(pose));
-    }
-    public void scan() {
-        analyze();
-        for (RingData r : ringData) {
-            Ring ring = new Ring(getRingPosition(r));
-            Field.addRing(ring);
         }
     }
 
@@ -182,6 +188,7 @@ public class Vision extends Subsystem {
         ringCountPipeline.setAnalysisRectMode(analysisRectMode);
     }
 
+    // Save image //
     public void saveOutput(String filename) {
         ringCountPipeline.saveLatestMat(filename);
     }
