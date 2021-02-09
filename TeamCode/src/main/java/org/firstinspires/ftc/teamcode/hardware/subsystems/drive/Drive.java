@@ -95,10 +95,7 @@ public class Drive extends MecanumDrive {
 
     private LinkedList<Pose2d> poseHistory;
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightRear;
-    private DcMotorEx rightFront;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
     private final VoltageSensor batteryVoltageSensor;

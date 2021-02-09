@@ -31,10 +31,8 @@ public class Shooter extends Subsystem {
     public static double LAUNCH_FLAP_EXTENDED_POS = 1;
 
 
-    private DcMotor shooterMotor1;
-    private DcMotor shooterMotor2;
-    private Servo flapServo;
-    private Servo launchFlapServo;
+    private DcMotor shooterMotor1, shooterMotor2;
+    private Servo flapServo, launchFlapServo;
 
     private double shooterMotor1Power, shooterMotor2Power;
     private double flapAngle, launchFlapPos;
@@ -130,7 +128,7 @@ public class Shooter extends Subsystem {
         logger.atFinest().log("is retracted: ", isRetracted());
     }
 
-    
+
     // Aiming //
     public boolean doneAiming() {
         return Math.abs(posToAngle(flapServo.getPosition()) - flapAngle) < FLAP_MIN_ERROR;

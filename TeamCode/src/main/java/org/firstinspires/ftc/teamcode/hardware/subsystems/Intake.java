@@ -18,8 +18,7 @@ public class Intake extends Subsystem {
     public static double FRONT_POWER_ON = 1;
     public static double REAR_POWER_ON = 1;
 
-    private DcMotorEx front;
-    private DcMotorEx rear;
+    private DcMotorEx front, rear;
     private double frontPower = 0, rearPower = 0;
 
     public Intake(HardwareMap hardwareMap) {

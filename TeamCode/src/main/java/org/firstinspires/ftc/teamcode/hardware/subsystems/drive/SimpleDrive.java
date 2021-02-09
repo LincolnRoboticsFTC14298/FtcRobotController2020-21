@@ -23,10 +23,7 @@ public class SimpleDrive extends Subsystem {
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
 
-    private final DcMotorEx frontLeft;
-    private final DcMotorEx frontRight;
-    private final DcMotorEx backLeft;
-    private final DcMotorEx backRight;
+    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
     public List<DcMotorEx> motors;
 
     private double frontLeftPower = 0, frontRightPower = 0, backLeftPower = 0, backRightPower = 0;
