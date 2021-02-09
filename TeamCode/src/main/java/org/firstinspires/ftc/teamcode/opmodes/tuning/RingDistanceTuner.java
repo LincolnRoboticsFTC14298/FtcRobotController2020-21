@@ -48,7 +48,7 @@ public class RingDistanceTuner extends OpMode {
     @Override
     public void loop() {
         RingData ring = robot.vision.getRingData().get(0);
-        double predDist = robot.vision.getRingLocalDistance(ring);
+        double predDist = robot.vision.getCameraRingDistance(ring);
 
         if (gamepad.a) {
             predictedDistances.add(predDist);
@@ -61,7 +61,7 @@ public class RingDistanceTuner extends OpMode {
 
         telemetry.addData("Actual Distance: ", dist);
         telemetry.addData("Predicted Distance: ", fudgeFactor*predDist);
-        telemetry.addData("Ring angle", robot.vision.getRingLocalAngle(ring));
+        telemetry.addData("Ring angle", robot.vision.getCameraRingAngle(ring));
         telemetry.addData("Fudge Factor: ", fudgeFactor);
         telemetry.update();
     }
