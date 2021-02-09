@@ -65,8 +65,6 @@ public class Drive extends MecanumDrive {
     private static final String RIGHT_REAR_NAME = "rightRear";
     private static final String RIGHT_FRONT_NAME = "rightFront";
 
-    //public static double DRIVER_TARGET_ANGLE_MIN_ERROR = 1; // In degrees
-
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
