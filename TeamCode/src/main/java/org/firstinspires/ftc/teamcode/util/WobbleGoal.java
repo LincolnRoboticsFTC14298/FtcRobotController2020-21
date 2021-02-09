@@ -1,31 +1,26 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
-import static org.firstinspires.ftc.teamcode.util.Field.RING_DIAMETER;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class WobbleGoal {
-    private final Vector2D position;
+    public static final double WOBBLE_GOAL_RADIUS = 6;
+    public static final double WOBBLE_GOAL_DIAMETER = 2 * WOBBLE_GOAL_RADIUS;
 
-    public WobbleGoal(Vector2D position) {
+    private final Vector2d position;
+
+    public WobbleGoal(Vector2d position) {
         this.position = position;
     }
 
-    public double distanceFrom(Vector2D pos) {
-        return position.distance(pos);
-    }
-    public double distanceFrom(Pose2d pose) {
-        return distanceFrom(poseToVector2D(pose));
+    public double distanceFrom(Vector2d pos) {
+        return position.distTo(pos);
     }
     public double distanceFrom(Ring ring) {
-        return position.distance(ring.getPosition());
+        return position.distTo(ring.getPosition());
     }
 
-    public Vector2D getPosition() {
+    public Vector2d getPosition() {
         return position;
     }
 
@@ -42,7 +37,6 @@ public class WobbleGoal {
                 canvas.setStroke("#2c5bd3");
                 break;
         }
-
-        canvas.strokeCircle(position.getX(), position.getY(), RING_DIAMETER);
+        canvas.strokeCircle(position.getX(), position.getY(), WOBBLE_GOAL_RADIUS);
     }
 }

@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
 import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
-import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
@@ -20,16 +19,13 @@ import org.firstinspires.ftc.teamcode.util.Field.Target;
 import org.firstinspires.ftc.teamcode.util.Ring;
 import org.firstinspires.ftc.teamcode.util.WobbleGoal;
 
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vector2DToPose;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION_2d;
 
 
 public class Robot extends RobotBase {
     public Localizer localizer;
 
-    // Subsystems
+    // Subsystems //
     public Vision vision;
     public Arm arm;
     public Intake intake;
@@ -211,31 +207,31 @@ public class Robot extends RobotBase {
     // Navigation //
     public void goToRing() {
         if (Field.ringProvider.getRings().size() > 0) {
-            Ring closestRing = Field.ringProvider.getClosest(localizer.getPoseEstimate());
-            Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
-            Vector2D ringPos = closestRing.getPosition();
+            Vector2d pos = localizer.getPoseEstimate().vec();
 
-            Vector2D dp = ringPos.subtract(pos);
-            dp = dp.scalarMultiply(1 - 5.0 / dp.getNorm()); // 5 inches before
-            Vector2D targetPos = pos.add(dp);
-            double heading = MathUtil.angle(new Vector2D(1, 0), dp);
+            Ring closestRing = Field.ringProvider.getClosest(pos);
+            Vector2d ringPos = closestRing.getPosition();
+            Vector2d dp = ringPos.minus(pos);
+            dp = dp.times(1 - 5.0 / dp.norm()); // 5 inches before
+            Vector2d targetPos = pos.plus(dp);
+            double heading = dp.angleBetween(new Vector2d(1, 0)); // TODO: Check if needs to be negated
 
-            drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
+            drive.strafeToPointAsync(new Pose2d(targetPos, heading));
         }
     }
     public void goToWobbleGoal() {
         if (Field.wobbleGoalProvider.getWobbleGoals().size() > 0) {
-            WobbleGoal closestWobbleGoal = Field.wobbleGoalProvider.getClosest(localizer.getPoseEstimate());
-            Vector2D pos = poseToVector2D(localizer.getPoseEstimate());
-            Vector2D ringPos = closestWobbleGoal.getPosition();
+            Vector2d pos = localizer.getPoseEstimate().vec();
 
-            Vector2D dp = ringPos.subtract(pos);
-            Vector2D armPos = vector3DToVector2D(ARM_DOWN_LOCATION);
-            dp = dp.scalarMultiply(1 - armPos.getNorm() / dp.getNorm());
-            Vector2D targetPos = pos.add(dp);
-            double heading = MathUtil.angle(new Vector2D(1, 0), armPos) + MathUtil.angle(new Vector2D(1, 0), dp);
+            WobbleGoal closestWobbleGoal = Field.wobbleGoalProvider.getClosest(pos);
+            Vector2d wobbleGoalPos = closestWobbleGoal.getPosition();
+            Vector2d dp = wobbleGoalPos.minus(pos);
+            Vector2d armPos = ARM_DOWN_LOCATION_2d;
+            dp = dp.times(1 - armPos.norm() / dp.norm());
+            Vector2d targetPos = pos.plus(dp);
+            double heading = armPos.angleBetween(new Vector2d(1, 0)) + dp.angleBetween(new Vector2d(1, 0));
 
-            drive.strafeToPointAsync(vector2DToPose(targetPos, heading));
+            drive.strafeToPointAsync(new Pose2d(targetPos, heading));
         }
     }
 

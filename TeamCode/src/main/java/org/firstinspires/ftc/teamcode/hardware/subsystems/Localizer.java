@@ -4,24 +4,21 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.Encoder;
-import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.rotateVector;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION_2d;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -75,39 +72,37 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
-    public Vector2D getPosition() {
-        return poseToVector2D(getPoseEstimate());
-    }
-
     /*
      * Frame of refrence: robot center with axis aligned with global axis
      */
-    public Vector2D getTargetRelativeLocation2D() {
-        Vector2D targetPos = MathUtil.vector3DToVector2D(target.getLocation(alliance));
-        Vector2D pos = getPosition();
-        return targetPos.subtract(pos);
+    public Vector2d getTargetRelativeLocation2d() {
+        Vector2d targetPos = target.getLocation2d(alliance);
+        Vector2d pos = getPoseEstimate().vec();
+        return targetPos.minus(pos);
     }
     public Vector3D getTargetRelativeLocation3D() {
         Vector3D targetPos = target.getLocation(alliance);
-        Vector3D pos = MathUtil.vector2DToVector3D(getPosition());
+        Vector2d pos2d = getPoseEstimate().vec();
+        Vector3D pos = new Vector3D(pos2d.getX(), pos2d.getY(), 0);
         return targetPos.subtract(pos);
     }
 
     public double getTargetHeading() {
-        double theta = MathUtil.angle(new Vector2D(1, 0), getTargetRelativeLocation2D());
+        Vector2d targetRelPos = getTargetRelativeLocation2d();
+        double theta = targetRelPos.angleBetween(new Vector2d(1, 0));
         double sy = ARM_DOWN_LOCATION.getY();
-        double targetMag = getTargetRelativeLocation2D().getNorm();
+        double targetMag = targetRelPos.norm();
         double alpha = Math.asin(sy / targetMag);
         return theta + alpha;
     }
     public double getTargetLaunchAngle() {
         try {
             final double h = getTargetRelativeLocation3D().getZ() - SHOOTER_LOCATION.getZ();
-            double d = getTargetRelativeLocation2D().subtract(
-                    rotateVector(
-                            vector3DToVector2D(SHOOTER_LOCATION),
+            double d = getTargetRelativeLocation2d().minus(
+                    SHOOTER_LOCATION_2d.rotated(
                             getPoseEstimate().getHeading()
-                    )).getNorm();
+                    )).norm();
+
             double k = d * d * g / (2 * launchVel * launchVel);
             return fudgeFactor * Math.atan((d + Math.sqrt(d*d - 4*(h+k)*k))/(2*(h+k))
             );
@@ -115,7 +110,6 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
             canLaunch = false;
             return Math.toRadians(22); // Average launch angle
         }
-
     }
 
     public boolean canLaunch() {

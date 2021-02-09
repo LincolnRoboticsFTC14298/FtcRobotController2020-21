@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -11,9 +12,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 @Config
 public class Field {
     // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
-    public static final double RING_RADIUS = 5.0; // inches
-    public static final double RING_DIAMETER = 2 * RING_RADIUS; // inches
-
     // X IS FROM BACK TO FRONT AND Y IS FROM LEFT TO RIGHT
     public static final double FIELD_WIDTH = 141.0;
     public static final int NUM_OF_TILES = 6;
@@ -52,52 +50,68 @@ public class Field {
         }
 
         public Vector3D getLocation(Alliance alliance) {
-            switch(alliance) {
-                case RED:
-                    return mirror(location);
-                default:
-                    return location;
-            }
+            return mirror(location, alliance);
+        }
+        public Vector2d getLocation2d(Alliance alliance) {
+            return mirror(new Vector2d(location.getX(), location.getY()), alliance);
         }
     }
 
     public enum TargetZone {
-        A(new Vector2D(0.5*TILE_WIDTH,2.5*TILE_WIDTH)),
-        B(new Vector2D(1.5*TILE_WIDTH,1.5*TILE_WIDTH)),
-        C(new Vector2D(2.5*TILE_WIDTH,2.5*TILE_WIDTH));
+        A(new Vector2d(0.5*TILE_WIDTH,2.5*TILE_WIDTH)),
+        B(new Vector2d(1.5*TILE_WIDTH,1.5*TILE_WIDTH)),
+        C(new Vector2d(2.5*TILE_WIDTH,2.5*TILE_WIDTH));
 
-        private final Vector2D location;
+        private final Vector2d location;
 
-        TargetZone(Vector2D location) {
+        TargetZone(Vector2d location) {
             this.location = location;
         }
 
-        public Vector2D getLocation(Alliance alliance) {
-            switch(alliance) {
-                case RED:
-                    return mirror(location);
-                default:
-                    return location;
-            }
+        public Vector2d getLocation(Alliance alliance) {
+            return mirror(location, alliance);
         }
-    }
-
-    private static Vector3D mirror(Vector3D location) {
-        return new Vector3D(location.getX(), -location.getY(), location.getZ());
-    }
-    private static Vector2D mirror(Vector2D location) {
-        return new Vector2D(location.getX(), -location.getY());
     }
 
     /*
      * Assumes pose is blue by default
      */
-    public static Pose2d conditionalMirror(Pose2d pose, Alliance alliance) {
+    private static Vector3D mirror(Vector3D vector3D) {
+        return new Vector3D(vector3D.getX(), -vector3D.getY(), vector3D.getZ());
+    }
+    private static Vector3D mirror(Vector3D vector3D, Alliance alliance) {
         switch(alliance) {
             case RED:
-                return new Pose2d(pose.getX(), -pose.getY(), -pose.getHeading());
+                return mirror(vector3D);
+            default:
+                return vector3D;
+        }
+    }
+
+    private static Vector2d mirror(Vector2d vector2d) {
+        return new Vector2d(vector2d.getX(), -vector2d.getY());
+    }
+    public static Vector2d mirror(Vector2d vector2d, Alliance alliance) {
+        switch(alliance) {
+            case RED:
+                return mirror(vector2d);
+            default:
+                return vector2d;
+        }
+    }
+
+    public static Pose2d mirror(Pose2d pose) {
+        return new Pose2d(pose.getX(), -pose.getY(), -pose.getHeading());
+    }
+    public static Pose2d mirror(Pose2d pose, Alliance alliance) {
+        switch(alliance) {
+            case RED:
+                return mirror(pose);
             default:
                 return pose;
         }
     }
+
+
+
 }

@@ -5,10 +5,10 @@ import android.os.Environment;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Ring;
@@ -21,11 +21,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 import java.io.File;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotlib.util.MathUtil.poseToVector2D;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.rotateVector;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vector3DToVector2D;
-import static org.firstinspires.ftc.robotlib.util.MathUtil.vectorFromAngle;
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION_2d;
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
 public class Vision extends Subsystem {
@@ -119,20 +115,19 @@ public class Vision extends Subsystem {
     /*
      * Frame of reference: robot at center and axis is local
      */
-    public Vector2D getRingLocalPosition(RingData ring) {
+    public Vector2d getRingLocalPosition(RingData ring) {
         double angle = getCameraRingAngle(ring);
         double distance = getCameraRingDistance(ring);
-        return vector3DToVector2D(CAMERA_LOCATION)
-                .add(vectorFromAngle(distance, angle));
+        return CAMERA_LOCATION_2d.plus(Vector2d.polar(distance, angle));
     }
 
     /*
      * Frame of reference: global
      */
-    public Vector2D getRingPosition(RingData ringData) {
+    public Vector2d getRingPosition(RingData ringData) {
         Pose2d pose = localizer.getPoseEstimate();
-        return rotateVector(getRingLocalPosition(ringData), pose.getHeading())
-                .add(poseToVector2D(pose));
+        return getRingLocalPosition(ringData).rotated(pose.getHeading())
+                .plus(pose.vec());
     }
 
     public void resumeViewport() {
