@@ -37,7 +37,6 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.robotlib.hardware.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.robotlib.util.DashboardUtil;
-import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field;
 
@@ -134,8 +133,6 @@ public class Drive extends MecanumDrive {
 
         poseHistory = new LinkedList<>();
 
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
-
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
@@ -191,8 +188,6 @@ public class Drive extends MecanumDrive {
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
         poseHistory = new LinkedList<>();
-
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 

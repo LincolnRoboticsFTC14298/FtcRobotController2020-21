@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
+import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
@@ -52,6 +53,8 @@ public class Robot extends RobotBase {
 
     public Robot(OpMode opMode) {
         super(opMode);
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         localizer = new Localizer(hardwareMap);
 
