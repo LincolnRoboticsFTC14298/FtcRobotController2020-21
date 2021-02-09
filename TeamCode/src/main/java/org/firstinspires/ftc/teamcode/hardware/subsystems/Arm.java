@@ -85,6 +85,7 @@ public class Arm extends Subsystem {
         logger.atFinest().log("arm target: ", armAngle);
     }
 
+    // Commands //
     public void openClaw() {
         setClawPosition(CLAW_OPEN_POSITION);
     }
@@ -102,6 +103,7 @@ public class Arm extends Subsystem {
         setArmAngle(ARM_LOWER_ANGLE);
     }
 
+    // Setters //
     public void setArmAngle(double angle) {
         armAngle = angle;
     }
@@ -114,6 +116,7 @@ public class Arm extends Subsystem {
         this.clawPosition = position;
     }
 
+    // Getters //
     public double getArmAngle() {
         return 2 * Math.PI * GEAR_RATIO * armMotor.getCurrentPosition() / TICKS_PER_REV + ARM_DEFAULT_ANGLE;
     }
