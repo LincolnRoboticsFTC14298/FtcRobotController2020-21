@@ -86,27 +86,8 @@ public class Shooter extends Subsystem {
     @Override
     public void update() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
-
-        switch (aimingMode) {
-            case AIMING:
-                aimAsync();
-                break;
-        }
-
-        switch (launchStatus) {
-            case EXTENDING:
-                if (isExtended()) {
-                    launchStatus = LaunchStatus.RETRACTING;
-                    retractLaunchFlap();
-                }
-                break;
-            case RETRACTING:
-                if (isRetracted()) {
-                    launchStatus = LaunchStatus.RETRACTED;
-                }
-                break;
-        }
-
+        updateAiming();
+        updateLaunching();
     }
 
     @Override
@@ -149,7 +130,8 @@ public class Shooter extends Subsystem {
         logger.atFinest().log("is retracted: ", isRetracted());
     }
 
-
+    
+    // Aiming //
     public boolean doneAiming() {
         return Math.abs(posToAngle(flapServo.getPosition()) - flapAngle) < FLAP_MIN_ERROR;
     }
@@ -161,7 +143,15 @@ public class Shooter extends Subsystem {
     public void stopAiming() {
         aimingMode = AimingMode.IDLE;
     }
+    public void updateAiming() {
+        switch (aimingMode) {
+            case AIMING:
+                aimAsync();
+                break;
+        }
+    }
 
+    // Launching //
     public boolean readyToLaunch() {
         return doneAiming() &&
                 MathUtil.withinRange(localizer.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
@@ -169,7 +159,34 @@ public class Shooter extends Subsystem {
                 Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
                 isRetractedStatus(); // Could use isRetracted();
     }
+    public void launchAsync() {
+        launchStatus = LaunchStatus.EXTENDING;
+    }
+    public void launch() {
+        extendLaunchFlap();
+        while (!isExtended() && !Thread.currentThread().isInterrupted()) {
+            updateMotorAndServoValues();
+        }
+        retractLaunchFlap();
+    }
+    public void updateLaunching() {
+        switch (launchStatus) {
+            case EXTENDING:
+                if (isExtended()) {
+                    launchStatus = LaunchStatus.RETRACTING;
+                    retractLaunchFlap();
+                }
+                break;
+            case RETRACTING:
+                if (isRetracted()) {
+                    launchStatus = LaunchStatus.RETRACTED;
+                }
+                break;
+        }
+    }
 
+
+    // Getters and Setters //
     public LaunchStatus getLaunchStatus() {
         return launchStatus;
     }
@@ -183,18 +200,6 @@ public class Shooter extends Subsystem {
         return launchStatus == LaunchStatus.RETRACTED;
     }
 
-    public void launchAsync() {
-        launchStatus = LaunchStatus.EXTENDING;
-    }
-    public void launch() {
-        extendLaunchFlap();
-        while (!isExtended() && !Thread.currentThread().isInterrupted()) {
-            updateMotorAndServoValues();
-        }
-        retractLaunchFlap();
-    }
-
-
     public void turnOnShooterMotor() {
         setShooterPower(SHOOTER_DEFAULT_POWER);
     }
@@ -202,7 +207,6 @@ public class Shooter extends Subsystem {
         setShooterPower(0);
     }
 
-    // Angle is in radians
     public double getTargetAngle() {
         return flapAngle;
     }
