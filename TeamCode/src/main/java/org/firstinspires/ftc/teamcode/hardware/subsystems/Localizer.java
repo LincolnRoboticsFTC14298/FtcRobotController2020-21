@@ -75,18 +75,30 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     /*
      * Frame of refrence: robot center with axis aligned with global axis
      */
-    public Vector2d getTargetRelativeLocation2d() {
+    public Vector2d getTargetRelativeLocation2d(Vector2d pos) {
         Vector2d targetPos = target.getLocation2d(alliance);
-        Vector2d pos = getPoseEstimate().vec();
         return targetPos.minus(pos);
     }
-    public Vector3D getTargetRelativeLocation3D() {
+    public Vector2d getTargetRelativeLocation2d() {
+        return getTargetRelativeLocation2d(getPoseEstimate().vec());
+    }
+    public Vector3D getTargetRelativeLocation3D(Vector2d pos) {
         Vector3D targetPos = target.getLocation(alliance);
-        Vector2d pos2d = getPoseEstimate().vec();
-        Vector3D pos = new Vector3D(pos2d.getX(), pos2d.getY(), 0);
-        return targetPos.subtract(pos);
+        Vector3D pos3D = new Vector3D(pos.getX(), pos.getY(), 0);
+        return targetPos.subtract(pos3D);
+    }
+    public Vector3D getTargetRelativeLocation3D() {
+        return getTargetRelativeLocation3D(getPoseEstimate().vec());
     }
 
+    public double getTargetHeading(Vector2d vector2d) {
+        Vector2d targetRelPos = getTargetRelativeLocation2d(vector2d);
+        double theta = targetRelPos.angleBetween(new Vector2d(1, 0));
+        double sy = ARM_DOWN_LOCATION.getY();
+        double targetMag = targetRelPos.norm();
+        double alpha = Math.asin(sy / targetMag);
+        return theta + alpha;
+    }
     public double getTargetHeading() {
         Vector2d targetRelPos = getTargetRelativeLocation2d();
         double theta = targetRelPos.angleBetween(new Vector2d(1, 0));
@@ -95,12 +107,28 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         double alpha = Math.asin(sy / targetMag);
         return theta + alpha;
     }
+    public double getTargetLaunchAngle(Vector2d vector2d) {
+        try {
+            final double h = getTargetRelativeLocation3D(vector2d).getZ() - SHOOTER_LOCATION.getZ();
+            double d = getTargetRelativeLocation2d().minus(
+                    SHOOTER_LOCATION_2d.rotated(
+                            getTargetHeading(vector2d)
+                    )).norm();
+
+            double k = d * d * g / (2 * launchVel * launchVel);
+            return fudgeFactor * Math.atan((d + Math.sqrt(d*d - 4*(h+k)*k))/(2*(h+k))
+            );
+        } catch (Exception e) {
+            canLaunch = false;
+            return Math.toRadians(22); // Average launch angle
+        }
+    }
     public double getTargetLaunchAngle() {
         try {
             final double h = getTargetRelativeLocation3D().getZ() - SHOOTER_LOCATION.getZ();
             double d = getTargetRelativeLocation2d().minus(
                     SHOOTER_LOCATION_2d.rotated(
-                            getPoseEstimate().getHeading()
+                            getTargetHeading()
                     )).norm();
 
             double k = d * d * g / (2 * launchVel * launchVel);
