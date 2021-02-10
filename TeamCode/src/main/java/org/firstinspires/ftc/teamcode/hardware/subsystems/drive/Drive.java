@@ -39,13 +39,15 @@ import org.firstinspires.ftc.robotlib.hardware.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.robotlib.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field;
+import org.firstinspires.ftc.teamcode.util.Ring;
+import org.firstinspires.ftc.teamcode.util.WobbleGoal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotlib.util.MathUtil.angleWrapRadians;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION_2d;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ANG_VEL;
@@ -106,6 +108,9 @@ public class Drive extends MecanumDrive {
 
     public static double LAUNCH_X = Field.LAUNCH_LINE_X - .75 * Field.TILE_WIDTH;
     public static double BEHIND_LINE_ERROR = .5; // inches
+
+    public static double WALL_X = -2.5 * Field.TILE_WIDTH;
+    public static double WALL_ERROR = .5; // inches
 
     public Drive(HardwareMap hardwareMap, Localizer localizer) {
         super("Drive", DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -349,7 +354,61 @@ public class Drive extends MecanumDrive {
         strafeToPointAsync(new Pose2d(targetVec, angle));
     }
     public boolean isBehindLine() {
-        return Math.abs(getPoseEstimate().getX() - LAUNCH_X) < BEHIND_LINE_ERROR;
+        return getPoseEstimate().getX() < LAUNCH_X + BEHIND_LINE_ERROR;
+    }
+
+    public void goToRingAsync() {
+        if (Field.ringProvider.amount() > 0) {
+            Vector2d pos = localizer.getPoseEstimate().vec();
+
+            Ring closestRing = Field.ringProvider.getClosest(pos);
+            Vector2d ringPos = closestRing.getPosition();
+            Vector2d dp = ringPos.minus(pos);
+            dp = dp.times(1 - 5.0 / dp.norm()); // 5 inches before
+            Vector2d targetPos = pos.plus(dp);
+            double heading = dp.angleBetween(new Vector2d(1, 0)); // TODO: Check if needs to be negated
+
+            strafeToPointAsync(new Pose2d(targetPos, heading));
+        }
+    }
+    public void goToRing() {
+        goToRingAsync();
+        waitForIdle();
+    }
+
+    public void goToWobbleGoalAsync() {
+        if (Field.wobbleGoalProvider.amount() > 0) {
+            Vector2d pos = localizer.getPoseEstimate().vec();
+
+            WobbleGoal closestWobbleGoal = Field.wobbleGoalProvider.getClosest(pos);
+            Vector2d wobbleGoalPos = closestWobbleGoal.getPosition();
+            Vector2d dp = wobbleGoalPos.minus(pos);
+            Vector2d armPos = ARM_DOWN_LOCATION_2d;
+            dp = dp.times(1 - armPos.norm() / dp.norm());
+            Vector2d targetPos = pos.plus(dp);
+            double heading = armPos.angleBetween(new Vector2d(1, 0)) + dp.angleBetween(new Vector2d(1, 0));
+
+            strafeToPointAsync(new Pose2d(targetPos, heading));
+        }
+    }
+    public void goToWobbleGoal() {
+        goToRingAsync();
+        waitForIdle();
+    }
+    public boolean isAtWobbleGoal() {
+        return Field.wobbleGoalProvider.atWobbleGoal(getPoseEstimate());
+    }
+
+    public void goToWallAsync() {
+        Vector2d targetVec = new Vector2d(WALL_X, localizer.getPoseEstimate().getY());
+        strafeToPointAsync(new Pose2d(targetVec, Math.PI));
+    }
+    public void goToWall() {
+        goToWallAsync();
+        waitForIdle();
+    }
+    public boolean isAtWall() {
+        return getPoseEstimate().getX() < WALL_X + WALL_ERROR;
     }
 
 

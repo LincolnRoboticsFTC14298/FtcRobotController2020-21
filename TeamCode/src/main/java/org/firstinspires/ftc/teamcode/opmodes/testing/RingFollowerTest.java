@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -20,18 +21,23 @@ public class RingFollowerTest extends OpMode {
     @Override
     public void start() {
         robot.start();
+        robot.setManualMode();
     }
 
     @Override
     public void loop() {
         robot.vision.scan();
-        robot.goToRing();
 
-        robot.update();
+        goToRing();
     }
 
     @Override
     public void stop() {
         robot.stop();
+    }
+
+    public void goToRing() {
+        robot.drive.goToRing();
+        robot.drive.strafeToPoint(new Pose2d(0,0));
     }
 }
