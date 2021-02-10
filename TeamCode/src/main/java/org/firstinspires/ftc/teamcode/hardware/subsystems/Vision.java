@@ -100,16 +100,16 @@ public class Vision extends Subsystem {
     public double getCameraRingAngle(RingData ring) {
         double cx = ring.getCentroid().x;
         int w = WIDTH;
-        double x = cx - w/2; // centered at w/2
-        return -Math.atan(Math.tan( Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
+        double x = w/2.0 - cx; // w/2 is center, left positive, right negative like heading
+        return Math.atan(Math.tan(Math.toRadians(FOV) / 2.0) * 2.0 * x / w);
     }
     public double getCameraRingDistance(RingData ring) {
         double cx = ring.getCentroid().x;
         int w = WIDTH;
-        double xpx = cx - w/2;
+        double xpx = w/2.0 - cx;
         double angle = getCameraRingAngle(ring);
         double dpx = ring.getBoxSize().width;
-        return FUDGE_FACTOR * Math.abs(xpx / Math.sin(angle)) * RING_DIAMETER / dpx;
+        return FUDGE_FACTOR * xpx / Math.sin(angle) * RING_DIAMETER / dpx;
     }
 
     /*
@@ -117,7 +117,7 @@ public class Vision extends Subsystem {
      */
     public Vector2d getRingLocalPosition(RingData ring) {
         double angle = getCameraRingAngle(ring);
-        double distance = getCameraRingDistance(ring);
+        double distance = getCameraRingDistance(ring); // TODO: May have to account for height of camera
         return CAMERA_LOCATION_2d.plus(Vector2d.polar(distance, angle));
     }
 
