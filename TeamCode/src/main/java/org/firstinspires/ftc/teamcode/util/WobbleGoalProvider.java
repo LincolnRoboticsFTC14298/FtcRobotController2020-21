@@ -24,6 +24,9 @@ public class WobbleGoalProvider {
     public List<WobbleGoal> getWobbleGoals() {
         return wobbleGoals;
     }
+    public int amount() {
+        return wobbleGoals.size();
+    }
 
     public void add(WobbleGoal wobbleGoal) {
         wobbleGoals.add(wobbleGoal);
