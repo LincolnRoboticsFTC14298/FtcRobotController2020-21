@@ -386,7 +386,19 @@ public class Drive extends MecanumDrive {
     }
 
     public void turnToAsync(double angle) {
-        turnAsync(angleWrapRadians(angle - getPoseEstimate().getHeading()));
+        double heading = getPoseEstimate().getHeading();
+
+        lastPoseOnTurn = getPoseEstimate();
+
+        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+                new MotionState(heading, 0, 0, 0),
+                new MotionState(angle, 0, 0, 0),
+                MAX_ANG_VEL,
+                MAX_ANG_ACCEL
+        );
+
+        turnStart = clock.seconds();
+        mode = Mode.TURN;
     }
     public void turnTo(double angle) {
         turnToAsync(angle);
