@@ -24,6 +24,9 @@ public class RingProvider {
     public List<Ring> getRings() {
         return rings;
     }
+    public int amount() {
+        return rings.size();
+    }
 
     public void add(Ring ring) {
         rings.add(ring);

@@ -43,6 +43,18 @@ public class WobbleGoalProvider {
             }
         }
     }
+    public boolean atWobbleGoal(Pose2d pose) {
+        Vector2d armTip = pose.vec().plus(
+                ARM_DOWN_LOCATION_2d.rotated(pose.getHeading())
+        );
+        for (int i = 0; i < wobbleGoals.size(); i++) {
+            double distance = wobbleGoals.get(i).getPosition().distTo(armTip);
+            if (distance < DISTANCE_TILL_DESPAWN_WOBBLE_GOALS) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public WobbleGoal getClosest(Vector2d pos) {
         return wobbleGoals.stream().min(Comparator.comparingDouble((r) -> r.distanceFrom(pos))).get();
