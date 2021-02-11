@@ -25,7 +25,6 @@ public class WobbleGoal {
     }
 
     public void draw(Canvas canvas, Field.Alliance alliance) {
-        // TODO: change color
         switch(alliance) {
             case RED:
                 canvas.setFill("#b93e40");
