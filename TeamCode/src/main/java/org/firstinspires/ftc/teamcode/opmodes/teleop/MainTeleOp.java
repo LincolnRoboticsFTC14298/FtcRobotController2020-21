@@ -15,11 +15,12 @@ public class MainTeleOp extends OpMode {
     private OperatorInterface operatorInterface = new OperatorInterface(this, robot, gamepad1, gamepad2);
 
     enum ControlMode {
-        MANUAL,
-        AUTOMATIC
+        FULLY_MANUAL,
+        MANUAL_COLLECTING,
+        FULLY_AUTOMATIC
     }
 
-    ControlMode controlMode = ControlMode.MANUAL;
+    ControlMode controlMode = ControlMode.MANUAL_COLLECTING;
 
     @Override
     public void init() {
@@ -39,8 +40,19 @@ public class MainTeleOp extends OpMode {
     @Override
     public void loop() {
         operatorInterface.update();
-        updateNavigation();
+
+        switch (controlMode) {
+            case FULLY_MANUAL:
+                break;
+            case MANUAL_COLLECTING:
+            case FULLY_AUTOMATIC:
+                updateNavigation();
+                break;
+        }
+
         robot.update();
+
+        // TODO: Add telemetry
     }
 
     @Override
@@ -71,14 +83,14 @@ public class MainTeleOp extends OpMode {
         public void update() {
             Field.ringProvider.update(robot.localizer.getPoseEstimate()); // may have to be in main update loop
             switch (controlMode) {
-                case AUTOMATIC:
+                case MANUAL_COLLECTING:
+                    break;
+                case FULLY_AUTOMATIC:
                     if (!robot.drive.isBusy() && Field.ringProvider.getRings().size() > 0) {
                         robot.drive.goToRingAsync();
                     } else if (!robot.drive.isBusy()) {
                         // TODO: rotate to find rings
                     }
-                    break;
-                case MANUAL:
                     break;
             }
         }
@@ -188,6 +200,7 @@ public class MainTeleOp extends OpMode {
         }
     }
 
+    // TODO: add some fully manually state
     NavigationState navigationState = new Collecting();
     public void updateNavigation() {
         NavigationState newState = navigationState.getState();
@@ -204,13 +217,21 @@ public class MainTeleOp extends OpMode {
         navigationState.update();
     }
 
-    public void setManualControlMode() {
-        if (navigationState instanceof Collecting) {
-            robot.drive.cancelFollowing();
+    public void setControlMode(ControlMode controlMode) {
+        switch (controlMode) {
+            case FULLY_MANUAL:
+                robot.drive.cancelFollowing();
+                navigationState = new Collecting(); // Default
+                break;
+            case MANUAL_COLLECTING:
+                if (navigationState instanceof Collecting) {
+                    robot.drive.cancelFollowing();
+                }
+                break;
+            case FULLY_AUTOMATIC:
+                // do nothing
+                break;
         }
-        controlMode = ControlMode.MANUAL;
-    }
-    public void setAutoControlMode() {
-        controlMode = ControlMode.AUTOMATIC;
+        this.controlMode = controlMode;
     }
 }
