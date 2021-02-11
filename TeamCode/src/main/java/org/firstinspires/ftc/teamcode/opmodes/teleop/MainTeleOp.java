@@ -49,92 +49,164 @@ public class MainTeleOp extends OpMode {
     }
 
     // Navigation //
-    public enum NavigationStatus {
-        COLLECTING,
-        TRAVELING_TO_SHOOT,
-        SHOOTING,
-        TRAVELING_TO_WOBBLE_GOAL,
-        TRAVELING_TO_DROP_OFF
-    }
+    abstract static class NavigationState {
+        public void start() {
 
-    NavigationStatus navigationStatus = NavigationStatus.COLLECTING;
-    public void updateNavigation() {
-        robot.vision.scan();
-        switch (navigationStatus) {
-            case COLLECTING:
-                if (getRuntime() > 90 && Field.wobbleGoalProvider.amount() > 0) {
-                    // Last 30 seconds of match
-                    robot.arm.lower();
-                    robot.drive.cancelFollowing();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_WOBBLE_GOAL;
-                } else if (robot.ringCounter.getNumberOfRings() == 3) {
-                    robot.drive.cancelFollowing();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_SHOOT;
-                }
-                switch (controlMode) {
-                    case AUTOMATIC:
-                        Field.ringProvider.update(robot.localizer.getPoseEstimate()); // may have to be in main update loop
-                        if (!robot.drive.isBusy() && Field.ringProvider.getRings().size() > 0) {
-                            robot.drive.goToRingAsync();
-                        } else if (!robot.drive.isBusy()) {
-                            // TODO: rotate to find rings
-                        }
-                        break;
-                    case MANUAL:
-                        break;
-                }
-                break;
-            case TRAVELING_TO_SHOOT:
-                if (!robot.drive.isBusy() && robot.drive.isBehindLine()) {
-                    navigationStatus = NavigationStatus.SHOOTING;
-                    if (getRuntime() > 90) {
-                        robot.shootAsync(3);
-                    } else {
-                        robot.powerShot();
-                    }
-                } else if (!robot.drive.isBusy()) {
-                    robot.drive.goBehindLineAsync();
-                }
-                break;
-            case SHOOTING:
-                if (robot.doneShooting()) {
-                    navigationStatus = NavigationStatus.COLLECTING;
-                }
-                break;
-            case TRAVELING_TO_WOBBLE_GOAL:
-                if (!robot.drive.isBusy() && robot.drive.isAtWobbleGoal()) {
-                    Field.wobbleGoalProvider.update(robot.localizer.getPoseEstimate());
-                    robot.arm.closeClaw();
-                    // May need to sleep or some PICKING_UP state
-                    robot.arm.lift();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_DROP_OFF;
-                } else if (!robot.drive.isBusy()) {
-                    robot.drive.goToWobbleGoalAsync();
-                }
-                break;
-            case TRAVELING_TO_DROP_OFF:
-                if (!robot.drive.isBusy() && robot.drive.isAtWall()) {
-                    robot.arm.openClaw();
-                    // May need to sleep or some IS_DROPPING state
-                    robot.arm.lower();
-                    if (Field.wobbleGoalProvider.amount() > 0) {
-                        navigationStatus = NavigationStatus.TRAVELING_TO_WOBBLE_GOAL;
-                    } else {
-                        robot.arm.closeClaw();
-                        navigationStatus = NavigationStatus.COLLECTING;
-                    }
-                } else if (!robot.drive.isBusy()) {
-                    robot.drive.goToWallAsync();
-                }
-                break;
+        }
+
+        public void update() {
+
+        }
+
+        public abstract NavigationState getState();
+
+        public void end() {
+
         }
     }
 
+    public class Collecting extends NavigationState {
+
+        @Override
+        public void update() {
+            Field.ringProvider.update(robot.localizer.getPoseEstimate()); // may have to be in main update loop
+            switch (controlMode) {
+                case AUTOMATIC:
+                    if (!robot.drive.isBusy() && Field.ringProvider.getRings().size() > 0) {
+                        robot.drive.goToRingAsync();
+                    } else if (!robot.drive.isBusy()) {
+                        // TODO: rotate to find rings
+                    }
+                    break;
+                case MANUAL:
+                    break;
+            }
+        }
+
+        @Override
+        public NavigationState getState() {
+            if (getRuntime() > 90 && Field.wobbleGoalProvider.amount() > 0) {
+                // Last 30 seconds of match
+                return new TravelingToWobbleGoal();
+            } else if (robot.ringCounter.getNumberOfRings() == 3) {
+                return new TravelingToShoot();
+            }
+            return this;
+        }
+
+        @Override
+        public void end() {
+            robot.drive.cancelFollowing();
+        }
+    }
+
+    public class TravelingToShoot extends NavigationState {
+
+        @Override
+        public void start() {
+            robot.drive.goBehindLineAsync();
+        }
+
+        @Override
+        public NavigationState getState() {
+            if (!robot.drive.isBusy() && robot.drive.isBehindLine()) {
+                return new Shooting();
+            }
+            return this;
+        }
+    }
+
+    public class Shooting extends NavigationState {
+
+        @Override
+        public void start() {
+            if (getRuntime() > 90) {
+                robot.shootAsync(3);
+            } else {
+                robot.powerShot();
+            }
+        }
+
+        @Override
+        public NavigationState getState() {
+            if (robot.doneShooting()) {
+                return new Collecting();
+            }
+            return this;
+        }
+    }
+
+    public class TravelingToWobbleGoal extends NavigationState {
+
+        @Override
+        public void start() {
+            robot.drive.goToWobbleGoalAsync();
+        }
+
+        @Override
+        public NavigationState getState() {
+            if (!robot.drive.isBusy() && robot.drive.isAtWobbleGoal()) {
+                Field.wobbleGoalProvider.update(robot.localizer.getPoseEstimate());
+                return new TravelingToDropOffWobbleGoal();
+            }
+            return this;
+        }
+
+        @Override
+        public void end() {
+            robot.arm.closeClaw();
+            // May need to sleep or some PICKING_UP state
+            robot.arm.lift();
+        }
+    }
+
+    public class TravelingToDropOffWobbleGoal extends NavigationState {
+
+        @Override
+        public void start() {
+            robot.drive.goToWallAsync();
+        }
+
+        @Override
+        public NavigationState getState() {
+            if (!robot.drive.isBusy() && robot.drive.isAtWall()) {
+                if (Field.wobbleGoalProvider.amount() > 0) {
+                    return new TravelingToWobbleGoal();
+                } else {
+                    robot.arm.closeClaw();
+                    return new Collecting();
+                }
+            }
+            return this;
+        }
+
+        @Override
+        public void end() {
+            robot.arm.openClaw();
+            // May need to sleep or some IS_DROPPING state
+            robot.arm.lower();
+        }
+    }
+
+    NavigationState navigationState = new Collecting();
+    public void updateNavigation() {
+        NavigationState newState = navigationState.getState();
+        if (navigationState != newState) {
+            // Different state //
+
+            // End current state
+            navigationState.end();
+            // Assign new state
+            navigationState = newState;
+            // Start the new state
+            navigationState.start();
+        }
+        navigationState.update();
+    }
+
     public void setManualMode() {
-        switch (navigationStatus) {
-            case COLLECTING:
-                robot.drive.cancelFollowing();
-                break;
+        if (navigationState instanceof Collecting) {
+            robot.drive.cancelFollowing();
         }
         controlMode = ControlMode.MANUAL;
     }
