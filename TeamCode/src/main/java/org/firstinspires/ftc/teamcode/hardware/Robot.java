@@ -142,6 +142,8 @@ public class Robot extends RobotBase {
         // Inward shot
         shootTarget(Target.INWARD_POWER_SHOT, 1);
         waitUntilDoneShooting();
+
+        setTarget(Target.HIGH_GOAL);
     }
     public void cancelShot() {
         shootScheduler = 0;
