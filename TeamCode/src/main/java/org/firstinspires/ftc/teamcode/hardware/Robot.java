@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.RingCounter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
-import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
@@ -32,13 +31,6 @@ public class Robot extends RobotBase {
 
     // TODO: Maybe alliance in field class?
     public Alliance alliance = Alliance.BLUE;
-
-    enum ControlMode {
-        MANUAL,
-        AUTOMATIC
-    }
-
-    ControlMode controlMode = ControlMode.MANUAL;
 
     public Robot(OpMode opMode) {
         super(opMode);
@@ -85,7 +77,6 @@ public class Robot extends RobotBase {
     public void update() {
         localizer.update();
 
-        updateNavigation();
         updateShooting();
 
         subsystemManager.update();
@@ -99,96 +90,11 @@ public class Robot extends RobotBase {
     }
 
     public void updateTelemetry() {
+        // TODO: Add ftcdashboard telemetry
         telemetry.addData("Alliance: ", alliance.toString());
         telemetry.addData("Pose:     ", localizer.getPoseEstimate().toString());
-        telemetry.addData("Mode:     ", controlMode);
         telemetry.addData("Target:   ", target.toString());
         telemetry.update();
-    }
-
-
-
-    // Navigation //
-    public enum NavigationStatus {
-        COLLECTING,
-        TRAVELING_TO_SHOOT,
-        SHOOTING,
-        TRAVELING_TO_WOBBLE_GOAL,
-        TRAVELING_TO_DROP_OFF
-    }
-
-    NavigationStatus navigationStatus = NavigationStatus.COLLECTING;
-    public void updateNavigation() {
-        vision.scan();
-        switch (navigationStatus) {
-            case COLLECTING:
-                if (timeSinceStart.seconds() > 90 && Field.wobbleGoalProvider.amount() > 0) {
-                    // Last 30 seconds of match
-                    arm.lower();
-                    drive.cancelFollowing();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_WOBBLE_GOAL;
-                } else if (ringCounter.getNumberOfRings() == 3) {
-                    drive.cancelFollowing();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_SHOOT;
-                }
-                switch (controlMode) {
-                    case AUTOMATIC:
-                        Field.ringProvider.update(localizer.getPoseEstimate()); // may have to be in main update loop
-                        if (!drive.isBusy() && Field.ringProvider.getRings().size() > 0) {
-                           drive.goToRingAsync();
-                        } else if (!drive.isBusy()) {
-                            // TODO: rotate to find rings
-                        }
-                        break;
-                    case MANUAL:
-                        break;
-                }
-                break;
-            case TRAVELING_TO_SHOOT:
-                if (!drive.isBusy() && drive.isBehindLine()) {
-                    navigationStatus = NavigationStatus.SHOOTING;
-                    // TODO: REWRITE???
-                    if (timeSinceStart.seconds() > 90) {
-                        shootAsync(3);
-                    } else {
-                        powerShot();
-                    }
-                } else if (!drive.isBusy()) {
-                    drive.goBehindLineAsync();
-                }
-                break;
-            case SHOOTING:
-                if (doneShooting()) {
-                    navigationStatus = NavigationStatus.COLLECTING;
-                }
-                break;
-            case TRAVELING_TO_WOBBLE_GOAL:
-                if (!drive.isBusy() && drive.isAtWobbleGoal()) {
-                    Field.wobbleGoalProvider.update(localizer.getPoseEstimate());
-                    arm.closeClaw();
-                    // May need to sleep or some PICKING_UP state
-                    arm.lift();
-                    navigationStatus = NavigationStatus.TRAVELING_TO_DROP_OFF;
-                } else if (!drive.isBusy()) {
-                    drive.goToWobbleGoalAsync();
-                }
-                break;
-            case TRAVELING_TO_DROP_OFF:
-                if (!drive.isBusy() && drive.isAtWall()) {
-                    arm.openClaw();
-                    // May need to sleep or some IS_DROPPING state
-                    arm.lower();
-                    if (Field.wobbleGoalProvider.amount() > 0) {
-                        navigationStatus = NavigationStatus.TRAVELING_TO_WOBBLE_GOAL;
-                    } else {
-                        arm.closeClaw();
-                        navigationStatus = NavigationStatus.COLLECTING;
-                    }
-                } else if (!drive.isBusy()) {
-                    drive.goToWallAsync();
-                }
-                break;
-        }
     }
 
 
@@ -283,18 +189,6 @@ public class Robot extends RobotBase {
 
 
     // Getters and setters //
-    public void setManualMode() {
-        switch (navigationStatus) {
-            case COLLECTING:
-                drive.cancelFollowing();
-                break;
-        }
-        controlMode = ControlMode.MANUAL;
-    }
-    public void setAutoMode() {
-        controlMode = ControlMode.AUTOMATIC;
-    }
-
     public void setPoseEstimate(Pose2d pose) {
         localizer.setPoseEstimate(pose);
     }
