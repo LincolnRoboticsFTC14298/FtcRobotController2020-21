@@ -204,13 +204,13 @@ public class MainTeleOp extends OpMode {
         navigationState.update();
     }
 
-    public void setManualMode() {
+    public void setManualControlMode() {
         if (navigationState instanceof Collecting) {
             robot.drive.cancelFollowing();
         }
         controlMode = ControlMode.MANUAL;
     }
-    public void setAutoMode() {
+    public void setAutoControlMode() {
         controlMode = ControlMode.AUTOMATIC;
     }
 }
