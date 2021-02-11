@@ -2,6 +2,7 @@ package org.firstinspires.ftc.robotlib.hardware.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+@Deprecated
 public class StickyGamepad {
     // USE RADICALGAMEPAD INSTEAD
     // Modified version of Acmerobotics StickyGamepad
