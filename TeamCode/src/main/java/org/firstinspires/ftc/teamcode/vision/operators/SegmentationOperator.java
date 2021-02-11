@@ -28,7 +28,6 @@ public class SegmentationOperator {
     }
 
     public List<MatOfPoint> process(Mat img, Mat dist1Dst, Mat dist2Dst, Mat dst) {
-        // TODO: add parameters as parameters
         // MODIFIED CODE FROM OPENCV EXAMPLE
 
         // Show source image
