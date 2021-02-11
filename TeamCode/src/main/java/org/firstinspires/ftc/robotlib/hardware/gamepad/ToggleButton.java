@@ -25,4 +25,11 @@ public class ToggleButton extends Button {
     public boolean off() {
         return !get();
     }
+
+    public boolean changedToOn() {
+        return isPressed() && on();
+    }
+    public boolean changedToOff() {
+        return isPressed() && off();
+    }
 }
