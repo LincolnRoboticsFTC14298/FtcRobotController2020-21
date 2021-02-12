@@ -29,9 +29,10 @@ public class ButtonTrigger extends Button {
         }
     }
 
+    @Override
     public boolean getRawPressed() {
         try {
-            double val = (double) field.get(gamepad);
+            float val = field.getFloat(gamepad);
             if (val > threshold) {
                 return true;
             }

@@ -110,9 +110,9 @@ public class Button {
         }
     }
 
-    private boolean getRawPressed() {
+    public boolean getRawPressed() {
         try {
-            return (boolean) field.get(gamepad);
+            return field.getBoolean(gamepad);
         } catch (IllegalAccessException e) {
             //throw new IllegalStateException("Failed to access field " + button.toString() + " after making it accessible", e);
         }
