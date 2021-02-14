@@ -134,17 +134,17 @@ public class Shooter extends Subsystem {
         return Math.abs(posToAngle(flapServo.getPosition()) - flapAngle) < FLAP_MIN_ERROR;
     }
     public void aimAsync() {
-        // TODO: Make update every update()
         aimingMode = AimingMode.AIMING;
-        setFlapAngle(localizer.getTargetLaunchAngle());
     }
     public void stopAiming() {
         aimingMode = AimingMode.IDLE;
     }
     public void updateAiming() {
         switch (aimingMode) {
+            case IDLE:
+                break;
             case AIMING:
-                aimAsync();
+                setFlapAngle(localizer.getTargetLaunchAngle());
                 break;
         }
     }
@@ -152,9 +152,9 @@ public class Shooter extends Subsystem {
     // Launching //
     public boolean readyToLaunch() {
         return doneAiming() &&
-                MathUtil.withinRange(localizer.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
-                Math.abs(shooterMotor1.getPower() - shooterMotor1Power) < SHOOTER_MIN_ERROR &&
-                Math.abs(shooterMotor2.getPower() - shooterMotor2Power) < SHOOTER_MIN_ERROR &&
+                MathUtil.inRange(localizer.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
+                MathUtil.differenceWithinError(shooterMotor1.getPower(), shooterMotor1Power, SHOOTER_MIN_ERROR) &&
+                MathUtil.differenceWithinError(shooterMotor2.getPower(), shooterMotor2Power, SHOOTER_MIN_ERROR) &&
                 isRetractedStatus(); // Could use isRetracted();
     }
     public void launchAsync() {
@@ -189,10 +189,10 @@ public class Shooter extends Subsystem {
         return launchStatus;
     }
     public boolean isExtended() {
-        return Math.abs(launchFlapServo.getPosition() - LAUNCH_FLAP_EXTENDED_POS) < LAUNCH_FLAP_EXTENDED_MIN_ERROR;
+        return MathUtil.differenceWithinError(launchFlapServo.getPosition(), LAUNCH_FLAP_EXTENDED_POS, LAUNCH_FLAP_EXTENDED_MIN_ERROR);
     }
     public boolean isRetracted() {
-        return Math.abs(launchFlapServo.getPosition() - LAUNCH_FLAP_RETRACTED_POS) < LAUNCH_FLAP_RETRACTED_MIN_ERROR;
+        return MathUtil.differenceWithinError(launchFlapServo.getPosition(), LAUNCH_FLAP_RETRACTED_POS, LAUNCH_FLAP_RETRACTED_MIN_ERROR);
     }
     public boolean isRetractedStatus() {
         return launchStatus == LaunchStatus.RETRACTED;

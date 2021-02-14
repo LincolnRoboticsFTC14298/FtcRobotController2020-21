@@ -37,8 +37,12 @@ public class MathUtil {
                 inchesToMeters(meters.getZ()));
     }
 
-    public static boolean withinRange(double number, double min, double max) {
+    public static boolean inRange(double number, double min, double max) {
         return number >= min && number <= max;
+    }
+
+    public static boolean differenceWithinError(double current, double target, double acceptableError) {
+        return Math.abs(current - target) < acceptableError;
     }
 
     public static double angleWrapRadians(double angle) {
