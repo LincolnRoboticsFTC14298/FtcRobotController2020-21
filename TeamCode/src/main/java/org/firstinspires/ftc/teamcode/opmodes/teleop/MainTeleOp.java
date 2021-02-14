@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotlib.util.statemachine.State;
+import org.firstinspires.ftc.robotlib.util.statemachine.StateMachine;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
@@ -61,23 +63,15 @@ public class MainTeleOp extends OpMode {
     }
 
     // Navigation //
-    abstract static class NavigationState {
-        public void start() {
+    public class Manual extends State {
 
-        }
-
-        public void update() {
-
-        }
-
-        public abstract NavigationState getState();
-
-        public void end() {
-
+        @Override
+        public State getState() {
+            return this;
         }
     }
 
-    public class Collecting extends NavigationState {
+    public class Collecting extends State {
 
         @Override
         public void update() {
@@ -96,7 +90,7 @@ public class MainTeleOp extends OpMode {
         }
 
         @Override
-        public NavigationState getState() {
+        public State getState() {
             if (getRuntime() > 90 && Field.wobbleGoalProvider.amount() > 0) {
                 // Last 30 seconds of match
                 return new TravelingToWobbleGoal();
@@ -111,8 +105,8 @@ public class MainTeleOp extends OpMode {
             robot.drive.cancelFollowing();
         }
     }
-
-    public class TravelingToShoot extends NavigationState {
+    
+    public class TravelingToShoot extends State {
 
         @Override
         public void start() {
@@ -120,7 +114,7 @@ public class MainTeleOp extends OpMode {
         }
 
         @Override
-        public NavigationState getState() {
+        public State getState() {
             if (!robot.drive.isBusy() && robot.drive.isBehindLine()) {
                 return new Shooting();
             }
@@ -128,7 +122,7 @@ public class MainTeleOp extends OpMode {
         }
     }
 
-    public class Shooting extends NavigationState {
+    public class Shooting extends State {
 
         @Override
         public void start() {
@@ -140,7 +134,7 @@ public class MainTeleOp extends OpMode {
         }
 
         @Override
-        public NavigationState getState() {
+        public State getState() {
             if (robot.doneShooting()) {
                 return new Collecting();
             }
@@ -148,7 +142,7 @@ public class MainTeleOp extends OpMode {
         }
     }
 
-    public class TravelingToWobbleGoal extends NavigationState {
+    public class TravelingToWobbleGoal extends State {
 
         @Override
         public void start() {
@@ -156,7 +150,7 @@ public class MainTeleOp extends OpMode {
         }
 
         @Override
-        public NavigationState getState() {
+        public State getState() {
             if (!robot.drive.isBusy() && robot.drive.isAtWobbleGoal()) {
                 Field.wobbleGoalProvider.update(robot.localizer.getPoseEstimate());
                 return new TravelingToDropOffWobbleGoal();
@@ -172,7 +166,7 @@ public class MainTeleOp extends OpMode {
         }
     }
 
-    public class TravelingToDropOffWobbleGoal extends NavigationState {
+    public class TravelingToDropOffWobbleGoal extends State {
 
         @Override
         public void start() {
@@ -180,7 +174,7 @@ public class MainTeleOp extends OpMode {
         }
 
         @Override
-        public NavigationState getState() {
+        public State getState() {
             if (!robot.drive.isBusy() && robot.drive.isAtWall()) {
                 if (Field.wobbleGoalProvider.amount() > 0) {
                     return new TravelingToWobbleGoal();
@@ -200,35 +194,28 @@ public class MainTeleOp extends OpMode {
         }
     }
 
-    // TODO: add some fully manually state
-    NavigationState navigationState = new Collecting();
+    StateMachine navigationStateMachine = new StateMachine(new Collecting());
     public void updateNavigation() {
-        NavigationState newState = navigationState.getState();
-        if (navigationState != newState) {
-            // Different state //
-
-            // End current state
-            navigationState.end();
-            // Assign new state
-            navigationState = newState;
-            // Start the new state
-            navigationState.start();
-        }
-        navigationState.update();
+        navigationStateMachine.update();
     }
 
     public void setControlMode(ControlMode controlMode) {
         switch (controlMode) {
             case FULLY_MANUAL:
                 robot.drive.cancelFollowing();
-                navigationState = new Collecting(); // Default
+                navigationStateMachine.setState(new Manual());
                 break;
             case MANUAL_COLLECTING:
-                if (navigationState instanceof Collecting) {
+                if (navigationStateMachine.getState() instanceof Manual) {
+                    navigationStateMachine.setState(new Collecting());
+                } else if (navigationStateMachine.getState() instanceof Collecting) {
                     robot.drive.cancelFollowing();
                 }
                 break;
             case FULLY_AUTOMATIC:
+                if (navigationStateMachine.getState() instanceof Manual) {
+                    navigationStateMachine.setState(new Collecting());
+                }
                 // do nothing
                 break;
         }
