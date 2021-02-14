@@ -35,9 +35,9 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION_
  */
 @Config
 public class Localizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 0;
-    public static double WHEEL_RADIUS = 2; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
+    public static final double TICKS_PER_REV = 0;
+    public static final double WHEEL_RADIUS = 2; // in
+    public static final double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
@@ -45,9 +45,9 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     public static double X_MULTIPLIER = 1; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
-    private final Encoder leftEncoder;
-    private final Encoder rightEncoder;
-    private final Encoder frontEncoder;
+    private Encoder leftEncoder;
+    private Encoder rightEncoder;
+    private Encoder frontEncoder;
 
     private boolean canLaunch = true;
 
@@ -162,14 +162,10 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
-        // TODO: If your encoder velocity can exceed 32767 counts / second (such as the REV Through Bore and other
-        //  competing magnetic encoders), change Encoder.getRawVelocity() to Encoder.getCorrectedVelocity() to enable a
-        //  compensation method
-
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getRawVelocity()),
-                encoderTicksToInches(rightEncoder.getRawVelocity()),
-                encoderTicksToInches(frontEncoder.getRawVelocity())
+                encoderTicksToInches(leftEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(rightEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(frontEncoder.getCorrectedVelocity()) * Y_MULTIPLIER
         );
     }
 
