@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
@@ -13,6 +11,7 @@ import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.AspectRatioScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.ExtentScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.SolidityScorer;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -30,12 +29,15 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
 @Config
 public class RingCountPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
-    public static int THICKNESS = 3;
-    public static int RADIUS = 8;
+    public static int THICKNESS = 1;
+    public static int RADIUS = 2;
     private Viewport viewport = Viewport.ANNOTATED;
-    private static Rect croppedRect = new Rect(0, Vision.HEIGHT/3, Vision.WIDTH, Vision.HEIGHT/3);
+
+    private static Rect croppedRect = new Rect(0, (int) ((1-.4)/2 * Vision.HEIGHT), Vision.WIDTH, (int) (Vision.HEIGHT*.4));
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
-    private boolean watershed = false;
+
+
+    public static boolean watershed = false;
 
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
     private static final Scalar falseColor = new Scalar(255, 0  , 0  );
@@ -49,7 +51,6 @@ public class RingCountPipeline extends OpenCvPipeline {
     public AspectRatioScorer aspectRatioSCorer = new AspectRatioScorer();
     public ExtentScorer extentScorer = new ExtentScorer();
     public SolidityScorer solidityScorer = new SolidityScorer();
-
 
     public HSVRangeFilter hsvRangeFilter = new HSVRangeFilter();
     public MorphologyOperator morphologyOperator = new MorphologyOperator();
@@ -69,8 +70,8 @@ public class RingCountPipeline extends OpenCvPipeline {
     }
 
     public enum AnalysisRectMode {
-        SMALL(5.0 / 10, 1),
-        WIDE(8.0 / 10, 1);
+        SMALL(1.0 / 8,  1.0/8),
+        WIDE(8.0 / 10, .9);
 
         private final Rect rect;
         private final int width = croppedRect.width;
@@ -102,30 +103,42 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
     }
 
+    @Override
+    public void onViewportTapped() {
+        int currentStageNum = viewport.ordinal();
 
+        int nextStageNum = currentStageNum + 1;
 
-    public Viewport getViewport() {
-        return viewport;
-    }
-    public void setViewport(Viewport viewport) {
-        this.viewport = viewport;
-    }
-    public Mat getLatestMat() {
-        return latestMat;
-    }
-    public void saveLatestMat(String filename) {
-        saveMatToDisk(latestMat, filename);
+        if(nextStageNum >= Viewport.values().length)
+        {
+            nextStageNum = 0;
+        }
+
+        viewport = Viewport.values()[nextStageNum];
+
+        if (!watershed) {
+            switch (viewport) {
+                case DIST1:
+                case DIST2:
+                case MARKERS:
+                    viewport = Viewport.ANNOTATED;
+                    break;
+            }
+        }
     }
 
     Mat rawImage = new Mat();
     Mat workingMat = new Mat();
-    Mat croppedWorkingMat = new Mat(); // For submat, modifying sub modifies that rect region in parent
-    Mat rawMask = new Mat();
-    Mat mask = new Mat();
+    Mat croppedWorkingMat;
+    Mat rawMask;
+    Mat mask;
     Mat masked = new Mat();
     Mat markers = new Mat();
     Mat dist1 = new Mat();
     Mat dist2 = new Mat();
+    Mat displayMat = new Mat();
+    Mat displaySubmat;
+
 
     @Override
     public Mat processFrame(Mat input) {
@@ -133,20 +146,21 @@ public class RingCountPipeline extends OpenCvPipeline {
         input.copyTo(rawImage);
         input.copyTo(workingMat);
 
-        croppedWorkingMat = new Mat(workingMat,croppedRect);
-        Log.println(Log.INFO, "Color space: ", String.valueOf(input.type()));
+        croppedWorkingMat = workingMat.submat(croppedRect);
 
         // MatOperator //
         rawMask = hsvRangeFilter.process(croppedWorkingMat);
         mask = morphologyOperator.process(rawMask);
 
+        masked.release();
+        masked = new Mat();
         croppedWorkingMat.copyTo(masked, mask);
-        Imgproc.cvtColor(masked,masked,Imgproc.COLOR_RGBA2RGB);
 
         List<MatOfPoint> potentialContours = new ArrayList<>();
 
         // Segment //
         if (watershed) {
+            markers.create(croppedWorkingMat.size(), CvType.CV_8UC3);
             potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
         } else {
             Mat hierarchy = new Mat();
@@ -165,7 +179,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         // Score and Threshold //
         for (int i = 0; i < potentialRings.size(); i++) {
             RingData ring = potentialRings.get(i);
-            // TODO: FIX!!!
             // Must be within analysisRect to be analyzed
             if (contains(analysisRectMode.getRect(), ring.getBoundingRect())) {
                 double score = calculateScore(ring);
@@ -178,53 +191,56 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
 
         rings = finalRings;
-        Collections.sort(rings, (r1, r2) -> (int) (r1.getContourArea() - r2.getContourArea()));
-        Collections.reverse(rings);
 
         // Draw contours //
         Imgproc.drawContours(croppedWorkingMat, potentialContours, -1, falseColor, THICKNESS);
         Imgproc.drawContours(croppedWorkingMat, finalContours, -1, foundColor, THICKNESS);
 
-        // Draw contour centers //
+        // Draw centroids //
         for (Point center: centers) {
             Imgproc.circle(croppedWorkingMat, center, RADIUS, foundColor, THICKNESS);
         }
 
-        // Draw rect on input //
-        //drawRectangles(croppedWorkingMat, potentialRects, falseColor, THICKNESS); // Wrong rings will be red
-        //drawRectangles(croppedWorkingMat, finalRects, foundColor, THICKNESS);
-
+        // Draw rectangles //
         Imgproc.rectangle(croppedWorkingMat, analysisRectMode.getRect(), foundColor, THICKNESS);
         Imgproc.rectangle(workingMat, croppedRect, foundColor, THICKNESS/2);
 
-        Mat displayMat;
+        rawImage.copyTo(displayMat);
+        displaySubmat = displayMat.submat(croppedRect);
+
         switch (viewport) {
             case RAW_IMAGE:
-                displayMat = rawImage;
+                rawImage.copyTo(displayMat);
                 break;
             case RAW_MASK:
-                displayMat = rawMask;
+                Imgproc.cvtColor(rawMask, displaySubmat, Imgproc.COLOR_GRAY2RGB);
                 break;
             case MASK:
-                displayMat = mask;
+                Imgproc.cvtColor(mask, displaySubmat, Imgproc.COLOR_GRAY2RGB);
                 break;
             case MASKED:
-                displayMat = masked;
+                masked.copyTo(displaySubmat);
                 break;
             case DIST1:
-                if (watershed) displayMat = dist1;
-                else displayMat = workingMat;
+                if (watershed) {
+                    Imgproc.cvtColor(dist1, displaySubmat, Imgproc.COLOR_GRAY2RGB);
+                }
+                else workingMat.copyTo(displayMat);
                 break;
             case DIST2:
-                if (watershed) displayMat = dist2;
-                else displayMat = workingMat;
+                if (watershed) {
+                    Imgproc.cvtColor(dist2, displaySubmat, Imgproc.COLOR_GRAY2RGB);
+                }
+                else workingMat.copyTo(displayMat);
                 break;
             case MARKERS:
-                if (watershed) displayMat = markers;
-                else displayMat = workingMat;
+                if (watershed)  {
+                    markers.copyTo(displayMat);
+                }
+                else workingMat.copyTo(displayMat);
                 break;
             default:
-                displayMat = workingMat;
+                workingMat.copyTo(displayMat);
                 break;
         }
         latestMat = displayMat;
@@ -239,20 +255,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         return score / totalWeight;
     }
 
-    @Override
-    public void onViewportTapped() {
-        int currentStageNum = viewport.ordinal();
-
-        int nextStageNum = currentStageNum + 1;
-
-        if(nextStageNum >= Viewport.values().length)
-        {
-            nextStageNum = 0;
-        }
-
-        viewport = Viewport.values()[nextStageNum];
-    }
-
     public void setWatershed(boolean watershed) {
         this.watershed = watershed;
         morphologyOperator.setClose(watershed);
@@ -263,6 +265,8 @@ public class RingCountPipeline extends OpenCvPipeline {
     }
 
     public ArrayList<RingData> getRingData() {
+        Collections.sort(rings, (r1, r2) -> (int) (r1.getContourArea() - r2.getContourArea()));
+        Collections.reverse(rings);
         return rings;
     }
 
@@ -272,5 +276,18 @@ public class RingCountPipeline extends OpenCvPipeline {
             ringData.add(new RingData(contour));
         }
         return ringData;
+    }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
+    public Mat getLatestMat() {
+        return latestMat;
+    }
+    public void saveLatestMat(String filename) {
+        saveMatToDisk(latestMat, filename);
     }
 }
