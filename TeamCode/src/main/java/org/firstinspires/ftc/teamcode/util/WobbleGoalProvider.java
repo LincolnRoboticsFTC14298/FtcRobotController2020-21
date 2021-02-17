@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
+import org.firstinspires.ftc.robotlib.util.MathUtil;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,9 +38,8 @@ public class WobbleGoalProvider {
     }
 
     public void update(Pose2d pose) {
-        Vector2d armTip = pose.vec().plus(
-                ARM_DOWN_LOCATION_2d.rotated(pose.getHeading())
-        );
+        Vector2d armTip = MathUtil.localToGlobal(ARM_DOWN_LOCATION_2d, pose);
+
         for (int i = 0; i < wobbleGoals.size(); i++) {
             double distance = wobbleGoals.get(i).getPosition().distTo(armTip);
             if (distance < DISTANCE_TILL_DESPAWN_WOBBLE_GOALS) {
@@ -47,9 +48,8 @@ public class WobbleGoalProvider {
         }
     }
     public boolean atWobbleGoal(Pose2d pose) {
-        Vector2d armTip = pose.vec().plus(
-                ARM_DOWN_LOCATION_2d.rotated(pose.getHeading())
-        );
+        Vector2d armTip = MathUtil.localToGlobal(ARM_DOWN_LOCATION_2d, pose);
+
         for (int i = 0; i < wobbleGoals.size(); i++) {
             double distance = wobbleGoals.get(i).getPosition().distTo(armTip);
             if (distance < DISTANCE_TILL_DESPAWN_WOBBLE_GOALS) {

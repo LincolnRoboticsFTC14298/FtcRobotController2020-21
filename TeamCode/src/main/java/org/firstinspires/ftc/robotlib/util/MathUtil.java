@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotlib.util;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -62,5 +63,23 @@ public class MathUtil {
     public static double squareError(double value, double target) {
         double diff = target - value;
         return diff * diff;
+    }
+
+    public static Vector2d localToGlobal(Vector2d vec, Pose2d pose) {
+        return vec.rotated(pose.getHeading()).plus(pose.vec());
+    }
+
+    /*
+     * 3D rotate function
+     * Rotates a vector about the pitch or y axis
+     */
+    public static Vector3D rotateY(Vector3D vector3D, double pitch) {
+        double oldx = vector3D.getX();
+        double oldz = vector3D.getZ();
+
+        double x =  oldx * Math.cos(pitch) + oldz * Math.sin(pitch);
+        double y = vector3D.getY();
+        double z = -oldx * Math.sin(pitch) + oldz * Math.cos(pitch);
+        return new Vector3D(x, y, z);
     }
 }
