@@ -107,7 +107,7 @@ public class Arm extends Subsystem {
     public void setArmAngle(double angle) {
         armAngle = angle;
     }
-    public void updateArmAngle(double angle) {
+    private void updateArmAngle(double angle) {
         angle -= ARM_DEFAULT_ANGLE;
         int ticks = (int) (angle / (2 * Math.PI * GEAR_RATIO) * TICKS_PER_REV);
         armMotor.setTargetPosition(ticks);
