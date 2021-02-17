@@ -188,9 +188,13 @@ public class Vision extends Subsystem {
     }
     public void saveOutput() {
         RingCountPipeline.Viewport lastViewport = getViewport();
-        setViewport(RingCountPipeline.Viewport.RAW_IMAGE);
-        File file = new File(Environment.getExternalStorageDirectory() + "/vision/samples/");
-        String filename = file.getPath() + "IMG_" + System.currentTimeMillis();
+        setViewport(RingCountPipeline.Viewport.RAW_IMAGE); // TODO: test
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        String filename = "/samples/" + "IMG_" + System.currentTimeMillis();
         saveOutput(filename);
         setViewport(lastViewport);
     }
