@@ -1,20 +1,15 @@
 package org.firstinspires.ftc.robotlib.util.statemachine;
 
-public abstract class State {
-    public void start() {
+public interface State {
 
-    }
+    void start();
 
-    public void update() {
-
-    }
+    void update();
 
     /*
      * Should return current state to stay on it
      */
-    public abstract State getState();
+    State getNextState();
 
-    public void end() {
-
-    }
+    void end();
 }

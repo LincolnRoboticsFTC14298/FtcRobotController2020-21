@@ -5,9 +5,6 @@ import android.util.Log;
 public class StateMachine {
     private State currentState;
 
-    public StateMachine() {
-
-    }
     public StateMachine(State startingState) {
         currentState = startingState;
     }
@@ -18,14 +15,14 @@ public class StateMachine {
             return;
         }
 
-        State newState = currentState.getState();
-        if (currentState != newState) {
+        State nextState = currentState.getNextState();
+        if (currentState != nextState) {
             // Different state //
 
             // End current state
             currentState.end();
             // Assign new state
-            currentState = newState;
+            currentState = nextState;
             // Start the new state
             currentState.start();
         }
@@ -34,8 +31,5 @@ public class StateMachine {
 
     public State getState() {
         return currentState;
-    }
-    public void setState(State state) {
-        currentState = state;
     }
 }
