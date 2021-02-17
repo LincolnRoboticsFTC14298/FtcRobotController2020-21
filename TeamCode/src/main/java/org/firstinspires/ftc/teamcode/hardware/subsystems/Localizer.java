@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.robotlib.hardware.Encoder;
+import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 
 import java.util.Arrays;
@@ -73,26 +74,25 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     }
 
     /*
-     * Frame of refrence: robot center with axis aligned with global axis
+     * Frame of reference: robot center with global axis
      */
-    public Vector2d getTargetRelativeLocation2d(Vector2d pos) {
-        Vector2d targetPos = target.getLocation2d(alliance);
-        return targetPos.minus(pos);
-    }
-    public Vector2d getTargetRelativeLocation2d() {
-        return getTargetRelativeLocation2d(getPoseEstimate().vec());
-    }
-    public Vector3D getTargetRelativeLocation3D(Vector2d pos) {
+    public Vector3D getRelativeTargetLocation3D(Vector2d pos) {
         Vector3D targetPos = target.getLocation(alliance);
-        Vector3D pos3D = new Vector3D(pos.getX(), pos.getY(), 0);
+        Vector3D pos3D = MathUtil.vector2dToVector3D(pos);
         return targetPos.subtract(pos3D);
     }
-    public Vector3D getTargetRelativeLocation3D() {
-        return getTargetRelativeLocation3D(getPoseEstimate().vec());
+    public Vector3D getRelativeTargetLocation3D() {
+        return getRelativeTargetLocation3D(getPoseEstimate().vec());
+    }
+    public Vector2d getRelativeTargetLocation2d(Vector2d pos) {
+        return MathUtil.vector3DToVector2d(getRelativeTargetLocation3D(pos));
+    }
+    public Vector2d getRelativeTargetLocation2d() {
+        return getRelativeTargetLocation2d(getPoseEstimate().vec());
     }
 
     public double getTargetHeading(Vector2d vector2d) {
-        Vector2d targetRelPos = getTargetRelativeLocation2d(vector2d);
+        Vector2d targetRelPos = getRelativeTargetLocation2d(vector2d);
         double theta = targetRelPos.angleBetween(new Vector2d(1, 0));
         double sy = ARM_DOWN_LOCATION.getY();
         double targetMag = targetRelPos.norm();
@@ -100,20 +100,27 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         return theta + alpha;
     }
     public double getTargetHeading() {
-        Vector2d targetRelPos = getTargetRelativeLocation2d();
-        double theta = targetRelPos.angleBetween(new Vector2d(1, 0));
-        double sy = ARM_DOWN_LOCATION.getY();
-        double targetMag = targetRelPos.norm();
-        double alpha = Math.asin(sy / targetMag);
-        return theta + alpha;
+        return getTargetHeading(getPoseEstimate().vec());
     }
+
+    /*
+     * Frame of reference: shooter center with global axis
+     */
+    public Vector3D getRelativeShooterTargetLocation3D(Vector2d pos) {
+        Vector3D targetPos = target.getLocation(alliance);
+        Vector2d shooter2d = MathUtil.localToGlobal(SHOOTER_LOCATION_2d, new Pose2d(pos, getTargetHeading(pos)));
+        Vector3D shooter3D = MathUtil.vector2dToVector3D(shooter2d, SHOOTER_LOCATION.getZ());
+        return targetPos.subtract(shooter3D);
+    }
+    public Vector3D getRelativeShooterTargetLocation3D() {
+        return getRelativeShooterTargetLocation3D(getPoseEstimate().vec());
+    }
+
     public double getTargetLaunchAngle(Vector2d vector2d) {
         try {
-            final double h = getTargetRelativeLocation3D(vector2d).getZ() - SHOOTER_LOCATION.getZ();
-            double d = getTargetRelativeLocation2d().minus(
-                    SHOOTER_LOCATION_2d.rotated(
-                            getTargetHeading(vector2d)
-                    )).norm();
+            Vector3D relTarget = getRelativeShooterTargetLocation3D(vector2d);
+            double h = relTarget.getZ();
+            double d = MathUtil.vector3DToVector2d(relTarget).norm();
 
             double k = d * d * g / (2 * launchVel * launchVel);
             return fudgeFactor * Math.atan((d + Math.sqrt(d*d - 4*(h+k)*k))/(2*(h+k))
@@ -124,20 +131,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         }
     }
     public double getTargetLaunchAngle() {
-        try {
-            final double h = getTargetRelativeLocation3D().getZ() - SHOOTER_LOCATION.getZ();
-            double d = getTargetRelativeLocation2d().minus(
-                    SHOOTER_LOCATION_2d.rotated(
-                            getTargetHeading()
-                    )).norm();
-
-            double k = d * d * g / (2 * launchVel * launchVel);
-            return fudgeFactor * Math.atan((d + Math.sqrt(d*d - 4*(h+k)*k))/(2*(h+k))
-            );
-        } catch (Exception e) {
-            canLaunch = false;
-            return Math.toRadians(22); // Average launch angle
-        }
+        return getTargetLaunchAngle(getPoseEstimate().vec());
     }
 
     public boolean canLaunch() {
