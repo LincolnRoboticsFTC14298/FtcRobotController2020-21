@@ -9,6 +9,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
+import static org.firstinspires.ftc.teamcode.vision.VisionUtil.normalizePoint;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
 
@@ -46,25 +47,53 @@ public class RingData {
     public MatOfPoint getContour() {
         return contour;
     }
+
     public double getContourArea() {
         return contourArea;
     }
+    public double getNormalizedContourArea() {
+        return VisionUtil.normalizeArea(contourArea);
+    }
+
     public Point getCentroid() {
         return centroid;
     }
+    public Point getNormalizedCentroid() {
+        return VisionUtil.normalizePoint(centroid);
+    }
+
     public double getConvexHullArea() {
         return convexHullArea;
     }
+    public double getNormalizedConvexHullArea() {
+        return VisionUtil.normalizeArea(convexHullArea);
+    }
+
     public Rect getBoundingRect() {
         return boundingRect;
     }
+    public Rect getNormalizedBoundingRect() {
+        return VisionUtil.normalizeRect(boundingRect);
+    }
+
     public double getBoxArea() {
         return boxArea;
     }
+    public double getNormalizedBoxArea() {
+        return VisionUtil.normalizeArea(boxArea);
+    }
+
     public Point getBoxCenter() {
         return boxCenter;
     }
+    public Point getNormalizedBoxCenter() {
+        return normalizePoint(boxCenter);
+    }
+
     public Size getBoxSize() {
         return boxSize;
+    }
+    public Size getNormalizedBoxSize() {
+        return VisionUtil.normalizeSize(boxSize);
     }
 }
