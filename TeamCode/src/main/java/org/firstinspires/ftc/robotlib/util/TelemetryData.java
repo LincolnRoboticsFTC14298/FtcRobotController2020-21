@@ -15,6 +15,11 @@ public class TelemetryData {
     public void put(String label, Object value) {
         data.put(prefix + ": " + label, value);
     }
+    public void putAll(Map<String, Object> data) {
+        data.forEach(
+                (label, value) -> data.put(prefix + ": " + label, value)
+                );
+    }
 
     public Map<String, Object> getData() {
         return data;
