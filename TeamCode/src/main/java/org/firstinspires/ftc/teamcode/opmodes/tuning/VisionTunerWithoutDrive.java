@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,7 +10,6 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline.Viewport;
 
 @TeleOp(name="Vision Without Drive", group="Tuner")
-@Config
 public class VisionTunerWithoutDrive extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -30,9 +28,11 @@ public class VisionTunerWithoutDrive extends OpMode {
         //vision.setWatershed(true);
     }
 
+    // TODO: Make tuning automatic w/ gradient decent
     @Override
     public void loop() {
         gamepad.update();
+        vision.analyze();
 
         if (gamepad.dpad_down) {
             vision.setViewport(Viewport.RAW_MASK);
@@ -58,7 +58,6 @@ public class VisionTunerWithoutDrive extends OpMode {
         vision.updateTelemetry();
         TelemetryPacket packet = new TelemetryPacket();
         packet.putAll(vision.getTelemetryData());
-        packet.put("Viewport", vision.getViewport().toString());
         dashboard.sendTelemetryPacket(packet);
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
