@@ -4,14 +4,14 @@ import com.acmerobotics.roadrunner.drive.DriveSignal
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.Localizer
 import com.acmerobotics.roadrunner.util.Angle
-import org.firstinspires.ftc.robotlib.hardware.Subsystem
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem
 
 /**
  * Abstraction for generic robot drive motion and localization. Robot poses are specified in a coordinate system with
  * positive x pointing forward, positive y pointing left, and positive heading measured counter-clockwise from the
  * x-axis.
  */
-abstract class Drive(name: String) : Subsystem(name) {
+abstract class Drive(name: String) : AbstractSubsystem(name) {
     /**
      * Localizer used to determine the evolution of [poseEstimate].
      */

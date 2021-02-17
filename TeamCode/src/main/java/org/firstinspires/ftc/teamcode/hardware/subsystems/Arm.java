@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 
 @Config
-public class Arm extends Subsystem {
+public class Arm extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     public static final String CLAW_SERVO_NAME = "claw";

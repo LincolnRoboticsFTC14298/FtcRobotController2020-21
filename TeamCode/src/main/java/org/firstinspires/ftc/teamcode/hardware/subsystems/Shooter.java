@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 
 @Config
-public class Shooter extends Subsystem {
+public class Shooter extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String SHOOTER_MOTOR1_NAME = "shooter1", SHOOTER_MOTOR2_NAME = "shooter2";

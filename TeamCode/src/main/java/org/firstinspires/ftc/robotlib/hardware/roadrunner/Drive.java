@@ -5,9 +5,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.util.Angle;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 
-public abstract class Drive extends Subsystem {
+public abstract class Drive extends AbstractSubsystem {
     public Drive(String name) {
         super(name);
     }

@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 
 @Deprecated
-public class Elevator extends Subsystem {
+public class Elevator extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final double RADIUS = 5; // inches

@@ -1,50 +1,25 @@
 package org.firstinspires.ftc.robotlib.hardware;
 
-import org.firstinspires.ftc.robotlib.util.TelemetryData;
-
 import java.util.Map;
 
+public interface Subsystem {
+    void init();
 
-public abstract class Subsystem {
-    private String name;
-    protected TelemetryData telemetry;
+    void initUpdate();
 
-    public Subsystem(String name) {
-        this.name = name;
-        telemetry = new TelemetryData(name);
-    }
+    void start();
 
-    public abstract void update();
-    public abstract void stop();
+    void update();
 
-    public void updateMotorAndServoValues() {
+    void stop();
 
-    }
+    void updateSensorValues();
 
-    public void getSensorValues() {
+    void updateMotorAndServoValues();
 
-    }
+    void updateTelemetry();
 
-    public void init() {
+    Map<String, Object> getTelemetryData();
 
-    }
-
-    public void initUpdate() {
-
-    }
-
-    public void start() {
-
-    }
-
-    public void updateTelemetry() {
-
-    }
-    public Map<String, Object> getTelemetryData() {
-        return telemetry.getData();
-    }
-
-    public void updateLogging() {
-
-    }
+    void updateLogging();
 }

@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 
 @Deprecated
-public class Turret extends Subsystem {
+public class Turret extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final double GEAR_RATIO = .1; // turret output revs / motor input revs

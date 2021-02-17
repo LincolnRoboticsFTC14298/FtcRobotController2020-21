@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
 
 @Deprecated
-public class SimpleDrive extends Subsystem {
+public class SimpleDrive extends AbstractSubsystem {
     // Mecanum drive //
 
     //private static final FluentLogger logger = FluentLogger.forEnclosingClass();
