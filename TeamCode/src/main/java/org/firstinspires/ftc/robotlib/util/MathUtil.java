@@ -76,8 +76,17 @@ public class MathUtil {
         return diff * diff;
     }
 
+    /*
+     * Local: center is robot, axis aligned with robots heading
+     * Global: center is center of field, axis global
+     */
     public static Vector2d localToGlobal(Vector2d vec, Pose2d pose) {
-        return vec.rotated(pose.getHeading()).plus(pose.vec());
+        return vec.rotated(pose.getHeading())
+                .plus(pose.vec());
+    }
+    public static Vector2d globalToLocal(Vector2d vec, Pose2d pose) {
+        return vec.minus(pose.vec())
+                .rotated(-pose.getHeading());
     }
 
     /*
