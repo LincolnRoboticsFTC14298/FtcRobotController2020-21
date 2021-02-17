@@ -11,12 +11,12 @@ import org.opencv.imgproc.Imgproc;
 
 @Config
 public class HSVRangeFilter implements MatOperator {
-    public static int lowerThresholdR = 10;
-    public static int lowerThresholdG = 100;
-    public static int lowerThresholdB = 120;
-    public static int upperThresholdR = 20;
-    public static int upperThresholdG = 255;
-    public static int upperThresholdB = 255;
+    public static int lowerThresholdH = 3;
+    public static int lowerThresholdS = 100;
+    public static int lowerThresholdV = 120;
+    public static int upperThresholdH = 20;
+    public static int upperThresholdS = 255;
+    public static int upperThresholdV = 255;
     public static Size blur = new Size(5,5);
     public static int blurSigma = 1;
 
@@ -30,8 +30,8 @@ public class HSVRangeFilter implements MatOperator {
     Mat mask = new Mat();
     @Override
     public Mat process(Mat img) {
-        Scalar lowerThreshold = new Scalar(lowerThresholdR, lowerThresholdG, lowerThresholdB);
-        Scalar upperThreshold = new Scalar(upperThresholdR, upperThresholdG, upperThresholdB);
+        Scalar lowerThreshold = new Scalar(lowerThresholdH, lowerThresholdS, lowerThresholdV);
+        Scalar upperThreshold = new Scalar(upperThresholdH, upperThresholdS, upperThresholdV);
 
         Imgproc.cvtColor(img, mask, Imgproc.COLOR_RGB2HSV);
 
