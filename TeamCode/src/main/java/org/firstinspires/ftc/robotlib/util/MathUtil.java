@@ -11,6 +11,17 @@ public class MathUtil {
         return new Vector3D(pose.getX(), pose.getY(), 0);
     }
 
+    public static Vector2d vector3DToVector2d(Vector3D vector3D) {
+        return new Vector2d(vector3D.getX(), vector3D.getY());
+    }
+    public static Vector3D vector2dToVector3D(Vector2d vector2d, double height) {
+        return new Vector3D(vector2d.getX(), vector2d.getY(), height);
+    }
+    public static Vector3D vector2dToVector3D(Vector2d vector2d) {
+        return new Vector3D(vector2d.getX(), vector2d.getY(), 0);
+    }
+
+
     public static double inchesToMeters(double inches) {
         return .0254*inches;
     }
