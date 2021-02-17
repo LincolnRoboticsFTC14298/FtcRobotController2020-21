@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.google.common.flogger.FluentLogger;
@@ -27,7 +28,7 @@ import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 public class Vision extends Subsystem {
     public static int WIDTH = 320;
     public static int HEIGHT = 240;
-    public static final double FOV_X = 27.3, FOV_Y = 21; // degrees
+    public static final double FOV_X = Math.toRadians(27.3), FOV_Y = Math.toRadians(21); // radians
     public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
 
     public static int oneRingHeight = 10;
@@ -39,9 +40,6 @@ public class Vision extends Subsystem {
     private RingCountPipeline ringCountPipeline;
 
     private List<RingData> ringData;
-
-    // TODO: Possibly delete later
-    private boolean processed = false;
 
     private Localizer localizer;
 
@@ -81,13 +79,11 @@ public class Vision extends Subsystem {
     @Override
     public void updateTelemetry() {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
-        telemetry.put("Output type", ringCountPipeline.getLatestMat().type());
         telemetry.put("Viewport", getViewport());
     }
 
     public void analyze() {
         ringData = ringCountPipeline.getRingData();
-        processed = true;
     }
     public void scan() {
         analyze();
@@ -139,12 +135,10 @@ public class Vision extends Subsystem {
         return ringData;
     }
     public int getNumRings() {
-        TelemetryPacket packet = new TelemetryPacket();
-        if (processed) {
+        if (ringData != null) {
             return ringData.size();
         } else {
-            packet.addLine("ERROR: IMAGE NOT PROCESSED");
-            //dashboard.sendTelemetryPacket(packet);
+            Log.e("Vision", "Ring Data is null");
             return 0;
         }
     }

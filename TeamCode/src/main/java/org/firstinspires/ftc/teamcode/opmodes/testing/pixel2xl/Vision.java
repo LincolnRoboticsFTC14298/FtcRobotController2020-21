@@ -1,49 +1,45 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing.pixel2xl;
 
-import android.os.Environment;
+import android.util.Log;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
 import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Ring;
 import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingData;
-import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-import java.io.File;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION_2d;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_PITCH;
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
 public class Vision extends Subsystem {
     public static int WIDTH = 320;
     public static int HEIGHT = 240;
-    public static final double FOVX = 27.3; // degrees
-    public static final double FOVY = 27.3; // degrees
-    public static double FUDGE_FACTOR = 1;
+    public static final double FOV_X = Math.toRadians(76), FOV_Y = Math.toRadians(21); // radians
+    public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
 
     public static int oneRingHeight = 10;
     public static int zeroRingHeight = 10;
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private OpenCvCamera camera;
+    private OpenCvInternalCamera camera;
     private RingCountPipeline ringCountPipeline;
 
     private List<RingData> ringData;
-
-    // TODO: Possibly delete later
-    private boolean processed = false;
 
     private Localizer localizer;
 
@@ -82,13 +78,11 @@ public class Vision extends Subsystem {
     @Override
     public void updateTelemetry() {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
-        //telemetry.put("Output type", ringCountPipeline.getLatestMat().type());
         telemetry.put("Viewport", getViewport());
     }
 
     public void analyze() {
         ringData = ringCountPipeline.getRingData();
-        processed = true;
     }
     public void scan() {
         analyze();
@@ -99,39 +93,33 @@ public class Vision extends Subsystem {
     }
 
     /*
-     * Frame of reference: camera center and axis is local
+     * Frame of reference: camera is center and axis same as cameras
      */
-    public double getCameraRingAngle(RingData ring) {
-        double cx = ring.getCentroid().x;
-        int w = WIDTH;
-        double x = w/2.0 - cx; // w/2 is center, left positive, right negative like heading
-        return Math.atan(Math.tan(Math.toRadians(FOVX) / 2.0) * 2.0 * x / w);
-    }
-    public double getCameraRingDistance(RingData ring) {
-        double cx = ring.getCentroid().x;
-        int w = WIDTH;
-        double xpx = w/2.0 - cx;
-        double angle = getCameraRingAngle(ring);
-        double dpx = ring.getBoxSize().width;
-        return FUDGE_FACTOR * xpx / Math.sin(angle) * RING_DIAMETER / dpx;
+    public Vector3D getRingCameraLocalPosition(RingData ring) {
+        double ratio = RING_DIAMETER / ring.getNormalizedBoxSize().width;
+        double x = FUDGE_FACTOR_X * ratio / Math.tan(FOV_X / 2.0);
+        double y = FUDGE_FACTOR_Y * ratio * ring.getNormalizedCentroid().x;
+        double z = Math.tan(FOV_Y / 2.0) * ring.getNormalizedCentroid().y * x;
+        return new Vector3D(x, y, z);
     }
 
     /*
-     * Frame of reference: robot at center and axis is local
+     * Frame of reference: robot at center, axis is same as robots
      */
-    public Vector2d getRingLocalPosition(RingData ring) {
-        double angle = getCameraRingAngle(ring);
-        double distance = getCameraRingDistance(ring); // TODO: May have to account for height of camera
-        return CAMERA_LOCATION_2d.plus(Vector2d.polar(distance, angle));
+    public Vector3D getRingLocalPosition(RingData ring) {
+        Vector3D cam = getRingCameraLocalPosition(ring);
+        Vector3D rotCam = MathUtil.rotateY(cam, CAMERA_PITCH);
+        return CAMERA_LOCATION.add(rotCam);
     }
 
     /*
      * Frame of reference: global
      */
-    public Vector2d getRingPosition(RingData ringData) {
-        Pose2d pose = localizer.getPoseEstimate();
-        return getRingLocalPosition(ringData).rotated(pose.getHeading())
-                .plus(pose.vec());
+    public Vector2d getRingPosition(RingData ring) {
+        Pose2d pose = new Pose2d(0,0,0);
+        Vector3D ringLocal3D = getRingLocalPosition(ring);
+        Vector2d ringLocal2d = MathUtil.vector3DToVector2d(ringLocal3D);
+        return MathUtil.localToGlobal(ringLocal2d, pose);
     }
 
     public void resumeViewport() {
@@ -146,17 +134,16 @@ public class Vision extends Subsystem {
         return ringData;
     }
     public int getNumRings() {
-        TelemetryPacket packet = new TelemetryPacket();
-        if (processed) {
+        if (ringData != null) {
             return ringData.size();
         } else {
-            packet.addLine("ERROR: IMAGE NOT PROCESSED");
-            //dashboard.sendTelemetryPacket(packet);
+            Log.e("Vision", "Ring Data is null");
             return 0;
         }
     }
 
     public int getCenterStackSize() {
+        // TODO: Center stack may not be considered a stack
         RingData centerRing = ringData.get(0);
         if (centerRing != null) {
             double height = centerRing.getBoxSize().height;
@@ -189,9 +176,13 @@ public class Vision extends Subsystem {
     }
     public void saveOutput() {
         RingCountPipeline.Viewport lastViewport = getViewport();
-        setViewport(RingCountPipeline.Viewport.RAW_IMAGE);
-        File file = new File(Environment.getExternalStorageDirectory() + "/vision/samples/");
-        String filename = file.getPath() + "IMG_" + System.currentTimeMillis();
+        setViewport(RingCountPipeline.Viewport.RAW_IMAGE); // TODO: test
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        String filename = "/samples/" + "IMG_" + System.currentTimeMillis();
         saveOutput(filename);
         setViewport(lastViewport);
     }
