@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
+import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
@@ -15,11 +18,19 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class Robot extends RobotBase {
-    public Localizer localizer;
+
+public class Robot implements RobotBase {
+    private HardwareMap hardwareMap;
+    private Telemetry telemetry;
+
+    private SubsystemManager subsystemManager = new SubsystemManager();
 
     // Subsystems //
+    public Localizer localizer;
+
     public Vision vision;
     public Arm arm;
     public Intake intake;
@@ -32,10 +43,15 @@ public class Robot extends RobotBase {
     // TODO: Maybe alliance in field class?
     public Alliance alliance = Alliance.BLUE;
 
-    public Robot(OpMode opMode) {
-        super(opMode);
+    public Robot(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         localizer = new Localizer(hardwareMap);
 
@@ -100,53 +116,46 @@ public class Robot extends RobotBase {
 
 
     // Shooting //
-    private int shootScheduler = 0;
+    private Queue<Target> shootingQueue = new LinkedList<>();
     public boolean doneShooting() {
-        return shootScheduler == 0;
+        return shootingQueue.isEmpty();
     }
     public void waitUntilDoneShooting() {
         while (!doneShooting() && !Thread.currentThread().isInterrupted()) {
-            // TODO: Find way to use update
-            localizer.update();
-            updateShooting();
-            subsystemManager.update();
-            telemetry.update();
+            update();
         }
     }
 
+    public void shootAsync(Target target) {
+        shootingQueue.add(target);
+    }
+    public void shootAsync(Target target, int n) {
+        for (int i = 0; i < n; i++)
+            shootingQueue.add(target);
+    }
+    public void shootAsync() {
+        shootAsync(Target.HIGH_GOAL);
+    }
     public void shootAsync(int n) {
-        shootScheduler += n;
+        shootAsync(Target.HIGH_GOAL, n);
     }
-    public void shoot(int n) {
-        shootAsync(n);
-        waitUntilDoneShooting();
-    }
-    public void shootTarget(Target target, int n) {
-        setTarget(target);
-        shootAsync(n);
-    }
+
     public void powerShot() {
-        // TODO: Make async
         // TODO: test strafing shot vs rotate shot
         // Break
         drive.stop();
 
         // Outward shot
-        shootTarget(Target.OUTWARD_POWER_SHOT, 1);
-        waitUntilDoneShooting();
+        shootAsync(Target.OUTWARD_POWER_SHOT);
 
         // Middle shot
-        shootTarget(Target.MIDDLE_POWER_SHOT, 1);
-        waitUntilDoneShooting();
+        shootAsync(Target.MIDDLE_POWER_SHOT);
 
         // Inward shot
-        shootTarget(Target.INWARD_POWER_SHOT, 1);
-        waitUntilDoneShooting();
-
-        setTarget(Target.HIGH_GOAL);
+        shootAsync(Target.INWARD_POWER_SHOT);
     }
     public void cancelShot() {
-        shootScheduler = 0;
+        shootingQueue.clear();
     }
 
 
@@ -160,16 +169,20 @@ public class Robot extends RobotBase {
     public void updateShooting() {
         shooter.aimAsync();
 
-        if (shootScheduler == 0) {
+        if (doneShooting()) {
             shootingStatus = ShootingStatus.IDLE;
             drive.cancelFollowing();
             shooter.turnOffShooterMotor();
         }
         switch (shootingStatus) {
             case IDLE:
-                if (shootScheduler > 0) {
+                if (!doneShooting()) {
                     shootingStatus = ShootingStatus.AIMING;
                     drive.stop();
+
+                    setTarget(shootingQueue.peek());
+                    drive.pointAtTargetAsync();
+                    shooter.turnOnShooterMotor();
                 }
                 break;
             case AIMING:
@@ -180,10 +193,8 @@ public class Robot extends RobotBase {
                 break;
             case SHOOTING:
                 if (shooter.isRetractedStatus()) {
-                    shootScheduler--;
-                    shootingStatus = ShootingStatus.AIMING;
-                    drive.pointAtTargetAsync();
-                    shooter.turnOnShooterMotor();
+                    shootingQueue.remove();
+                    shootingStatus = ShootingStatus.IDLE;
                 }
                 break;
         }
