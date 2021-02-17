@@ -23,7 +23,7 @@ public class DriveToLine extends OpMode {
     @Override
     public void init() {
         DataWriterUtil.setAlliance(Field.Alliance.RED);
-        robot = new Robot(this);
+        robot = new Robot(hardwareMap, telemetry);
         robot.start();
     }
 

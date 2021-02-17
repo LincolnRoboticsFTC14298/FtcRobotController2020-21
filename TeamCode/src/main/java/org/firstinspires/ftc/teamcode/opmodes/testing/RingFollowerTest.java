@@ -14,7 +14,7 @@ public class RingFollowerTest extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(hardwareMap, telemetry);
         robot.init();
     }
 

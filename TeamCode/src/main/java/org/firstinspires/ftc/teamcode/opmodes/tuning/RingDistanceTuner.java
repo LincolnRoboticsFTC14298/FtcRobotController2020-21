@@ -36,7 +36,7 @@ public class RingDistanceTuner extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(hardwareMap, telemetry);
         gamepad = new RadicalGamepad(gamepad1);
     }
 

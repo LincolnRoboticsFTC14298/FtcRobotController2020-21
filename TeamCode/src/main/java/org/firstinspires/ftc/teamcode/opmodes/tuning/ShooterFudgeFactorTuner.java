@@ -38,7 +38,7 @@ public class ShooterFudgeFactorTuner extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(hardwareMap, telemetry);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
@@ -76,7 +76,7 @@ public class ShooterFudgeFactorTuner extends OpMode {
         }
 
         if (gamepad.a) {
-            robot.shoot(1);
+            robot.shootAsync();
         } else if (gamepad.b) {
             predictedAngles.add(robot.localizer.getTargetLaunchAngle());
             actualAngles.add(robot.shooter.getTargetAngle());
