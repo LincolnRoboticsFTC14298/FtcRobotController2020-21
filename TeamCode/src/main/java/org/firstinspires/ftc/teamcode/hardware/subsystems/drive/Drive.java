@@ -26,7 +26,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.google.common.flogger.FluentLogger;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -100,7 +99,7 @@ public class Drive extends MecanumDrive {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
-    private final VoltageSensor batteryVoltageSensor;
+    private VoltageSensor batteryVoltageSensor;
 
     private Pose2d lastPoseOnTurn;
 
@@ -133,10 +132,6 @@ public class Drive extends MecanumDrive {
         poseHistory = new LinkedList<>();
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
-
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
 
         leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_NAME);
         leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_NAME);
@@ -366,7 +361,7 @@ public class Drive extends MecanumDrive {
             Vector2d dp = ringPos.minus(pos);
             dp = dp.times(1 - 5.0 / dp.norm()); // 5 inches before
             Vector2d targetPos = pos.plus(dp);
-            double heading = dp.angleBetween(new Vector2d(1, 0)); // TODO: Check if needs to be negated
+            double heading = dp.angleBetween(new Vector2d(1, 0));
 
             strafeToPointAsync(new Pose2d(targetPos, heading));
         }
