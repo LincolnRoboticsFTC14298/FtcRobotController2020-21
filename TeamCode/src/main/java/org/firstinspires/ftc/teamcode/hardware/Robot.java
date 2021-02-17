@@ -131,7 +131,7 @@ public class Robot implements RobotBase {
     }
     public void shootAsync(Target target, int n) {
         for (int i = 0; i < n; i++)
-            shootingQueue.add(target);
+            shootAsync(target);
     }
     public void shootAsync() {
         shootAsync(Target.HIGH_GOAL);
