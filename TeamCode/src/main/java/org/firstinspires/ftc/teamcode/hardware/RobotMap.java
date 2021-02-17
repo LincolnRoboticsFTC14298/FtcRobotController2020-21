@@ -12,6 +12,8 @@ public class RobotMap {
     public static Vector3D SHOOTER_LOCATION = new Vector3D(0,0,0);
     public static Vector2d SHOOTER_LOCATION_2d = new Vector2d(SHOOTER_LOCATION.getX(), SHOOTER_LOCATION.getY());
 
+    public static double CAMERA_PITCH = 0; // RADIANS, positive if pointing down
+    public static double CAMERA_YAW = 0;
     public static Vector3D CAMERA_LOCATION = new Vector3D(0,0,0);
     public static Vector2d CAMERA_LOCATION_2d = new Vector2d(CAMERA_LOCATION.getX(), CAMERA_LOCATION.getY());
 
