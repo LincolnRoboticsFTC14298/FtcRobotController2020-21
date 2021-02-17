@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 
 @Config
-public class AreaScorer extends VisionScorer {
+public class AreaScorer implements VisionScorer {
     private final FtcDashboard dashboard;
     public static double weight = 10;
 
@@ -16,7 +16,7 @@ public class AreaScorer extends VisionScorer {
     }
     public AreaScorer(double weight) {
         dashboard = FtcDashboard.getInstance();
-        AreaScorer.weight = weight;
+        this.weight = weight;
     }
 
     @Override
@@ -24,5 +24,10 @@ public class AreaScorer extends VisionScorer {
         double area = ringData.getNormalizedContourArea();
         dashboard.getTelemetry().addLine("area = " + area);
         return -area * weight;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 }

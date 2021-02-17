@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.vision.RingData;
 import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
-public class SolidityScorer extends VisionScorer {
+public class SolidityScorer implements VisionScorer {
     private final FtcDashboard dashboard;
 
     public static double optimalRatio = .8;
@@ -20,8 +20,8 @@ public class SolidityScorer extends VisionScorer {
     }
     public SolidityScorer(double optimalRatio, double weight) {
         dashboard = FtcDashboard.getInstance();
-        SolidityScorer.optimalRatio = optimalRatio;
-        SolidityScorer.weight = weight;
+        this.optimalRatio = optimalRatio;
+        this.weight = weight;
     }
 
     @Override
@@ -29,5 +29,10 @@ public class SolidityScorer extends VisionScorer {
         double ratio = ringData.getContourArea() / ringData.getConvexHullArea();
         dashboard.getTelemetry().addLine("solidity ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 }

@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 
 @Config
-public class AspectRatioScorer extends VisionScorer {
+public class AspectRatioScorer implements VisionScorer {
     private final FtcDashboard dashboard;
 
     public static double optimalRatio = 5.0 / 0.75;
@@ -22,8 +22,8 @@ public class AspectRatioScorer extends VisionScorer {
     }
     public AspectRatioScorer(double optimalRatio, double weight) {
         dashboard = FtcDashboard.getInstance();
-        AspectRatioScorer.optimalRatio = optimalRatio;
-        AspectRatioScorer.weight = weight;
+        this.optimalRatio = optimalRatio;
+        this.weight = weight;
     }
 
     @Override
@@ -34,5 +34,10 @@ public class AspectRatioScorer extends VisionScorer {
         ratio = Math.max(ratio, 1.0/ratio);
         dashboard.getTelemetry().addLine("aspect ratio = " + ratio);
         return squareError(ratio, optimalRatio) * weight;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 }
