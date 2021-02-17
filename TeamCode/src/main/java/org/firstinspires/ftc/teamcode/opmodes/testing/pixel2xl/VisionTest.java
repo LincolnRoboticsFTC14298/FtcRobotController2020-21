@@ -22,17 +22,18 @@ public class VisionTest extends OpMode {
     @Override
     public void start() {
         vision.start();
-        //vision.setWatershed(true);
     }
 
-    // TODO: Make tuning automatic w/ gradient decent
     @Override
     public void loop() {
+        vision.analyze();
         vision.update();
         vision.updateTelemetry();
         TelemetryPacket packet = new TelemetryPacket();
         packet.putAll(vision.getTelemetryData());
+        //packet.put("Latest Ring Position", vision.getRingCameraLocalPosition(vision.getRingData().get(0)));
         dashboard.sendTelemetryPacket(packet);
+        dashboard.getTelemetry().update();
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
     }
