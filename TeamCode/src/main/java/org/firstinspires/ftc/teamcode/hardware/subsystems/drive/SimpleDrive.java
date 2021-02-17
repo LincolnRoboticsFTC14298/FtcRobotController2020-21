@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotlib.hardware.Subsystem;
 import org.firstinspires.ftc.teamcode.util.Field.Alliance;
@@ -147,11 +148,11 @@ public class SimpleDrive extends Subsystem {
     }
 
     public void setMotorPowers(double fl, double fr, double bl, double br) {
-        // TODO: Clip powers to make sure it's between -1 and 1
-        frontLeftPower = fl;
-        frontRightPower = fr;
-        backLeftPower = bl;
-        backRightPower = br;
+        // May want to scale down by the max
+        frontLeftPower = Range.clip(fl, -1, 1);
+        frontRightPower = Range.clip(fr, -1, 1);
+        backLeftPower = Range.clip(bl, -1, 1);
+        backRightPower = Range.clip(br, -1, 1);
     }
     public void setMode(DcMotor.RunMode mode) {
         frontLeft.setMode(mode);
