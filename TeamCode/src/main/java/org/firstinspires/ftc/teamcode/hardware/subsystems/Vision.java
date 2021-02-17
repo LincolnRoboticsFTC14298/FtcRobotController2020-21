@@ -27,8 +27,11 @@ import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 public class Vision extends Subsystem {
     public static int WIDTH = 320;
     public static int HEIGHT = 240;
-    public static final double FOV = 27.3; // degrees
-    public static double FUDGE_FACTOR = 1;
+    public static final double FOV_X = 27.3, FOV_Y = 21; // degrees
+    public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
+
+    public static int oneRingHeight = 10;
+    public static int zeroRingHeight = 10;
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -156,6 +159,19 @@ public class Vision extends Subsystem {
         FtcDashboard.getInstance().stopCameraStream();
         camera.setSensorFps(fps);
         FtcDashboard.getInstance().startCameraStream(camera, fps);
+    }
+
+    public int getCenterStackSize() {
+        RingData centerRing = ringData.get(0);
+        if (centerRing != null) {
+            double height = centerRing.getBoxSize().height;
+            if (height > oneRingHeight) {
+                return 4;
+            } else if (height > zeroRingHeight) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     public RingCountPipeline.Viewport getViewport() {
