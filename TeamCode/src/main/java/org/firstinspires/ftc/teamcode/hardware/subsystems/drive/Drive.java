@@ -174,8 +174,6 @@ public class Drive extends MecanumDrive {
 
     @Override
     public void update() {
-        updatePoseEstimate();
-
         Pose2d currentPose = getPoseEstimate();
 
         poseHistory.add(currentPose);
