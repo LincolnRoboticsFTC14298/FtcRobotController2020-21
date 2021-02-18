@@ -83,13 +83,6 @@ public class Vision extends AbstractSubsystem {
     public void analyze() {
         ringData = ringCountPipeline.getRingData();
     }
-    public void scan() {
-        analyze();
-        for (RingData r : ringData) {
-            Ring ring = new Ring(getRingPosition(r));
-            Field.ringProvider.add(ring);
-        }
-    }
 
     /*
      * Frame of reference: camera is center and axis same as cameras
@@ -100,25 +93,6 @@ public class Vision extends AbstractSubsystem {
         double y = FUDGE_FACTOR_Y * ratio * ring.getNormalizedCentroid().x;
         double z = Math.tan(FOV_Y / 2.0) * ring.getNormalizedCentroid().y * x;
         return new Vector3D(x, y, z);
-    }
-
-    /*
-     * Frame of reference: robot at center, axis is same as robots
-     */
-    public Vector3D getRingLocalPosition(RingData ring) {
-        Vector3D cam = getRingCameraLocalPosition(ring);
-        Vector3D rotCam = MathUtil.rotateY(cam, CAMERA_PITCH);
-        return CAMERA_LOCATION.add(rotCam);
-    }
-
-    /*
-     * Frame of reference: global
-     */
-    public Vector2d getRingPosition(RingData ring) {
-        Pose2d pose = new Pose2d(0,0,0);
-        Vector3D ringLocal3D = getRingLocalPosition(ring);
-        Vector2d ringLocal2d = MathUtil.vector3DToVector2d(ringLocal3D);
-        return MathUtil.localToGlobal(ringLocal2d, pose);
     }
 
     public void resumeViewport() {
