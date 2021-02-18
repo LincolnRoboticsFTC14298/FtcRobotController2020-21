@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.vision.scorers;
 
 import android.util.Log;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.AbstractVisionScorer;
@@ -12,19 +11,15 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 public class ExtentScorer extends AbstractVisionScorer {
-    private final FtcDashboard dashboard;
-
     public static double optimalRatio = .8;
     public static double weight = .7;
     private double ratio;
 
     public ExtentScorer() {
         super("Extent Scorer");
-        dashboard = FtcDashboard.getInstance();
     }
     public ExtentScorer(double optimalRatio, double weight) {
         super("Extent Scorer");
-        dashboard = FtcDashboard.getInstance();
         this.optimalRatio = optimalRatio;
         this.weight = weight;
     }
