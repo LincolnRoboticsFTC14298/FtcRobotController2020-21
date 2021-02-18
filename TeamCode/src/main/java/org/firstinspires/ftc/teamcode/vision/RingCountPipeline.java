@@ -22,7 +22,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
 
@@ -35,7 +37,6 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     private static Rect croppedRect = new Rect(0, (int) ((1-.4)/2 * Vision.HEIGHT), Vision.WIDTH, (int) (Vision.HEIGHT*.4));
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
-
 
     public static boolean watershed = false;
 
@@ -74,13 +75,13 @@ public class RingCountPipeline extends OpenCvPipeline {
         WIDE(8.0 / 10, .9);
 
         private final Rect rect;
-        private final int width = croppedRect.width;
-        private final int height = croppedRect.height;
 
         AnalysisRectMode(double widthRatio, double heightRatio) {
+            final int width = croppedRect.width;
+            final int height = croppedRect.height;
             int w = (int) (width * widthRatio);
             int h = (int) (height * heightRatio);
-            int x = (int) (width*(1 - widthRatio)/2), y = (int) (height*(1 - heightRatio)/2);
+            int x = (int) (width *(1 - widthRatio)/2), y = (int) (height *(1 - heightRatio)/2);
             rect = new Rect(x, y, w, h);
         }
 
@@ -99,7 +100,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         scorers.add(solidityScorer);
 
         for (VisionScorer scorer : scorers) {
-            totalWeight += scorer.weight;
+            totalWeight += scorer.getWeight();
         }
     }
 
@@ -247,6 +248,21 @@ public class RingCountPipeline extends OpenCvPipeline {
         return displayMat;
     }
 
+    public Map<String, Object> getTelemetryData() {
+        Map<String, Object> data = new HashMap<>();
+        for (VisionScorer scorer : scorers) {
+            scorer.updateTelemetry();
+            data.putAll(scorer.getTelemetryData());
+        }
+        return areaScorer.getTelemetryData();
+    }
+
+    public void updateLogging() {
+        for (VisionScorer scorer : scorers) {
+            scorer.updateLogging();
+        }
+    }
+
     private double calculateScore(RingData ringData) {
         double score = 0.0;
         for (VisionScorer scorer : scorers) {
@@ -256,7 +272,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     }
 
     public void setWatershed(boolean watershed) {
-        this.watershed = watershed;
+        RingCountPipeline.watershed = watershed;
         morphologyOperator.setClose(watershed);
     }
 
@@ -283,9 +299,6 @@ public class RingCountPipeline extends OpenCvPipeline {
     }
     public void setViewport(Viewport viewport) {
         this.viewport = viewport;
-    }
-    public Mat getLatestMat() {
-        return latestMat;
     }
     public void saveLatestMat(String filename) {
         saveMatToDisk(latestMat, filename);
