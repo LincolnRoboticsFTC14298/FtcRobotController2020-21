@@ -9,7 +9,7 @@ import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.firstinspires.ftc.robotlib.hardware.Subsystem;
+import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Ring;
@@ -25,9 +25,9 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_LOCATION;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_PITCH;
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
-public class Vision extends Subsystem {
-    public static int WIDTH = 320;
-    public static int HEIGHT = 240;
+public class Vision extends AbstractSubsystem {
+    public static int WIDTH = 1280;
+    public static int HEIGHT = 720;
     public static final double FOV_X = Math.toRadians(27.3), FOV_Y = Math.toRadians(21); // radians
     public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
 
@@ -80,6 +80,12 @@ public class Vision extends Subsystem {
     public void updateTelemetry() {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
         telemetry.put("Viewport", getViewport());
+        telemetry.putAll(ringCountPipeline.getTelemetryData());
+    }
+
+    @Override
+    public void updateLogging() {
+        ringCountPipeline.updateLogging();
     }
 
     public void analyze() {
@@ -150,6 +156,7 @@ public class Vision extends Subsystem {
     }
 
     public int getCenterStackSize() {
+        // TODO: Center stack may not be considered a stack
         RingData centerRing = ringData.get(0);
         if (centerRing != null) {
             double height = centerRing.getBoxSize().height;
