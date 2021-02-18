@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.vision.RingData;
 public class AreaScorer extends AbstractVisionScorer {
     private final FtcDashboard dashboard;
     public static double weight = 10;
-    private double area = 0;
+    private double area;
 
     public AreaScorer() {
         super("Area Scorer");
