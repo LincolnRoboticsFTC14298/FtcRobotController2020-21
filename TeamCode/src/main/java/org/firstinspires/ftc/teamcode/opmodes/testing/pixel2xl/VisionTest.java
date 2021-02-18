@@ -28,12 +28,12 @@ public class VisionTest extends OpMode {
     public void loop() {
         vision.analyze();
         vision.update();
+        vision.updateLogging();
         vision.updateTelemetry();
         TelemetryPacket packet = new TelemetryPacket();
         packet.putAll(vision.getTelemetryData());
         //packet.put("Latest Ring Position", vision.getRingCameraLocalPosition(vision.getRingData().get(0)));
         dashboard.sendTelemetryPacket(packet);
-        dashboard.getTelemetry().update();
         telemetry.addData("Viewport: ", vision.getViewport());
         telemetry.update();
     }
