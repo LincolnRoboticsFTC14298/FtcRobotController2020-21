@@ -47,14 +47,9 @@ public class MainTeleOp extends OpMode {
     public void loop() {
         operatorInterface.update();
 
-        switch (controlMode) {
-            case FULLY_MANUAL:
-                break;
-            case MANUAL_COLLECTING:
-            case FULLY_AUTOMATIC:
-                updateNavigation();
-                break;
-        }
+        robot.vision.scan();
+
+        updateNavigation();
 
         robot.update();
 
