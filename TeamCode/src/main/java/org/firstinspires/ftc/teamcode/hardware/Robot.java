@@ -23,7 +23,6 @@ import java.util.Queue;
 
 
 public class Robot implements RobotBase {
-    private HardwareMap hardwareMap;
     private Telemetry telemetry;
 
     private SubsystemManager subsystemManager = new SubsystemManager();
@@ -44,7 +43,6 @@ public class Robot implements RobotBase {
     public Alliance alliance = Alliance.BLUE;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -142,9 +140,6 @@ public class Robot implements RobotBase {
 
     public void powerShot() {
         // TODO: test strafing shot vs rotate shot
-        // Break
-        drive.stop();
-
         // Outward shot
         shootAsync(Target.OUTWARD_POWER_SHOT);
 
