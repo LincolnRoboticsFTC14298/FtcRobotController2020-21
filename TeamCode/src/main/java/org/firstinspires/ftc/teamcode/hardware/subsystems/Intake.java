@@ -68,18 +68,18 @@ public class Intake extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("front motor power: ", front.getPower());
-        telemetry.put("back motor power: ", rear.getPower());
+        telemetry.put("Front motor power: ", front.getPower());
+        telemetry.put("Back motor power: ", rear.getPower());
     }
 
     @Override
     public void updateLogging() {
-        logger.atFine().log("front motor power: ", front.getPower());
-        logger.atFine().log("back motor power: ", rear.getPower());
-        logger.atFiner().log("target - front power: ", frontPower - front.getPower());
-        logger.atFiner().log("target - rear power: ", rearPower - rear.getPower());
-        logger.atFiner().log("front target: ", frontPower);
-        logger.atFiner().log("rear target: ", rearPower);
+        logger.atInfo().log("Front motor power: %f", front.getPower());
+        logger.atInfo().log("Back motor power: %f", rear.getPower());
+        logger.atInfo().log("Target - front power: %f", frontPower - front.getPower());
+        logger.atInfo().log("Target - rear power: %f", rearPower - rear.getPower());
+        logger.atInfo().log("Front target: %f", frontPower);
+        logger.atInfo().log("Rear target: %f", rearPower);
     }
 
     // Setters //

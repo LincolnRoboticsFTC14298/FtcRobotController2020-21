@@ -106,26 +106,26 @@ public class Shooter extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("aiming mode: ", aimingMode);
-        telemetry.put("launch status: ", launchStatus);
-        telemetry.put("shooter power: ", shooterMotor1.getPower());
-        telemetry.put("flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
+        telemetry.put("Aiming mode: ", aimingMode);
+        telemetry.put("Launch status: ", launchStatus);
+        telemetry.put("Shooter power: ", shooterMotor1.getPower());
+        telemetry.put("Flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
     }
 
     @Override
     public void updateLogging() {
-        logger.atFine().log("aiming mode: ", aimingMode);
-        logger.atFine().log("launch status: ", launchStatus);
-        logger.atFine().log("shooter power: ", shooterMotor1.getPower());
-        logger.atFine().log("flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
+        logger.atInfo().log("Aiming mode: %s", aimingMode);
+        logger.atInfo().log("Launch status: %s", launchStatus);
+        logger.atInfo().log("Shooter power: %f", shooterMotor1.getPower());
+        logger.atInfo().log("Flap angle: %f", Math.toDegrees(posToAngle(flapServo.getPosition())));
 
-        logger.atFiner().log("target - shoot power: ", shooterMotor1Power - shooterMotor1.getPower());
-        logger.atFiner().log("target - flap angle: ", Math.toDegrees(targetAngle) - Math.toDegrees(posToAngle(flapServo.getPosition())));
+        logger.atInfo().log("Target - shoot power: %f", shooterMotor1Power - shooterMotor1.getPower());
+        logger.atInfo().log("Target - flap angle: %f", Math.toDegrees(targetAngle) - Math.toDegrees(posToAngle(flapServo.getPosition())));
 
-        logger.atFinest().log("ready to launch: ", readyToLaunch());
-        logger.atFinest().log("done aiming: ", doneAiming());
-        logger.atFinest().log("is extended: ", isExtended());
-        logger.atFinest().log("is retracted: ", isRetracted());
+        logger.atInfo().log("Ready to launch: %b", readyToLaunch());
+        logger.atInfo().log("Done aiming: %b", doneAiming());
+        logger.atInfo().log("Is extended: %b", isExtended());
+        logger.atInfo().log("Is retracted: %b", isRetracted());
     }
 
 

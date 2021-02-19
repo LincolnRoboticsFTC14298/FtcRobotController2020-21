@@ -71,18 +71,18 @@ public class Arm extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("claw position: ", clawServo.getPosition());
-        telemetry.put("arm angle: ", getArmAngle());
+        telemetry.put("Claw position: ", clawServo.getPosition());
+        telemetry.put("Arm angle: ", getArmAngle());
     }
 
     @Override
     public void updateLogging() {
-        logger.atFine().log("claw position: ", clawServo.getPosition());
-        logger.atFine().log("arm angle: ", getArmAngle());
-        logger.atFiner().log("target - claw position: ", clawPosition - clawServo.getPosition());
-        logger.atFiner().log("target - arm angle: ", armAngle - getArmAngle());
-        logger.atFinest().log("claw target: ", clawPosition);
-        logger.atFinest().log("arm target: ", armAngle);
+        logger.atInfo().log("Claw position: %f", clawServo.getPosition());
+        logger.atInfo().log("Arm angle: %f", getArmAngle());
+        logger.atInfo().log("Target - claw position: %f", clawPosition - clawServo.getPosition());
+        logger.atInfo().log("Target - arm angle: %f", armAngle - getArmAngle());
+        logger.atInfo().log("Claw target: %f", clawPosition);
+        logger.atInfo().log("Arm target: %f", armAngle);
     }
 
     // Commands //

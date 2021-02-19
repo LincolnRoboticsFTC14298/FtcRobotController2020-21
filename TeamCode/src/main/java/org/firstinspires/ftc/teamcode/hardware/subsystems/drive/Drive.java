@@ -286,15 +286,11 @@ public class Drive extends MecanumDrive {
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
 
-        logger.atFine().log("mode", mode);
+        logger.atInfo().log("Mode: %s", mode);
 
-        logger.atFine().log("x", currentPose.getX());
-        logger.atFine().log("y", currentPose.getY());
-        logger.atFine().log("heading (deg)", Math.toDegrees(currentPose.getHeading()));
+        logger.atInfo().log("Pose: %s", currentPose);
 
-        logger.atFine().log("xError", lastError.getX());
-        logger.atFine().log("yError", lastError.getY());
-        logger.atFine().log("headingError (deg)", Math.toDegrees(lastError.getHeading()));
+        logger.atInfo().log("Pose Error: %s", lastError);
     }
 
     /*
