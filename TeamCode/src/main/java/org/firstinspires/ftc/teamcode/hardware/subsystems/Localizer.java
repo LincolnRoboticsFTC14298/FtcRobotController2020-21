@@ -53,8 +53,8 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     private boolean canLaunch = true;
 
     public static double fudgeFactor = 1;
-    public static double launchVel = 8;
-    private static final double g = 9.8;
+    public static double launchVel = 30; // ft / s
+    private static final double g = 32.1741; // ft / s^2
 
     private static Field.Target target;
     private static Field.Alliance alliance;
