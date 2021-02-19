@@ -21,12 +21,20 @@ public class Intake extends AbstractSubsystem {
     private DcMotorEx front, rear;
     private double frontPower = 0, rearPower = 0;
 
-    public Intake(HardwareMap hardwareMap) {
+    private RingCounter ringCounter;
+
+    public Intake(HardwareMap hardwareMap, RingCounter ringCounter) {
         super("Intake");
 
         front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
         rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
         rear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        this.ringCounter = ringCounter;
+    }
+
+    public Intake(HardwareMap hardwareMap) {
+        this(hardwareMap, null);
     }
 
     @Override
@@ -36,7 +44,15 @@ public class Intake extends AbstractSubsystem {
 
     @Override
     public void update() {
+        // INTAKE SAFETY FEATURES //
+        int cartridge = ringCounter.getNumberOfRingsInCartridge();
+        int total = ringCounter.getTotalRings();
 
+        if (total > 3) {
+            //turnOnReverse();
+        } else if (cartridge == 3 && total == 3) {
+            turnOff();
+        }
     }
 
     @Override
@@ -68,11 +84,17 @@ public class Intake extends AbstractSubsystem {
 
     // Setters //
     public void turnOn() {
+        ringCounter.setReversed(false);
         frontPower = FRONT_POWER_ON;
         rearPower = REAR_POWER_ON;
     }
     public void turnOff() {
         frontPower = 0;
         rearPower = 0;
+    }
+    public void turnOnReverse() {
+        ringCounter.setReversed(true);
+        frontPower = -FRONT_POWER_ON;
+        rearPower = -REAR_POWER_ON;
     }
 }
