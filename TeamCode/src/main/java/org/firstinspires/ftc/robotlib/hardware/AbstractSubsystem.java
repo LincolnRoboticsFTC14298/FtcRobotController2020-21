@@ -34,7 +34,7 @@ public abstract class AbstractSubsystem implements Subsystem {
 
     }
 
-    public void updateSensorValues() {
+    public void readSensorValues() {
 
     }
 
