@@ -17,7 +17,7 @@ public class SubsystemManager {
         dashboard.setTelemetryTransmissionInterval(25);
 
         for (Subsystem subsystem : subsystems) {
-            subsystem.updateSensorValues();
+            subsystem.readSensorValues();
             subsystem.init();
             subsystem.updateMotorAndServoValues();
             subsystem.updateTelemetry();
@@ -28,7 +28,7 @@ public class SubsystemManager {
 
     public void initUpdate() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.updateSensorValues();
+            subsystem.readSensorValues();
             subsystem.initUpdate();
             subsystem.updateMotorAndServoValues();
             subsystem.updateTelemetry();
@@ -39,7 +39,7 @@ public class SubsystemManager {
 
     public void start() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.updateSensorValues();
+            subsystem.readSensorValues();
             subsystem.start();
             subsystem.updateMotorAndServoValues();
             subsystem.updateTelemetry();
@@ -50,7 +50,7 @@ public class SubsystemManager {
 
     public void update() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.updateSensorValues();
+            subsystem.readSensorValues();
             subsystem.update();
             subsystem.updateMotorAndServoValues();
             subsystem.updateTelemetry();
@@ -61,7 +61,7 @@ public class SubsystemManager {
 
     public void stop() {
         for (Subsystem subsystem : subsystems) {
-            subsystem.updateSensorValues();
+            subsystem.readSensorValues();
             subsystem.stop();
             subsystem.updateMotorAndServoValues();
             subsystem.updateTelemetry();

@@ -13,7 +13,7 @@ public interface Subsystem {
 
     void stop();
 
-    void updateSensorValues();
+    void readSensorValues();
 
     void updateMotorAndServoValues();
 
