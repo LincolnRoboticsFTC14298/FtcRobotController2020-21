@@ -31,8 +31,8 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
 @Config
 public class RingCountPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
-    public static int THICKNESS = 1;
-    public static int RADIUS = 2;
+    public static int THICKNESS = 5;
+    public static int RADIUS = 8;
     private Viewport viewport = Viewport.ANNOTATED;
 
     private static Rect croppedRect = new Rect(0, (int) ((1-.4)/2 * Vision.HEIGHT), Vision.WIDTH, (int) (Vision.HEIGHT*.4));
@@ -254,7 +254,7 @@ public class RingCountPipeline extends OpenCvPipeline {
             scorer.updateTelemetry();
             data.putAll(scorer.getTelemetryData());
         }
-        return areaScorer.getTelemetryData();
+        return data;
     }
 
     public void updateLogging() {
