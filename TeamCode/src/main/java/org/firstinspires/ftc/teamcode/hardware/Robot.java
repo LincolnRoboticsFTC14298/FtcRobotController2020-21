@@ -52,11 +52,11 @@ public class Robot implements RobotBase {
         }
 
         localizer = new Localizer(hardwareMap);
+        ringCounter = new RingCounter(hardwareMap);
 
         vision = new Vision(hardwareMap, localizer);
         arm = new Arm(hardwareMap);
-        intake = new Intake(hardwareMap);
-        ringCounter = new RingCounter(hardwareMap);
+        intake = new Intake(hardwareMap, ringCounter);
         shooter = new Shooter(hardwareMap, localizer);
         drive = new Drive(hardwareMap, localizer);
 
@@ -188,6 +188,7 @@ public class Robot implements RobotBase {
                 break;
             case SHOOTING:
                 if (shooter.isRetractedStatus()) {
+                    ringCounter.removeRingFromCartridge();
                     shootingQueue.remove();
                     shootingStatus = ShootingStatus.IDLE;
                 }
