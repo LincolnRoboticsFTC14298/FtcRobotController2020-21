@@ -114,6 +114,9 @@ public class RingCounter extends AbstractSubsystem {
     public int getTotalRings() {
         return totalRings;
     }
+    public boolean allRingsInCartridge() {
+        return totalRings == numOfRingsCartridge;
+    }
 
     public void setReversed(boolean reversed) {
         this.reversed = reversed;

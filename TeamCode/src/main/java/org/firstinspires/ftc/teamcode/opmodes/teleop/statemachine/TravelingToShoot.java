@@ -18,7 +18,7 @@ public class TravelingToShoot extends AbstractNavigationState {
     public AbstractState getNextState() {
         if (getTeleOp().getControlMode() == MainTeleOp.ControlMode.FULLY_MANUAL) {
             return new Manual(getTeleOp());
-        } else if (!getRobot().drive.isBusy() && getRobot().drive.isBehindLine()) {
+        } else if (!getRobot().drive.isBusy() && getRobot().drive.isBehindLine() && getRobot().ringCounter.allRingsInCartridge()) {
             return new Shooting(getTeleOp());
         }
         return this;
