@@ -75,6 +75,9 @@ public class RingCounter extends AbstractSubsystem {
         telemetry.put("Total Cartridge Cartridge", numOfRingsCartridge);
         telemetry.put("Total", totalRings);
         telemetry.put("Reversed", reversed);
+
+        telemetry.put("Curr Dist", currDist);
+        telemetry.put("Cartridge Dist", cartridgeDist);
     }
 
     @Override
