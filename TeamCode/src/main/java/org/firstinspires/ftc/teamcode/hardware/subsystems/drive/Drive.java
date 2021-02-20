@@ -338,9 +338,12 @@ public class Drive extends MecanumDrive {
     }
 
     public void goBehindLineAsync() {
-        Vector2d targetVec = new Vector2d(LAUNCH_X, localizer.getPoseEstimate().getY());
-        double angle = localizer.getTargetHeading(targetVec);
-        strafeToPointAsync(new Pose2d(targetVec, angle));
+        // Doesn't need to if already behind line
+        if (!isBehindLine()) {
+            Vector2d targetVec = new Vector2d(LAUNCH_X, localizer.getPoseEstimate().getY());
+            double angle = localizer.getTargetHeading(targetVec);
+            strafeToPointAsync(new Pose2d(targetVec, angle));
+        }
     }
     public boolean isBehindLine() {
         return getPoseEstimate().getX() < LAUNCH_X + BEHIND_LINE_ERROR;
