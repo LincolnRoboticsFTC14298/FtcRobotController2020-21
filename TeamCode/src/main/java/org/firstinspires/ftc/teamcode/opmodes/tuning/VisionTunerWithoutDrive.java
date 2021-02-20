@@ -59,7 +59,5 @@ public class VisionTunerWithoutDrive extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
         packet.putAll(vision.getTelemetryData());
         dashboard.sendTelemetryPacket(packet);
-        telemetry.addData("Viewport: ", vision.getViewport());
-        telemetry.update();
     }
 }
