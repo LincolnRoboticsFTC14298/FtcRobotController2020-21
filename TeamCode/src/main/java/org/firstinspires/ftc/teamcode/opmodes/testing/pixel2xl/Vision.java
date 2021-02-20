@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
-import org.firstinspires.ftc.teamcode.vision.RingCountPipeline;
+import org.firstinspires.ftc.teamcode.vision.RingPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingData;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -30,7 +30,7 @@ public class Vision extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private OpenCvInternalCamera camera;
-    private RingCountPipeline ringCountPipeline;
+    private RingPipeline ringPipeline;
 
     private List<RingData> ringData;
 
@@ -42,8 +42,8 @@ public class Vision extends AbstractSubsystem {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
-        ringCountPipeline = new RingCountPipeline();
-        camera.setPipeline(ringCountPipeline);
+        ringPipeline = new RingPipeline();
+        camera.setPipeline(ringPipeline);
 
         camera.openCameraDeviceAsync(
                 () -> {
@@ -72,16 +72,16 @@ public class Vision extends AbstractSubsystem {
     public void updateTelemetry() {
         if (ringData != null) telemetry.put("Number of Rings", ringData.size());
         telemetry.put("Viewport", getViewport());
-        telemetry.putAll(ringCountPipeline.getTelemetryData());
+        telemetry.putAll(ringPipeline.getTelemetryData());
     }
 
     @Override
     public void updateLogging() {
-        ringCountPipeline.updateLogging();
+        ringPipeline.updateLogging();
     }
 
     public void analyze() {
-        ringData = ringCountPipeline.getRingData();
+        ringData = ringPipeline.getRingData();
     }
 
     /*
@@ -129,27 +129,27 @@ public class Vision extends AbstractSubsystem {
         return 0;
     }
 
-    public RingCountPipeline.Viewport getViewport() {
-        return ringCountPipeline.getViewport();
+    public RingPipeline.Viewport getViewport() {
+        return ringPipeline.getViewport();
     }
-    public void setViewport(RingCountPipeline.Viewport viewport) {
-        ringCountPipeline.setViewport(viewport);
+    public void setViewport(RingPipeline.Viewport viewport) {
+        ringPipeline.setViewport(viewport);
     }
 
     public void setClose(boolean close) {
-        ringCountPipeline.setClose(close);
+        ringPipeline.setClose(close);
     }
-    public void setCroppedRectMode(RingCountPipeline.AnalysisRectMode analysisRectMode) {
-        ringCountPipeline.setAnalysisRectMode(analysisRectMode);
+    public void setCroppedRectMode(RingPipeline.AnalysisRectMode analysisRectMode) {
+        ringPipeline.setAnalysisRectMode(analysisRectMode);
     }
 
     // Save image //
     public void saveOutput(String filename) {
-        ringCountPipeline.saveLatestMat(filename);
+        ringPipeline.saveLatestMat(filename);
     }
     public void saveOutput() {
-        RingCountPipeline.Viewport lastViewport = getViewport();
-        setViewport(RingCountPipeline.Viewport.RAW_IMAGE); // TODO: test
+        RingPipeline.Viewport lastViewport = getViewport();
+        setViewport(RingPipeline.Viewport.RAW_IMAGE); // TODO: test
 //        try {
 //            Thread.sleep(100);
 //        } catch (InterruptedException e) {

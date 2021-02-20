@@ -27,7 +27,7 @@ import java.util.Map;
 import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
 
 @Config
-public class RingCountPipeline extends OpenCvPipeline {
+public class RingPipeline extends OpenCvPipeline {
     public static double SCORE_THRESHOLD = 3;
     public static int THICKNESS = 5;
     public static int RADIUS = 8;
