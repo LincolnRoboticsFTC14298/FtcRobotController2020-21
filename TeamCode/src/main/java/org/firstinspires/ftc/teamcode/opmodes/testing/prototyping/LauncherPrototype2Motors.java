@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing.prototyping;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import static com.qualcomm.robotcore.util.Range.clip;
 
 
 @TeleOp(name="Launcher 2 Motors", group="Prototype")
+@Disabled
 public class LauncherPrototype2Motors extends LinearOpMode {
     public final double MOTOR_STEP = 0.05; // Motor speed step
 

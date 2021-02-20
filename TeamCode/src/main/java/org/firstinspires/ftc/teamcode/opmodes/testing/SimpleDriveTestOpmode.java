@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.SimpleDrive;
 
 @TeleOp(name="Simple Drive test", group="Test")
+@Disabled
 public class SimpleDriveTestOpmode extends OpMode {
     SimpleDrive drive;
     RadicalGamepad gamepad;
