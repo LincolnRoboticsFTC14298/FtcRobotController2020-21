@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.vision.operators.HSVRangeFilter;
+import org.firstinspires.ftc.teamcode.vision.operators.YCrCbRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
 import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
 import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
@@ -53,7 +53,7 @@ public class RingCountPipeline extends OpenCvPipeline {
     public ExtentScorer extentScorer = new ExtentScorer();
     public SolidityScorer solidityScorer = new SolidityScorer();
 
-    public HSVRangeFilter hsvRangeFilter = new HSVRangeFilter();
+    public YCrCbRangeFilter YCrCbRangeFilter = new YCrCbRangeFilter();
     public MorphologyOperator morphologyOperator = new MorphologyOperator();
     public SegmentationOperator segmentationOperator = new SegmentationOperator();
 
@@ -150,7 +150,7 @@ public class RingCountPipeline extends OpenCvPipeline {
         croppedWorkingMat = workingMat.submat(croppedRect);
 
         // MatOperator //
-        rawMask = hsvRangeFilter.process(croppedWorkingMat);
+        rawMask = YCrCbRangeFilter.process(croppedWorkingMat);
         mask = morphologyOperator.process(rawMask);
 
         masked.release();
