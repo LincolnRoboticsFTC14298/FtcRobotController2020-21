@@ -40,7 +40,6 @@ public class RingPipeline extends OpenCvPipeline {
     private static final Scalar falseColor = new Scalar(255, 0  , 0  );
 
     private final ArrayList<VisionScorer> scorers = new ArrayList<>();
-    private double totalWeight = 0;
 
     private ArrayList<RingData> rings = new ArrayList<>();
 
@@ -83,17 +82,13 @@ public class RingPipeline extends OpenCvPipeline {
     }
 
 
-    public RingCountPipeline() {
+    public RingPipeline() {
         setAnalysisRectMode(analysisRectMode);
 
         scorers.add(areaScorer);
         scorers.add(aspectRatioSCorer);
         scorers.add(extentScorer);
         scorers.add(solidityScorer);
-
-        for (VisionScorer scorer : scorers) {
-            totalWeight += scorer.getWeight();
-        }
     }
 
     @Override
@@ -227,7 +222,7 @@ public class RingPipeline extends OpenCvPipeline {
         for (VisionScorer scorer : scorers) {
             score += scorer.score(ringData);
         }
-        return score / totalWeight;
+        return score;
     }
 
     public void setClose(boolean close) {
