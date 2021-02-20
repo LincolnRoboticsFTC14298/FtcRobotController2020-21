@@ -11,6 +11,11 @@ public class Collecting extends AbstractNavigationState {
     }
 
     @Override
+    public void start() {
+        getRobot().intake.turnOn();
+    }
+
+    @Override
     public void update() {
         Field.ringProvider.update(getRobot().localizer.getPoseEstimate()); // may have to be in main update loop
 
@@ -37,7 +42,7 @@ public class Collecting extends AbstractNavigationState {
         } else if (getTeleOp().getRuntime() > 90 && Field.wobbleGoalProvider.amount() > 0) {
             // Last 30 seconds of match
             return new TravelingToWobbleGoal(getTeleOp());
-        } else if (getRobot().ringCounter.getNumberOfRings() == 3) {
+        } else if (getRobot().ringCounter.getTotalRings() == 3) {
             return new TravelingToShoot(getTeleOp());
         }
         return this;
