@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.google.common.flogger.FluentLogger;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
+@Disabled
 public class LoggingTest extends OpMode {
     private static FluentLogger logger = FluentLogger.forEnclosingClass();
 
