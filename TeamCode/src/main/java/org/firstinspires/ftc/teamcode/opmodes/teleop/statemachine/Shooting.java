@@ -12,9 +12,9 @@ public class Shooting extends AbstractNavigationState {
     @Override
     public void start() {
         if (getTeleOp().getRuntime() > 90) {
-            getRobot().shootAsync(3);
-        } else {
             getRobot().powerShot();
+        } else {
+            getRobot().shootAsync(3);
         }
     }
 
