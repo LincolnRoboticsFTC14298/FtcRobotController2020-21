@@ -136,8 +136,8 @@ public class Vision extends AbstractSubsystem {
         ringCountPipeline.setViewport(viewport);
     }
 
-    public void setWatershed(boolean watershed) {
-        ringCountPipeline.setWatershed(watershed);
+    public void setClose(boolean close) {
+        ringCountPipeline.setClose(close);
     }
     public void setCroppedRectMode(RingCountPipeline.AnalysisRectMode analysisRectMode) {
         ringCountPipeline.setAnalysisRectMode(analysisRectMode);

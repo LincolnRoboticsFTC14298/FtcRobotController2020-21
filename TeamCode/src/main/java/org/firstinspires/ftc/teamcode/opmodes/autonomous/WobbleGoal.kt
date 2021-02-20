@@ -20,7 +20,7 @@ open class WobbleGoal(var alliance: Field.Alliance) : OpMode() {
     lateinit var traj3: Trajectory
 
     override fun init() {
-        robot = Robot(this)
+        robot = Robot(hardwareMap, telemetry);
 
         robot.setPoseEstimate(mirror(startPose, alliance))
 

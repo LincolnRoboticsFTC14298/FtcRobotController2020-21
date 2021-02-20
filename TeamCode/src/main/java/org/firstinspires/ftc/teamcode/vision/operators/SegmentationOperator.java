@@ -18,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.vision.VisionUtil.generateColor;
 
 
 @Config
+@Deprecated
 public class SegmentationOperator {
     public static double binaryThresh = 40.0;
     public static Size openSize = new Size(25,7);

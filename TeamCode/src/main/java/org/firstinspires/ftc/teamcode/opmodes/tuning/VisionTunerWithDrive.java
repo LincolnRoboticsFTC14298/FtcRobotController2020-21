@@ -43,14 +43,8 @@ public class VisionTunerWithDrive extends OpMode {
         } else if (gamepad.dpad_left) {
             vision.setViewport(Viewport.MASKED);
         } else if (gamepad.dpad_up) {
-            vision.setViewport(Viewport.DIST1);
-        } else if (gamepad.dpad_right) {
-            vision.setViewport(Viewport.DIST2);
-        } else if (gamepad.a) {
-            vision.setViewport(Viewport.MARKERS);
-        } else if (gamepad.b) {
             vision.setViewport(Viewport.RAW_IMAGE);
-        } else if (gamepad.y) {
+        } else if (gamepad.dpad_right) {
             vision.setViewport(Viewport.ANNOTATED);
         }
 

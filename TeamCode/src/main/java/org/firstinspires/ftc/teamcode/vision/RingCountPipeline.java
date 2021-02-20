@@ -4,14 +4,12 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.vision.operators.YCrCbRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
-import org.firstinspires.ftc.teamcode.vision.operators.SegmentationOperator;
+import org.firstinspires.ftc.teamcode.vision.operators.YCrCbRangeFilter;
 import org.firstinspires.ftc.teamcode.vision.scorers.AreaScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.AspectRatioScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.ExtentScorer;
 import org.firstinspires.ftc.teamcode.vision.scorers.SolidityScorer;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -38,8 +36,6 @@ public class RingCountPipeline extends OpenCvPipeline {
     private static Rect croppedRect = new Rect(0, (int) ((1-.4)/2 * Vision.HEIGHT), Vision.WIDTH, (int) (Vision.HEIGHT*.4));
     private AnalysisRectMode analysisRectMode = AnalysisRectMode.WIDE;
 
-    public static boolean watershed = false;
-
     private static final Scalar foundColor = new Scalar(0  , 255, 0  );
     private static final Scalar falseColor = new Scalar(255, 0  , 0  );
 
@@ -55,7 +51,6 @@ public class RingCountPipeline extends OpenCvPipeline {
 
     public YCrCbRangeFilter YCrCbRangeFilter = new YCrCbRangeFilter();
     public MorphologyOperator morphologyOperator = new MorphologyOperator();
-    public SegmentationOperator segmentationOperator = new SegmentationOperator();
 
     private Mat latestMat;
 
@@ -64,9 +59,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         RAW_MASK,
         MASK,
         MASKED,
-        DIST1,
-        DIST2,
-        MARKERS,
         ANNOTATED
     }
 
@@ -116,16 +108,6 @@ public class RingCountPipeline extends OpenCvPipeline {
         }
 
         viewport = Viewport.values()[nextStageNum];
-
-        if (!watershed) {
-            switch (viewport) {
-                case DIST1:
-                case DIST2:
-                case MARKERS:
-                    viewport = Viewport.ANNOTATED;
-                    break;
-            }
-        }
     }
 
     Mat rawImage = new Mat();
@@ -159,17 +141,12 @@ public class RingCountPipeline extends OpenCvPipeline {
 
         List<MatOfPoint> potentialContours = new ArrayList<>();
 
-        // Segment //
-        if (watershed) {
-            markers.create(croppedWorkingMat.size(), CvType.CV_8UC3);
-            potentialContours = segmentationOperator.process(masked, dist1, dist2, markers);
-        } else {
-            Mat hierarchy = new Mat();
-            // Consider using chain approx none
-            Imgproc.findContours(mask, potentialContours, hierarchy,
-                    Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-            hierarchy.release();
-        }
+        // Contours //
+
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(mask, potentialContours, hierarchy,
+                Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        hierarchy.release();
 
         List<RingData> potentialRings = contoursToRingData(potentialContours);
 
@@ -222,24 +199,6 @@ public class RingCountPipeline extends OpenCvPipeline {
             case MASKED:
                 masked.copyTo(displaySubmat);
                 break;
-            case DIST1:
-                if (watershed) {
-                    Imgproc.cvtColor(dist1, displaySubmat, Imgproc.COLOR_GRAY2RGB);
-                }
-                else workingMat.copyTo(displayMat);
-                break;
-            case DIST2:
-                if (watershed) {
-                    Imgproc.cvtColor(dist2, displaySubmat, Imgproc.COLOR_GRAY2RGB);
-                }
-                else workingMat.copyTo(displayMat);
-                break;
-            case MARKERS:
-                if (watershed)  {
-                    markers.copyTo(displayMat);
-                }
-                else workingMat.copyTo(displayMat);
-                break;
             default:
                 workingMat.copyTo(displayMat);
                 break;
@@ -271,9 +230,8 @@ public class RingCountPipeline extends OpenCvPipeline {
         return score / totalWeight;
     }
 
-    public void setWatershed(boolean watershed) {
-        RingCountPipeline.watershed = watershed;
-        morphologyOperator.setClose(watershed);
+    public void setClose(boolean close) {
+        morphologyOperator.setClose(close);
     }
 
     public void setAnalysisRectMode(AnalysisRectMode analysisRectMode) {
