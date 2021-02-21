@@ -191,6 +191,7 @@ public class Robot implements RobotBase {
                     ringCounter.removeRingFromCartridge();
                     shootingQueue.remove();
                     shootingStatus = ShootingStatus.IDLE;
+                    setTarget(Target.HIGH_GOAL); // default target
                 }
                 break;
         }
