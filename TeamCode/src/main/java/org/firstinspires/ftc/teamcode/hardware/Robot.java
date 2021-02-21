@@ -104,7 +104,6 @@ public class Robot implements RobotBase {
     }
 
     public void updateTelemetry() {
-        // TODO: Add ftcdashboard telemetry
         telemetry.addData("Alliance: ", alliance.toString());
         telemetry.addData("Pose:     ", localizer.getPoseEstimate().toString());
         telemetry.addData("Target:   ", target.toString());

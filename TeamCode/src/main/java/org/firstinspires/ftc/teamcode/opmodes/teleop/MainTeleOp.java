@@ -51,9 +51,14 @@ public class MainTeleOp extends OpMode {
 
         updateNavigation();
 
-        robot.update();
+        updateTelemetry();
 
-        // TODO: Add telemetry
+        robot.update();
+    }
+
+    private void updateTelemetry() {
+        telemetry.addData("Control Mode: ", controlMode);
+        telemetry.addData("State Machine: ", navigationStateMachine.getState().getClass().getSimpleName());
     }
 
     @Override
