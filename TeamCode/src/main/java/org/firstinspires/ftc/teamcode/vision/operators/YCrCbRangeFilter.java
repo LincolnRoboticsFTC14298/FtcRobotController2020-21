@@ -11,14 +11,14 @@ import org.opencv.imgproc.Imgproc;
 
 @Config
 public class YCrCbRangeFilter implements MatOperator {
-    public static int lowerThresholdY = 3;
-    public static int lowerThresholdCr = 100;
-    public static int lowerThresholdCb = 120;
-    public static int upperThresholdY = 20;
-    public static int upperThresholdCr = 255;
-    public static int upperThresholdCb = 255;
+    public static int lowerThresholdY = 30;
+    public static int lowerThresholdCr = 160;
+    public static int lowerThresholdCb = 50;
+    public static int upperThresholdY = 180;
+    public static int upperThresholdCr = 210;
+    public static int upperThresholdCb = 120;
     public static Size blur = new Size(5,5);
-    public static int blurSigma = 1;
+    public static int blurSigma = 3;
 
     public YCrCbRangeFilter() {
 
