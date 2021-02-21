@@ -11,7 +11,8 @@ import static org.firstinspires.ftc.teamcode.util.Ring.RING_RADIUS;
 
 @Config
 public class RingCounter extends AbstractSubsystem {
-    private static FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     //TODO: ADD FRONT AND CARTRIDGE SENSOR
     public static double wallError = .2; // in
     public static double ringError = .5;

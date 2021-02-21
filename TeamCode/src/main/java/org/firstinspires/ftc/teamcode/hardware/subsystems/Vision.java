@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 import org.firstinspires.ftc.teamcode.util.Ring;
-import org.firstinspires.ftc.teamcode.vision.RingPipeline;
 import org.firstinspires.ftc.teamcode.vision.RingData;
+import org.firstinspires.ftc.teamcode.vision.RingPipeline;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
@@ -26,6 +26,8 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.CAMERA_PITCH;
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
 public class Vision extends AbstractSubsystem {
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     public static int WIDTH = 1280;
     public static int HEIGHT = 720;
     public static final double FOV_X = Math.toRadians(27.3), FOV_Y = Math.toRadians(21); // radians
@@ -33,8 +35,6 @@ public class Vision extends AbstractSubsystem {
 
     public static int oneRingHeight = 10;
     public static int zeroRingHeight = 10;
-
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private OpenCvInternalCamera2 camera;
     private RingPipeline ringPipeline;
