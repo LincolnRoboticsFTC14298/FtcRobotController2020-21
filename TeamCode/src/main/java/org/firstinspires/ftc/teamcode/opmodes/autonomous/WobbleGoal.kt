@@ -27,8 +27,6 @@ open class WobbleGoal(var alliance: Field.Alliance) : OpMode() {
     }
 
     override fun start() {
-        robot.vision.analyze()
-
         var dropOff1: Vector2d; var dropOff2: Vector2d
 
         when (robot.vision.centerStackSize) {

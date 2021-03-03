@@ -157,6 +157,7 @@ public class Vision extends AbstractSubsystem {
 
     public int getCenterStackSize() {
         // TODO: Center stack may not be considered a stack
+        analyze();
         RingData centerRing = ringData.get(0);
         if (centerRing != null) {
             double height = centerRing.getBoxSize().height;
