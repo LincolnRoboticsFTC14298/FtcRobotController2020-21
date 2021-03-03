@@ -69,7 +69,6 @@ public class OperatorInterface {
             robot.cancelShot();
         }
 
-        // TODO: Add some fully manual state just in case
         Pose2d input = getInput();
         switch (teleOp.getControlMode()) {
             case FULLY_MANUAL:
@@ -107,7 +106,7 @@ public class OperatorInterface {
                 break;
             case MANUAL_COLLECTING:
                 // Drive //
-                if (teleOp.getNavigationState() instanceof Collecting) {
+                if (teleOp.getNavigationState() instanceof Collecting && robot.doneShooting()) {
                     robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
                 }
                 break;
