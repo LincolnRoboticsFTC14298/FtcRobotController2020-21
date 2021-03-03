@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop.statemachine;
 import org.firstinspires.ftc.robotlib.util.statemachine.AbstractState;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.MainTeleOp;
 
-public class Shooting extends AbstractNavigationState {
+public class Shoot extends AbstractNavigationState {
 
-    public Shooting(MainTeleOp teleOp) {
+    public Shoot(MainTeleOp teleOp) {
         super(teleOp);
     }
 

@@ -43,7 +43,7 @@ public class Collecting extends AbstractNavigationState {
             // Last 30 seconds of match
             return new TravelingToWobbleGoal(getTeleOp());
         } else if (getRobot().ringCounter.getTotalRings() == 3) {
-            return new TravelingToShoot(getTeleOp());
+            return new Shoot(getTeleOp());
         }
         return this;
     }

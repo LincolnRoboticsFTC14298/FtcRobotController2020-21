@@ -39,7 +39,6 @@ public class Robot implements RobotBase {
 
     public Target target = Target.HIGH_GOAL;
 
-    // TODO: Maybe alliance in field class?
     public Alliance alliance = Alliance.BLUE;
 
     public Robot(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -155,10 +154,12 @@ public class Robot implements RobotBase {
 
     public enum ShootingStatus {
         IDLE,
+        TRAVELING,
         AIMING,
         SHOOTING
     }
 
+    // TODO: move driving behind line to update shooting
     ShootingStatus shootingStatus = ShootingStatus.IDLE;
     public void updateShooting() {
         shooter.aimAsync();
@@ -171,26 +172,33 @@ public class Robot implements RobotBase {
         switch (shootingStatus) {
             case IDLE:
                 if (!doneShooting()) {
-                    shootingStatus = ShootingStatus.AIMING;
-                    drive.stop();
+                    drive.goBehindLineAsync();
+                    shootingStatus = ShootingStatus.TRAVELING;
 
                     setTarget(shootingQueue.peek());
                     drive.pointAtTargetAsync();
                     shooter.turnOnShooterMotor();
                 }
                 break;
+            case TRAVELING:
+                if (!drive.isBusy() && drive.isBehindLine()) {
+                    shootingStatus = ShootingStatus.AIMING;
+                }
+                break;
             case AIMING:
-                if (localizer.canLaunch() && shooter.readyToLaunch() && !drive.isBusy()) {
+                drive.stop();
+                if (localizer.canLaunch() && shooter.readyToLaunch() && !drive.isBusy() && ringCounter.allRingsInCartridge()) {
                     shootingStatus = ShootingStatus.SHOOTING;
                     shooter.launchAsync();
                 }
                 break;
             case SHOOTING:
+                drive.stop();
                 if (shooter.isRetractedStatus()) {
                     ringCounter.removeRingFromCartridge();
                     shootingQueue.remove();
                     shootingStatus = ShootingStatus.IDLE;
-                    setTarget(Target.HIGH_GOAL); // default target
+                    setTarget(Target.HIGH_GOAL); // default target TODO: check if needed
                 }
                 break;
         }
