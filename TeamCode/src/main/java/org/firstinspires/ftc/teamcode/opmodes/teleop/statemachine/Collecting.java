@@ -17,8 +17,6 @@ public class Collecting extends AbstractNavigationState {
 
     @Override
     public void update() {
-        Field.ringProvider.update(getRobot().localizer.getPoseEstimate()); // may have to be in main update loop
-
         switch (getTeleOp().getControlMode()) {
             case MANUAL_COLLECTING:
                 if (getRobot().drive.isBusy()) {

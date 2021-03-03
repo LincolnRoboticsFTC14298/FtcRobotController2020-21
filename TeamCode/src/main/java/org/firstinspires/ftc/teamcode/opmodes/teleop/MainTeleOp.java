@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotlib.util.statemachine.StateMachine;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.DataWriterUtil;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.statemachine.Collecting;
+import org.firstinspires.ftc.teamcode.util.Field;
 
 @TeleOp(name="Main TeleOp", group="TeleOp")
 @Disabled
@@ -48,6 +49,8 @@ public class MainTeleOp extends OpMode {
         operatorInterface.update();
 
         robot.vision.scan();
+
+        Field.ringProvider.update(getRobot().localizer.getPoseEstimate());
 
         updateNavigation();
 
