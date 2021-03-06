@@ -4,13 +4,26 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SubsystemManager {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
     private ArrayList<Subsystem> subsystems = new ArrayList<>();
 
+    private RobotBase robot;
+
+    public SubsystemManager(RobotBase robot) {
+        this.robot = robot;
+    }
+    public SubsystemManager() {
+        this(null);
+    }
+
     public void add(Subsystem subsystem) {
         subsystems.add(subsystem);
+    }
+    public void add(Subsystem... subsystems) {
+        this.subsystems.addAll(Arrays.asList(subsystems));
     }
 
     public void init() {
@@ -23,6 +36,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
+        robot.updateLogging();
         pushTelemetry();
     }
 
@@ -34,6 +48,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
+        robot.updateLogging();
         pushTelemetry();
     }
 
@@ -45,6 +60,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
+        robot.updateLogging();
         pushTelemetry();
     }
 
@@ -56,6 +72,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
+        robot.updateLogging();
         pushTelemetry();
     }
 
@@ -67,6 +84,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
+        robot.updateLogging();
         pushTelemetry();
     }
 
@@ -75,6 +93,7 @@ public class SubsystemManager {
         for (Subsystem subsystem : subsystems) {
             packet.putAll(subsystem.getTelemetryData());
         }
+        packet.putAll(robot.updateTelemetry());
         dashboard.sendTelemetryPacket(packet);
     }
 }

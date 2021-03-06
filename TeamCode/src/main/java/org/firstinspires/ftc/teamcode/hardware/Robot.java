@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.hardware.RobotBase;
 import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.util.LynxModuleUtil;
+import org.firstinspires.ftc.robotlib.util.TelemetryData;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Localizer;
@@ -19,13 +20,15 @@ import org.firstinspires.ftc.teamcode.util.Field.Alliance;
 import org.firstinspires.ftc.teamcode.util.Field.Target;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 
 public class Robot implements RobotBase {
     private Telemetry telemetry;
+    private TelemetryData telemetryData = new TelemetryData("Robot");
 
-    private SubsystemManager subsystemManager = new SubsystemManager();
+    private SubsystemManager subsystemManager = new SubsystemManager(this);
 
     // Subsystems //
     public Localizer localizer;
@@ -102,11 +105,14 @@ public class Robot implements RobotBase {
         updateTelemetry();
     }
 
-    public void updateTelemetry() {
-        telemetry.addData("Alliance: ", alliance.toString());
-        telemetry.addData("Pose:     ", localizer.getPoseEstimate().toString());
-        telemetry.addData("Target:   ", target.toString());
-        telemetry.update();
+    public Map<String, Object> updateTelemetry() {
+        telemetryData.put("Alliance: ", alliance.toString());
+        telemetryData.put("Pose:     ", localizer.getPoseEstimate().toString());
+        telemetryData.put("Target:   ", target.toString());
+        return telemetryData.getData();
+    }
+    public void updateLogging() {
+
     }
 
 
