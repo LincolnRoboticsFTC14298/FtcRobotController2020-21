@@ -63,7 +63,12 @@ public class RingPoseEstimateTuner extends OpMode {
 
     @Override
     public void loop() {
+        gamepad.update();
+
         robot.vision.analyze();
+
+        Pose2d input = new Pose2d(-gamepad.left_stick_y, -gamepad.left_stick_x, gamepad.right_stick_x);
+        robot.drive.teleopControl(input, true, true);
 
         RingData ring = robot.vision.getRingData().get(0);
         Vector3D predictedVector3D = robot.vision.getRingCameraLocalPosition(ring);

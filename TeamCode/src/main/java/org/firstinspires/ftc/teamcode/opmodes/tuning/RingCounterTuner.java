@@ -4,32 +4,40 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.RingCounter;
 
 @TeleOp
 @Disabled
 public class RingCounterTuner extends OpMode {
-    Robot robot;
+    private SubsystemManager subsystemManager = new SubsystemManager();
+    private RingCounter ringCounter;
+    private Intake intake;
     RadicalGamepad gamepad;
 
     @Override
     public void init() {
-        robot = new Robot(hardwareMap, telemetry);
-        robot.init();
+        ringCounter = new RingCounter(hardwareMap);
+        intake = new Intake(hardwareMap, ringCounter);
+        subsystemManager.add(ringCounter, intake);
+        subsystemManager.init();
 
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void loop() {
+        gamepad.update();
+
         if (gamepad.a) {
-            robot.intake.turnOn();
+            intake.turnOn();
         } else if (gamepad.b) {
-            robot.intake.turnOff();
+            intake.turnOff();
         } else if (gamepad.x) {
-            robot.intake.turnOnReverse();
+            intake.turnOnReverse();
         }
-        robot.update();
+        subsystemManager.update();
     }
 }

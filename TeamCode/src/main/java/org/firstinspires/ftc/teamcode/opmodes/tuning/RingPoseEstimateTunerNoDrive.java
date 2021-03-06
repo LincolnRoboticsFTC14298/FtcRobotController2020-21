@@ -57,6 +57,8 @@ public class RingPoseEstimateTunerNoDrive extends OpMode {
 
     @Override
     public void loop() {
+        gamepad.update();
+
         vision.analyze();
 
         RingData ring = vision.getRingData().get(0);

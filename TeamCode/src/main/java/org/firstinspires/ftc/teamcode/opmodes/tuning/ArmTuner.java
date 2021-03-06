@@ -5,25 +5,28 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 
 @Config
 @TeleOp(name="Arm Tuner", group="Tuner")
 @Disabled
 public class ArmTuner extends OpMode {
-    private Robot robot;
+    private SubsystemManager subsystemManager = new SubsystemManager();
+    private Arm arm;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
-        robot = new Robot(hardwareMap, telemetry);
+        arm = new Arm(hardwareMap);
+        subsystemManager.add(arm);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void start() {
-        robot.start();
+        subsystemManager.start();
     }
 
     @Override
@@ -31,17 +34,17 @@ public class ArmTuner extends OpMode {
         gamepad.update();
 
         if (gamepad.a) {
-            robot.arm.openClaw();
+            arm.openClaw();
         } else if (gamepad.b) {
-            robot.arm.closeClaw();
+            arm.closeClaw();
         } else if (gamepad.x) {
-            robot.arm.lift();
+            arm.lift();
         } else if (gamepad.y) {
-            robot.arm.defaultPos();
+            arm.defaultPos();
         } else if (gamepad.right_bumper) {
-            robot.arm.lower();
+            arm.lower();
         }
 
-        robot.update();
+        subsystemManager.update();
     }
 }

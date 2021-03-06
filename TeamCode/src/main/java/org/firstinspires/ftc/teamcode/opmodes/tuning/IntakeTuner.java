@@ -5,25 +5,28 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 
 @Config
 @TeleOp(name="Intake Tuner", group="Tuner")
 @Disabled
 public class IntakeTuner extends OpMode {
-    private Robot robot;
+    private SubsystemManager subsystemManager = new SubsystemManager();
+    private Intake intake;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
-        robot = new Robot(hardwareMap, telemetry);
+        intake = new Intake(hardwareMap);
+        subsystemManager.add(intake);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
     @Override
     public void start() {
-        robot.start();
+        subsystemManager.start();
     }
 
     @Override
@@ -31,11 +34,11 @@ public class IntakeTuner extends OpMode {
         gamepad.update();
 
         if (gamepad.a) {
-            robot.intake.turnOn();
+            intake.turnOn();
         } else if (gamepad.b) {
-            robot.intake.turnOff();
+            intake.turnOff();
         }
 
-        robot.update();
+        subsystemManager.update();
     }
 }

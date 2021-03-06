@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.RingPipeline.Viewport;
@@ -13,12 +13,14 @@ import org.firstinspires.ftc.teamcode.vision.RingPipeline.Viewport;
 public class VisionTunerWithoutDrive extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
+    private SubsystemManager subsystemManager = new SubsystemManager();
     private Vision vision;
     private RadicalGamepad gamepad;
 
     @Override
     public void init() {
         vision = new Vision(hardwareMap);
+        subsystemManager.add(vision);
         gamepad = new RadicalGamepad(gamepad1);
     }
 
@@ -48,10 +50,6 @@ public class VisionTunerWithoutDrive extends OpMode {
             vision.saveOutput();
         }
 
-        vision.update();
-        vision.updateTelemetry();
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.putAll(vision.getTelemetryData());
-        dashboard.sendTelemetryPacket(packet);
+        subsystemManager.update();
     }
 }
