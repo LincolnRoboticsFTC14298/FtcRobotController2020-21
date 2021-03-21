@@ -49,9 +49,14 @@ public class Arm extends AbstractSubsystem {
     }
 
     @Override
-    public void start() {
+    public void init() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
-        defaultPos();
+    }
+
+
+    @Override
+    public void start() {
+        lower();
     }
 
     @Override
@@ -62,7 +67,7 @@ public class Arm extends AbstractSubsystem {
     @Override
     public void stop() {
         closeClaw();
-        defaultPos();
+        lower();
     }
 
     @Override
