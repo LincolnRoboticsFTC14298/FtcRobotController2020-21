@@ -67,6 +67,9 @@ public class Arm extends AbstractSubsystem {
     public void updateMotorAndServoValues() {
         clawServo.setPosition(clawPosition);
         updateArmAngle(armAngle);
+
+        if (armMotor.isBusy()) armMotor.setPower(speed);
+        else armMotor.setPower(0);
     }
 
     @Override
