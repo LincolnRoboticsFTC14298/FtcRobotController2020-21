@@ -24,6 +24,8 @@ public class Arm extends AbstractSubsystem {
     public static double ARM_DEFAULT_ANGLE = .5;
     public static double ARM_LOWER_ANGLE = 0;
 
+    public static double speed = .25;
+
     public static double GEAR_RATIO = 1; // output revs / input revs
 
     public static PIDFCoefficients POS_PIDF = new PIDFCoefficients(0,0,0,0);
