@@ -21,7 +21,7 @@ public class Arm extends AbstractSubsystem {
     public static double CLAW_CLOSE_POSITION = 0;
 
     public static double ARM_LIFT_ANGLE = 1;
-    public static double ARM_DEFAULT_ANGLE = .5;
+    public static double ARM_DEFAULT_ANGLE = 0;
     public static double ARM_LOWER_ANGLE = 0;
 
     public static double speed = .25;
@@ -111,6 +111,12 @@ public class Arm extends AbstractSubsystem {
     }
     public void lower() {
         setArmAngle(ARM_LOWER_ANGLE);
+    }
+
+    public void resetDefaultAngle(double defaultAngle) {
+        ARM_DEFAULT_ANGLE = defaultAngle;
+        armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 
     // Setters //
