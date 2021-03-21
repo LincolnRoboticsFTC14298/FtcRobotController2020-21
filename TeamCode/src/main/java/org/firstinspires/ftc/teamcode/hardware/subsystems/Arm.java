@@ -43,8 +43,7 @@ public class Arm extends AbstractSubsystem {
 
         armMotor = hardwareMap.get(DcMotorEx.class, ARM_MOTOR_NAME);
 
-        armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, POS_PIDF);
+        //armMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, POS_PIDF);
         armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 
