@@ -31,7 +31,7 @@ public class ButtonTest extends OpMode {
         if (r.isPressed()) rt++;
         if (r.isPressed() && l.isPressed()) st++;
         telemetry.addData("Times b has been pressed: ", bt);
-        telemetry.addData("Toggle x = ", x.on());
+        telemetry.addData("Toggle x = ", x.isOn());
         telemetry.addData("Times x changed from off to on: ", xt);
         telemetry.addData("Times right trigger button pressed: ", rt);
         telemetry.addData("Times right and left trigger buttons pressed together: ", st);

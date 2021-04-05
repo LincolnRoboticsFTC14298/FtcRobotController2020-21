@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 public class ToggleButton extends Button {
     private boolean toggle;
 
-    public ToggleButton(Gamepad gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType buttonType) {
+    public ToggleButton(Gamepad gamepad, ButtonType buttonType) {
         super(gamepad, buttonType);
     }
     public ToggleButton(Gamepad gamepad, ButtonType buttonType, double debouncePeriod) {
@@ -19,17 +19,17 @@ public class ToggleButton extends Button {
         return toggle;
     }
 
-    public boolean on() {
+    public boolean isOn() {
         return get();
     }
-    public boolean off() {
+    public boolean isOff() {
         return !get();
     }
 
     public boolean changedToOn() {
-        return isPressed() && on();
+        return isPressed() && isOn();
     }
     public boolean changedToOff() {
-        return isPressed() && off();
+        return isPressed() && isOff();
     }
 }

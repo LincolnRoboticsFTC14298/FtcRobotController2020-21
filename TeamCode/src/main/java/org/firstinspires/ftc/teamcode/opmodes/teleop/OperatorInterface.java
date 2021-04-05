@@ -74,7 +74,7 @@ public class OperatorInterface {
             case FULLY_MANUAL:
                 // Drive //
                 if (robot.doneShooting()) {
-                    robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
+                    robot.drive.teleopControl(input, fieldCentricToggleButton.isOn(), autoAimToggleButton.isOn());
                 }
 
                 // Shooting //
@@ -107,7 +107,7 @@ public class OperatorInterface {
             case MANUAL_COLLECTING:
                 // Drive //
                 if (teleOp.getNavigationState() instanceof Collecting && robot.doneShooting()) {
-                    robot.drive.teleopControl(input, fieldCentricToggleButton.on(), autoAimToggleButton.on());
+                    robot.drive.teleopControl(input, fieldCentricToggleButton.isOn(), autoAimToggleButton.isOn());
                 }
                 break;
         }
