@@ -39,8 +39,9 @@ public class OperatorInterface {
         fieldCentricToggleButton = new ToggleButton(gamepad1, ButtonType.b, 1);
 
         fullyManualModeButton = new Button(gamepad1, ButtonType.dpad_left, 2);
-        manualCollectingModeButton = new Button(gamepad1, ButtonType.dpad_up, 2);
-        fullyAutoModeButton = new Button(gamepad1, ButtonType.dpad_right, 2);
+        //fullyAutoModeButton = new Button(gamepad1, ButtonType.dpad_up, 2);
+        manualCollectingModeButton = new Button(gamepad1, ButtonType.dpad_right, 2);
+
 
         cancelShotLeft = new ButtonTrigger(gamepad1, ButtonType.left_trigger, 1);
         cancelShotRight = new ButtonTrigger(gamepad1, ButtonType.right_trigger, 1);
@@ -61,7 +62,7 @@ public class OperatorInterface {
             teleOp.setControlMode(MainTeleOp.ControlMode.FULLY_MANUAL);
         } else if (manualCollectingModeButton.isPressed()) {
             teleOp.setControlMode(MainTeleOp.ControlMode.MANUAL_COLLECTING);
-        } else if (manualCollectingModeButton.isPressed()) {
+        } else if (fullyAutoModeButton.isPressed()) {
             teleOp.setControlMode(MainTeleOp.ControlMode.FULLY_AUTOMATIC);
         }
 
