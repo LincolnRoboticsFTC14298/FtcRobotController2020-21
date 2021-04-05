@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.drive.SimpleDrive;
 @TeleOp(name="Simple Drive test", group="Test")
 @Disabled
 public class SimpleDriveTestOpmode extends OpMode {
-    SimpleDrive drive;
-    RadicalGamepad gamepad;
+    private SimpleDrive drive;
+    private RadicalGamepad gamepad;
 
     @Override
     public void init() {
