@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 @TeleOp(name="Radical Gamepad test", group="Test")
 @Disabled
 public class RadicalGamepadTest extends OpMode {
-    RadicalGamepad gamepad;
-    int at = 0;
+    private RadicalGamepad gamepad;
+    private int at = 0;
 
     @Override
     public void init() {
