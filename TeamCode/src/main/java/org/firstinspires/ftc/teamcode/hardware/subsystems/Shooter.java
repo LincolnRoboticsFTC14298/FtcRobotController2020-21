@@ -118,6 +118,7 @@ public class Shooter extends AbstractSubsystem {
         logger.atInfo().log("Launch status: %s", launchStatus);
         logger.atInfo().log("Shooter power: %f", shooterMotor1.getPower());
         logger.atInfo().log("Flap angle: %f", Math.toDegrees(posToAngle(flapServo.getPosition())));
+        logger.atInfo().log("Target angle: %f", Math.toDegrees(localizer.getTargetLaunchAngle()));
 
         logger.atInfo().log("Target - shoot power: %f", shooterMotor1Power - shooterMotor1.getPower());
         logger.atInfo().log("Target - flap angle: %f", Math.toDegrees(targetAngle) - Math.toDegrees(posToAngle(flapServo.getPosition())));
