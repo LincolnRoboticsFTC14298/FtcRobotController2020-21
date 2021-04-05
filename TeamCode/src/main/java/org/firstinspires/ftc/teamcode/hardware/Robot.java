@@ -62,6 +62,7 @@ public class Robot implements RobotBase {
         shooter = new Shooter(hardwareMap, localizer);
         drive = new Drive(hardwareMap, localizer);
 
+        subsystemManager.add(localizer);
         subsystemManager.add(vision);
         subsystemManager.add(arm);
         subsystemManager.add(intake);

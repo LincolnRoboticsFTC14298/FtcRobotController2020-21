@@ -5,12 +5,13 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
+import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.firstinspires.ftc.robotlib.hardware.Encoder;
+import org.firstinspires.ftc.robotlib.hardware.roadrunner.kotlin.ThreeTrackingWheelLocalizer;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.Field;
 
@@ -34,8 +35,11 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION_
  *    \--------------/
  *
  */
+
 @Config
 public class Localizer extends ThreeTrackingWheelLocalizer {
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     public static final double TICKS_PER_REV = 0;
     public static final double WHEEL_RADIUS = 2; // in
     public static final double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -59,8 +63,11 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     private static Field.Target target;
     private static Field.Alliance alliance;
 
+    private double targetHeading;
+    private double targetLaunchAngle;
+
     public Localizer(HardwareMap hardwareMap) {
-        super(Arrays.asList(
+        super("Localizer", Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
                 new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
@@ -71,6 +78,29 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        targetHeading = getTargetHeading(getPoseEstimate().vec());
+        targetLaunchAngle = getTargetLaunchAngle(getPoseEstimate().vec());
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void updateTelemetry() {
+        telemetry.put("Can launch: ", canLaunch());
+    }
+
+    @Override
+    public void updateLogging() {
+        logger.atInfo().log("Target heading: %.3f", targetHeading);
+        logger.atInfo().log("Target angle: %.3f", Math.toDegrees(targetLaunchAngle));
     }
 
     /*
@@ -100,7 +130,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         return theta + alpha;
     }
     public double getTargetHeading() {
-        return getTargetHeading(getPoseEstimate().vec());
+        return targetHeading;
     }
 
     /*
@@ -131,7 +161,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
         }
     }
     public double getTargetLaunchAngle() {
-        return getTargetLaunchAngle(getPoseEstimate().vec());
+        return targetLaunchAngle;
     }
 
     public boolean canLaunch() {

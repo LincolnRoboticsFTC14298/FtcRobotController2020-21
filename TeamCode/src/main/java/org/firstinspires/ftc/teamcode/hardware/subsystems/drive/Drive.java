@@ -289,7 +289,6 @@ public class Drive extends MecanumDrive {
         logger.atInfo().log("Mode: %s", mode);
         logger.atInfo().log("Pose: %s", currentPose);
         logger.atInfo().log("Pose Error: %s", lastError);
-        logger.atInfo().log("Target heading: %.3f", localizer.getTargetHeading());
     }
 
     /*
