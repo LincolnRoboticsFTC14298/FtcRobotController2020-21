@@ -18,12 +18,11 @@ public class RingCounter extends AbstractSubsystem {
     public static double ringError = .5;
     public static double wallDist = 4;
 
-    public static double ONE_RING = 5; // SENSOR UNITS
-    public static double TWO_RINGS = 3;
-    public static double THREE_RINGS = 1;
+    public static double TIME_FROM_FRONT_TO_CARTRIDGE = 1000; // ms
 
-    private double cartridgeDist;
-    private double lastDist = wallDist; // Default, wall length
+    private LinkedList<ElapsedTime> rings = new LinkedList<>();
+
+    private double lastDist = WALL_DIST; // Default, wall length
     private double currDist;
     private double dx;
 
@@ -39,31 +38,13 @@ public class RingCounter extends AbstractSubsystem {
 
     @Override
     public void readSensorValues() {
-        currDist = 0; // read sensor
-        cartridgeDist = 0;
+        currDist = distanceSensor.getDistance(DistanceUnit.INCH); // read sensor
     }
 
     @Override
     public void update() {
-        // INTAKE SENSOR //
-        dx = Math.abs(currDist - lastDist);
-        if (!reversed && (wallToRing() || ringToRing())) {
-            totalRings++;
-        } else if (reversed && (ringToRing() || ringToWall())) {
-            totalRings--;
-        }
-        lastDist = currDist;
-
-        // CARTRIDGE //
-        if (cartridgeDist <= THREE_RINGS) {
-            numOfRingsCartridge = 3;
-        } else if (cartridgeDist <= TWO_RINGS) {
-            numOfRingsCartridge = 2;
-        } else if (cartridgeDist <= ONE_RING) {
-            numOfRingsCartridge = 1;
-        } else {
-            numOfRingsCartridge = 0;
-        }
+        updateFront();
+        updateCartridge();
     }
 
     @Override
@@ -76,9 +57,7 @@ public class RingCounter extends AbstractSubsystem {
         telemetry.put("Total Cartridge Cartridge", numOfRingsCartridge);
         telemetry.put("Total", totalRings);
         telemetry.put("Reversed", reversed);
-
         telemetry.put("Curr Dist", currDist);
-        telemetry.put("Cartridge Dist", cartridgeDist);
     }
 
     @Override
@@ -86,9 +65,29 @@ public class RingCounter extends AbstractSubsystem {
         logger.atInfo().log("Total Cartridge Cartridge: %f", numOfRingsCartridge);
         logger.atInfo().log("Total: %f", totalRings);
         logger.atInfo().log("Reversed: %f", reversed);
-
-        logger.atInfo().log("Cartridge distance: %f", cartridgeDist);
         logger.atInfo().log("Sensor distance: %f", currDist);
+    }
+
+    private void updateFront() {
+        dx = Math.abs(currDist - lastDist);
+        if (!reversed && (wallToRing() || ringToRing())) {
+            totalRings++;
+            rings.add(new ElapsedTime());
+        } else if (reversed && (ringToRing() || ringToWall())) {
+            // TODO: check to see behavior if ring just left but still somewhat in the intake, mainly ring to ring
+            totalRings--;
+            rings.removeLast();
+        }
+        lastDist = currDist;
+    }
+
+    private void updateCartridge() {
+        // In order from oldest to youngest
+        // TODO: Would break if forward -> reverse -> forward, may not be a problem
+        while (rings.getFirst().milliseconds() >= TIME_FROM_FRONT_TO_CARTRIDGE) {
+            rings.removeFirst();
+            numOfRingsCartridge++;
+        }
     }
 
     private boolean rawChange() {
