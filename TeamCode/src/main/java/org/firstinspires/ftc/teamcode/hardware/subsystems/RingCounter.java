@@ -14,9 +14,9 @@ public class RingCounter extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     //TODO: ADD FRONT AND CARTRIDGE SENSOR
-    public static double wallError = .2; // in
-    public static double ringError = .5;
-    public static double wallDist = 4;
+    public static double WALL_DIST_MIN_ERROR = .2; // in
+    public static double RING_DIST_MIN_ERROR = .5;
+    public static double WALL_DIST = 4;
 
     public static double TIME_FROM_FRONT_TO_CARTRIDGE = 1000; // ms
 
@@ -92,10 +92,10 @@ public class RingCounter extends AbstractSubsystem {
 
     private boolean rawChange() {
         // Check if change in distance of the sensor is greater than a rings radius
-        return dx > RING_RADIUS - ringError;
+        return dx > RING_RADIUS - RING_DIST_MIN_ERROR;
     }
     private static boolean atWall(double dist) {
-        return MathUtil.differenceWithinError(dist, wallDist, wallError);
+        return MathUtil.differenceWithinError(dist, WALL_DIST, WALL_DIST_MIN_ERROR);
     }
 
     private boolean wallToRing() {
