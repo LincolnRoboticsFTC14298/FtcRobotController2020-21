@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotlib.util.MathUtil;
 public class Shooter extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private static final String SHOOTER_MOTOR1_NAME = "shooter1", SHOOTER_MOTOR2_NAME = "shooter2";
+    private static final String SHOOTER_MOTOR_NAME = "shooter";
     private static final String FLAP_NAME = "flap", LAUNCH_FLAP_NAME = "launchFlap";
 
     public static double SHOOTER_MIN_ERROR = 0.1;
@@ -30,11 +30,10 @@ public class Shooter extends AbstractSubsystem {
     public static double LAUNCH_FLAP_RETRACTED_POS = 0;
     public static double LAUNCH_FLAP_EXTENDED_POS = 1;
 
-
-    private DcMotor shooterMotor1, shooterMotor2;
+    private DcMotor shooterMotor;
     private Servo flapServo, launchFlapServo;
 
-    private double shooterMotor1Power, shooterMotor2Power;
+    private double shooterMotorPower;
     private double flapAngle, launchFlapPos;
     private double targetAngle = 0;
 
@@ -57,8 +56,7 @@ public class Shooter extends AbstractSubsystem {
     public Shooter(HardwareMap hardwareMap, Localizer localizer) {
         super("Shooter");
         // Initialize motors and servos //
-        shooterMotor1 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR1_NAME);
-        shooterMotor2 = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR2_NAME);
+        shooterMotor = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
 
         flapServo = hardwareMap.get(Servo.class, FLAP_NAME);
         launchFlapServo = hardwareMap.get(Servo.class, LAUNCH_FLAP_NAME);
@@ -97,8 +95,7 @@ public class Shooter extends AbstractSubsystem {
 
     @Override
     public void updateMotorAndServoValues() {
-        shooterMotor1.setPower(shooterMotor1Power);
-        shooterMotor2.setPower(shooterMotor2Power);
+        shooterMotor.setPower(shooterMotorPower);
 
         flapServo.setPosition(angleToPos(flapAngle));
         launchFlapServo.setPosition(launchFlapPos);
@@ -108,7 +105,7 @@ public class Shooter extends AbstractSubsystem {
     public void updateTelemetry() {
         telemetry.put("Aiming mode: ", aimingMode);
         telemetry.put("Launch status: ", launchStatus);
-        telemetry.put("Shooter power: ", shooterMotor1.getPower());
+        telemetry.put("Shooter power: ", shooterMotor.getPower());
         telemetry.put("Flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
     }
 
@@ -116,10 +113,10 @@ public class Shooter extends AbstractSubsystem {
     public void updateLogging() {
         logger.atInfo().log("Aiming mode: %s", aimingMode);
         logger.atInfo().log("Launch status: %s", launchStatus);
-        logger.atInfo().log("Shooter power: %f", shooterMotor1.getPower());
+        logger.atInfo().log("Shooter power: %f", shooterMotor.getPower());
         logger.atInfo().log("Flap angle: %f", Math.toDegrees(posToAngle(flapServo.getPosition())));
 
-        logger.atInfo().log("Target - shoot power: %f", shooterMotor1Power - shooterMotor1.getPower());
+        logger.atInfo().log("Target - shoot power: %f", shooterMotorPower - shooterMotor.getPower());
         logger.atInfo().log("Target - flap angle: %f", Math.toDegrees(targetAngle) - Math.toDegrees(posToAngle(flapServo.getPosition())));
 
         logger.atInfo().log("Ready to launch: %b", readyToLaunch());
@@ -153,8 +150,7 @@ public class Shooter extends AbstractSubsystem {
     public boolean readyToLaunch() {
         return doneAiming() &&
                 MathUtil.inRange(localizer.getTargetLaunchAngle(), FLAP_MIN_ANGLE, FLAP_MAX_ANGLE) &&
-                MathUtil.differenceWithinError(shooterMotor1.getPower(), shooterMotor1Power, SHOOTER_MIN_ERROR) &&
-                MathUtil.differenceWithinError(shooterMotor2.getPower(), shooterMotor2Power, SHOOTER_MIN_ERROR) &&
+                MathUtil.differenceWithinError(shooterMotor.getPower(), shooterMotorPower, SHOOTER_MIN_ERROR) &&
                 isRetractedStatus(); // Could use isRetracted();
     }
     public void launchAsync() {
@@ -220,8 +216,7 @@ public class Shooter extends AbstractSubsystem {
     }
 
     private void setShooterPower(double power) {
-        power = Range.clip(power, -1, 1);
-        shooterMotor1Power = shooterMotor2Power = power;
+        shooterMotorPower = Range.clip(power, -1, 1);
     }
 
     private double posToAngle(double pos) {
