@@ -2,16 +2,23 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.google.common.flogger.FluentLogger;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 import org.firstinspires.ftc.robotlib.util.MathUtil;
+
+import java.util.LinkedList;
 
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_RADIUS;
 
 @Config
 public class RingCounter extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+    private static final String DISTANCE_SENSOR_NAME = "distanceSensor";
 
     //TODO: ADD FRONT AND CARTRIDGE SENSOR
     public static double WALL_DIST_MIN_ERROR = .2; // in
@@ -29,11 +36,13 @@ public class RingCounter extends AbstractSubsystem {
     private int numOfRingsCartridge;
     private int totalRings;
 
+    private DistanceSensor distanceSensor;
+
     private boolean reversed = false;
 
     public RingCounter(HardwareMap hardwareMap) {
         super("Ring Counter");
-
+        distanceSensor = hardwareMap.get(DistanceSensor.class, DISTANCE_SENSOR_NAME);
     }
 
     @Override
