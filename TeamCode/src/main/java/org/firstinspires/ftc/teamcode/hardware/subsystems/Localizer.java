@@ -40,6 +40,10 @@ import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION_
 public class Localizer extends ThreeTrackingWheelLocalizer {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
+    private static final String LEFT_ENCODER_NAME = "leftEncoder",
+            RIGHT_ENCODER_NAME = "rightEncoder",
+            FRONT_ENCODER_NAME = "frontEncoder";
+
     public static final double TICKS_PER_REV = 0;
     public static final double WHEEL_RADIUS = 2; // in
     public static final double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -50,15 +54,15 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
     public static double X_MULTIPLIER = 1; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
+    public static double fudgeFactor = 1;
+    public static double launchVel = 30; // ft / s
+    private static final double g = 32.1741; // ft / s^2
+
     private Encoder leftEncoder;
     private Encoder rightEncoder;
     private Encoder frontEncoder;
 
     private boolean canLaunch = true;
-
-    public static double fudgeFactor = 1;
-    public static double launchVel = 30; // ft / s
-    private static final double g = 32.1741; // ft / s^2
 
     private static Field.Target target;
     private static Field.Alliance alliance;
@@ -73,9 +77,9 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, FRONT_ENCODER_NAME));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
