@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
@@ -12,23 +11,20 @@ import org.firstinspires.ftc.robotlib.hardware.AbstractSubsystem;
 public class Intake extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private static final String FRONT_NAME = "intakeFront";
-    private static final String REAR_NAME = "intakeRear";
+    private static final String INTAKE_MOTOR_NAME = "intake";
 
-    public static double FRONT_POWER_ON = 1;
-    public static double REAR_POWER_ON = 1;
+    public static double MOTOR_POWER_ON = 1;
 
-    private DcMotorEx front, rear;
-    private double frontPower = 0, rearPower = 0;
+    private DcMotorEx intakeMotor;
+    private double intakePower = 0;
 
     private RingCounter ringCounter;
 
     public Intake(HardwareMap hardwareMap, RingCounter ringCounter) {
         super("Intake");
 
-        front = hardwareMap.get(DcMotorEx.class, FRONT_NAME);
-        rear = hardwareMap.get(DcMotorEx.class, REAR_NAME);
-        rear.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor = hardwareMap.get(DcMotorEx.class, INTAKE_MOTOR_NAME);
+        //intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.ringCounter = ringCounter;
     }
@@ -64,39 +60,31 @@ public class Intake extends AbstractSubsystem {
 
     @Override
     public void updateMotorAndServoValues() {
-        front.setPower(frontPower);
-        rear.setPower(rearPower);
+        intakeMotor.setPower(intakePower);
     }
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Front motor power: ", front.getPower());
-        telemetry.put("Back motor power: ", rear.getPower());
+        telemetry.put("Intake motor power: ", intakeMotor.getPower());
     }
 
     @Override
     public void updateLogging() {
-        logger.atInfo().log("Front motor power: %f", front.getPower());
-        logger.atInfo().log("Back motor power: %f", rear.getPower());
-        logger.atInfo().log("Target - front power: %f", frontPower - front.getPower());
-        logger.atInfo().log("Target - rear power: %f", rearPower - rear.getPower());
-        logger.atInfo().log("Front target: %f", frontPower);
-        logger.atInfo().log("Rear target: %f", rearPower);
+        logger.atInfo().log("Intake motor power: %f", intakeMotor.getPower());
+        logger.atInfo().log("Intake target: %f", intakePower);
+        logger.atInfo().log("Target - intake power: %f", intakePower - intakeMotor.getPower());
     }
 
     // Setters //
     public void turnOn() {
         ringCounter.setReversed(false);
-        frontPower = FRONT_POWER_ON;
-        rearPower = REAR_POWER_ON;
+        intakePower = MOTOR_POWER_ON;
     }
     public void turnOff() {
-        frontPower = 0;
-        rearPower = 0;
+        intakePower = 0;
     }
     public void turnOnReverse() {
         ringCounter.setReversed(true);
-        frontPower = -FRONT_POWER_ON;
-        rearPower = -REAR_POWER_ON;
+        intakePower = -MOTOR_POWER_ON;
     }
 }
