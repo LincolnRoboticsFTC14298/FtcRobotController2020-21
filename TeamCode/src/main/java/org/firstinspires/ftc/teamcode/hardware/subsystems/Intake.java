@@ -48,7 +48,7 @@ public class Intake extends AbstractSubsystem {
             turnOnReverse();
         } else if (total > cartridge) {
             turnOn();
-        } else if (cartridge == 3 && total == 3) {
+        } else if (ringCounter.allRingsInCartridge()) {
             turnOff();
         }
     }
