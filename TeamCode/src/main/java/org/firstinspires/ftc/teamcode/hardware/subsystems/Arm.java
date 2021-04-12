@@ -30,7 +30,7 @@ public class Arm extends AbstractSubsystem {
 
     public static PIDFCoefficients POS_PIDF = new PIDFCoefficients(0,0,0,0);
 
-    public static double TICKS_PER_REV = 0;
+    public static double TICKS_PER_REV = 1425.1;
 
     private DcMotorEx armMotor;
     private Servo clawServo;
