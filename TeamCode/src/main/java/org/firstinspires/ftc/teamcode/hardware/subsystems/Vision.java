@@ -28,15 +28,15 @@ import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 public class Vision extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    public static int WIDTH = 1280;
-    public static int HEIGHT = 720;
+    public static int WIDTH = 320;
+    public static int HEIGHT = 240;
     public static final double FOV_X = Math.toRadians(27.3), FOV_Y = Math.toRadians(21); // radians
     public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
 
-    public static int RING_AREA_MIN = 100;
+    public static double RING_AREA_MIN = 0.0001;
 
-    public static int oneRingHeight = 10;
-    public static int zeroRingHeight = 10;
+    public static int oneRingHeight = 15;
+    public static int zeroRingHeight = 2;
 
     private OpenCvInternalCamera2 camera;
     private RingPipeline ringPipeline;
@@ -49,6 +49,7 @@ public class Vision extends AbstractSubsystem {
         super("Vision");
         this.localizer = localizer;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
 
         ringPipeline = new RingPipeline();
@@ -80,7 +81,8 @@ public class Vision extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        if (ringData != null) telemetry.put("Number of Rings", ringData.size());
+        ringPipeline.updateTelemetry();
+        if (ringData != null) telemetry.put("Number of Rings", getCenterStackSize());
         telemetry.put("Viewport", getViewport());
         telemetry.putAll(ringPipeline.getTelemetryData());
     }
@@ -160,13 +162,16 @@ public class Vision extends AbstractSubsystem {
     public int getCenterStackSize() {
         // TODO: Center stack may not be considered a stack
         analyze();
-        RingData centerRing = ringData.get(0);
-        if (centerRing != null && centerRing.getContourArea() >= RING_AREA_MIN) {
-            double height = centerRing.getBoxSize().height;
-            if (height > oneRingHeight) {
-                return 4;
-            } else if (height > zeroRingHeight) {
-                return 1;
+        if (ringData.size() > 0) {
+            RingData centerRing = ringData.get(0);
+            if (centerRing.getNormalizedContourArea() >= RING_AREA_MIN) {
+                double height = centerRing.getBoxSize().height;
+                telemetry.put("Height", height);
+                if (height > oneRingHeight) {
+                    return 4;
+                } else if (height > zeroRingHeight) {
+                    return 1;
+                }
             }
         }
         return 0;

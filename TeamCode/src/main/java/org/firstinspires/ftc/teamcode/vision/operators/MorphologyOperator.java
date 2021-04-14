@@ -9,8 +9,8 @@ import org.opencv.imgproc.Imgproc;
 
 @Config
 public class MorphologyOperator implements MatOperator {
-    public static Size openSize = new Size(7,7);
-    public static Size closeSize = new Size(5,5);
+    public static Size openSize = new Size(3,3);
+    public static Size closeSize = new Size(3,3);
     public static boolean close = true;
 
     public MorphologyOperator() {

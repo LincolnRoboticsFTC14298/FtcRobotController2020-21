@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.vision;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.robotlib.util.TelemetryData;
 import org.firstinspires.ftc.robotlib.vision.VisionScorer;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.vision.operators.MorphologyOperator;
@@ -20,7 +21,6 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +28,10 @@ import static org.firstinspires.ftc.teamcode.util.VisionUtil.contains;
 
 @Config
 public class RingPipeline extends OpenCvPipeline {
+    private TelemetryData telemetryData = new TelemetryData("RingPipeline");
     public static double SCORE_THRESHOLD = 3;
-    public static int THICKNESS = 5;
-    public static int RADIUS = 8;
+    public static int THICKNESS = 3;
+    public static int RADIUS = 4;
     private Viewport viewport = Viewport.ANNOTATED;
 
     private static Rect croppedRect = new Rect(0, (int) ((1-.4)/2 * Vision.HEIGHT), Vision.WIDTH, (int) (Vision.HEIGHT*.4));
@@ -159,6 +160,7 @@ public class RingPipeline extends OpenCvPipeline {
                     finalRings.add(ring);
                     finalContours.add(ring.getContour());
                     centers.add(ring.getCentroid());
+                    telemetryData.put("Score", score);
                 }
             }
         }
@@ -202,13 +204,18 @@ public class RingPipeline extends OpenCvPipeline {
         return displayMat;
     }
 
-    public Map<String, Object> getTelemetryData() {
-        Map<String, Object> data = new HashMap<>();
+    public void updateTelemetry() {
         for (VisionScorer scorer : scorers) {
             scorer.updateTelemetry();
-            data.putAll(scorer.getTelemetryData());
         }
-        return data;
+    }
+
+    public Map<String, Object> getTelemetryData() {
+        for (VisionScorer scorer : scorers) {
+            scorer.updateTelemetry();
+            telemetryData.putAll(scorer.getTelemetryData());
+        }
+        return telemetryData.getData();
     }
 
     public void updateLogging() {

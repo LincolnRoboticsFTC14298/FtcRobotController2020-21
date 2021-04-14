@@ -11,8 +11,8 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 public class ExtentScorer extends AbstractVisionScorer {
-    public static double optimalRatio = .8;
-    public static double weight = .7;
+    public static double optimalRatio = .86;
+    public static double weight = 1;
     private double ratio;
 
     public ExtentScorer() {

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.vision.RingData;
 
 @Config
 public class AreaScorer extends AbstractVisionScorer {
-    public static double weight = 10;
+    public static double weight = 30;
     private double area;
 
     public AreaScorer() {

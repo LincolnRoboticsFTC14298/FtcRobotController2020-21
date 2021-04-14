@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 
 @Config
 public class SolidityScorer extends AbstractVisionScorer {
-    public static double optimalRatio = .8;
+    public static double optimalRatio = .97;
     public static double weight = 1;
     private double ratio;
 

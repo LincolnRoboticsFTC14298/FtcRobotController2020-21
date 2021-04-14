@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.robotlib.util.MathUtil.squareError;
 @Config
 public class AspectRatioScorer extends AbstractVisionScorer {
     public static double optimalRatio = 5.0 / 0.75;
-    public static double weight = .5;
+    public static double weight = .01;
     private double ratio;
 
     public AspectRatioScorer() {
