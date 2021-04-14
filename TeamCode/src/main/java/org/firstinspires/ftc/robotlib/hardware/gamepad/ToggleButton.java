@@ -27,9 +27,13 @@ public class ToggleButton extends Button {
     }
 
     public boolean changedToOn() {
-        return isPressed() && isOn();
+        boolean oldToggle = toggle;
+        boolean newToggle = get();
+        return !oldToggle && newToggle;
     }
     public boolean changedToOff() {
-        return isPressed() && isOff();
+        boolean oldToggle = toggle;
+        boolean newToggle = get();
+        return oldToggle && !newToggle;
     }
 }
