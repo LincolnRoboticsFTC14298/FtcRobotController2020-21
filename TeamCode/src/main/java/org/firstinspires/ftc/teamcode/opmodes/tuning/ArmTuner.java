@@ -17,10 +17,10 @@ public class ArmTuner extends OpMode {
     private RadicalGamepad gamepad;
 
     public static double incrClaw = 0.005;
-    public static double incrArm = 0.005;
+    public static double incrArm = 0.1;
 
     private double clawPos = .5;
-    private double armAngle = 1;
+    private double armAngle = Math.PI/2;
 
     @Override
     public void init() {
@@ -34,6 +34,7 @@ public class ArmTuner extends OpMode {
     @Override
     public void start() {
         arm.defaultPos();
+        arm.resetDefaultAngle();
     }
 
     @Override
@@ -48,8 +49,6 @@ public class ArmTuner extends OpMode {
             armAngle += incrArm;
         } else if (gamepad.y) {
             armAngle -= incrArm;
-        } else if (gamepad.left_bumper) {
-            arm.resetDefaultAngle(armAngle);
         } else if (gamepad.right_bumper) {
             arm.defaultPos();
         }
