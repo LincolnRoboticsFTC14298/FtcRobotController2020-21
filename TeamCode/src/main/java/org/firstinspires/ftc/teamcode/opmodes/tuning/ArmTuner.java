@@ -60,8 +60,8 @@ public class ArmTuner extends OpMode {
         arm.setClawPosition(clawPos);
         arm.setArmAngle(armAngle);
 
-        telemetry.addData("Claw Pos: ", clawPos);
-        telemetry.addData("Arm Angle: ", armAngle);
+        telemetry.addData("Claw Pos", clawPos);
+        telemetry.addData("Arm Angle", armAngle);
 
         subsystemManager.update();
     }

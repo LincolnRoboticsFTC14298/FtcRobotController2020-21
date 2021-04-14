@@ -75,10 +75,10 @@ public class RingPoseEstimateTunerNoDrive extends OpMode {
 
         vision.update();
 
-        telemetry.addData("Predicted Vector: ", predVector3D.toString());
-        telemetry.addData("Actual Vector: ", currentVector2d.toString());
-        telemetry.addData("Fudge Factor X: ", fudgeFactorX);
-        telemetry.addData("Fudge Factor Y: ", fudgeFactorY);
+        telemetry.addData("Predicted Vector", predVector3D.toString());
+        telemetry.addData("Actual Vector", currentVector2d.toString());
+        telemetry.addData("Fudge Factor X", fudgeFactorX);
+        telemetry.addData("Fudge Factor Y", fudgeFactorY);
         telemetry.update();
     }
 

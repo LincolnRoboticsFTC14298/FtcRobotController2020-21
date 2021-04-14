@@ -48,11 +48,11 @@ public class ShooterTuner extends OpMode {
 
         subsystemManager.update();
 
-        telemetry.addData("Is extended: ", shooter.isExtended());
-        telemetry.addData("Is retracted: ", shooter.isRetracted());
-        telemetry.addData("Launch status: ", shooter.getLaunchStatus().toString());
-        telemetry.addData("Is done aiming: ", shooter.doneAiming());
-        telemetry.addData("Is ready to launch: ", shooter.readyToLaunch());
+        telemetry.addData("Is extended", shooter.isExtended());
+        telemetry.addData("Is retracted", shooter.isRetracted());
+        telemetry.addData("Launch status", shooter.getLaunchStatus().toString());
+        telemetry.addData("Is done aiming", shooter.doneAiming());
+        telemetry.addData("Is ready to launch", shooter.readyToLaunch());
         telemetry.update();
     }
 }

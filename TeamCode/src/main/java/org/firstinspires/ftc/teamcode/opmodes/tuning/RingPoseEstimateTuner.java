@@ -91,10 +91,10 @@ public class RingPoseEstimateTuner extends OpMode {
 
         robot.update();
 
-        telemetry.addData("Predicted Vector: ", predictedVector3D.toString());
-        telemetry.addData("Actual Vector: ", cameraLocal.toString());
-        telemetry.addData("Fudge Factor X: ", fudgeFactorX);
-        telemetry.addData("Fudge Factor Y: ", fudgeFactorY);
+        telemetry.addData("Predicted Vector", predictedVector3D.toString());
+        telemetry.addData("Actual Vector", cameraLocal.toString());
+        telemetry.addData("Fudge Factor X", fudgeFactorX);
+        telemetry.addData("Fudge Factor Y", fudgeFactorY);
         telemetry.update();
     }
 

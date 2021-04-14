@@ -85,13 +85,13 @@ public class ShooterFudgeFactorTuner extends OpMode {
 
         robot.update();
 
-        telemetry.addData("Set Angle: ", Math.toDegrees(robot.shooter.getTargetAngle()));
-        telemetry.addData("Predicted Angle: ", Math.toDegrees(fudgeFactor*robot.localizer.getTargetLaunchAngle()));
-        telemetry.addData("Pose: ", robot.localizer.getPoseEstimate().toString());
-        telemetry.addData("Target: ", robot.getTarget().toString());
+        telemetry.addData("Set Angle", Math.toDegrees(robot.shooter.getTargetAngle()));
+        telemetry.addData("Predicted Angle", Math.toDegrees(fudgeFactor*robot.localizer.getTargetLaunchAngle()));
+        telemetry.addData("Pose", robot.localizer.getPoseEstimate().toString());
+        telemetry.addData("Target", robot.getTarget().toString());
         telemetry.addLine();
-        telemetry.addData("Fudge Factor: ", fudgeFactor);
-        telemetry.addData("Alliance: ", robot.getAlliance());
+        telemetry.addData("Fudge Factor", fudgeFactor);
+        telemetry.addData("Alliance", robot.getAlliance());
         telemetry.update();
     }
 
