@@ -33,6 +33,8 @@ public class Vision extends AbstractSubsystem {
     public static final double FOV_X = Math.toRadians(27.3), FOV_Y = Math.toRadians(21); // radians
     public static double FUDGE_FACTOR_Y = 1, FUDGE_FACTOR_X = 1;
 
+    public static int RING_AREA_MIN = 100;
+
     public static int oneRingHeight = 10;
     public static int zeroRingHeight = 10;
 
@@ -159,7 +161,7 @@ public class Vision extends AbstractSubsystem {
         // TODO: Center stack may not be considered a stack
         analyze();
         RingData centerRing = ringData.get(0);
-        if (centerRing != null) {
+        if (centerRing != null && centerRing.getContourArea() >= RING_AREA_MIN) {
             double height = centerRing.getBoxSize().height;
             if (height > oneRingHeight) {
                 return 4;
