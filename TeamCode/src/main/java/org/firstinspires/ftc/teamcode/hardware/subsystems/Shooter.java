@@ -57,6 +57,7 @@ public class Shooter extends AbstractSubsystem {
         super("Shooter");
         // Initialize motors and servos //
         shooterMotor = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         flapServo = hardwareMap.get(Servo.class, FLAP_NAME);
         launchFlapServo = hardwareMap.get(Servo.class, LAUNCH_FLAP_NAME);
