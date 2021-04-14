@@ -41,15 +41,17 @@ public class Intake extends AbstractSubsystem {
     @Override
     public void update() {
         // INTAKE SAFETY FEATURES //
-        int cartridge = ringCounter.getNumberOfRingsInCartridge();
-        int total = ringCounter.getTotalRings();
+        if (ringCounter != null) {
+            int cartridge = ringCounter.getNumberOfRingsInCartridge();
+            int total = ringCounter.getTotalRings();
 
-        if (total > 3) {
-            turnOnReverse();
-        } else if (total > cartridge) {
-            turnOn();
-        } else if (ringCounter.allRingsInCartridge()) {
-            turnOff();
+            if (total > 3) {
+                turnOnReverse();
+            } else if (total > cartridge) {
+                turnOn();
+            } else if (ringCounter.allRingsInCartridge()) {
+                turnOff();
+            }
         }
     }
 
@@ -77,14 +79,14 @@ public class Intake extends AbstractSubsystem {
 
     // Setters //
     public void turnOn() {
-        ringCounter.setReversed(false);
+        if (ringCounter != null) ringCounter.setReversed(false);
         intakePower = MOTOR_POWER_ON;
     }
     public void turnOff() {
         intakePower = 0;
     }
     public void turnOnReverse() {
-        ringCounter.setReversed(true);
+        if (ringCounter != null) ringCounter.setReversed(true);
         intakePower = -MOTOR_POWER_ON;
     }
 }
