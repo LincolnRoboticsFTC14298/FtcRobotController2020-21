@@ -10,11 +10,13 @@ public class RadicalGamepad {
     public boolean a, b, x, y;
     public boolean left_bumper, right_bumper;
     public boolean left_stick_button, right_stick_button;
+    public boolean back, guide, start;
 
-    private org.firstinspires.ftc.robotlib.hardware.gamepad.Button dpadUp, dpadDown, dpadLeft, dpadRight;
-    private org.firstinspires.ftc.robotlib.hardware.gamepad.Button A, B, X, Y;
-    private org.firstinspires.ftc.robotlib.hardware.gamepad.Button leftBumper, rightBumper;
-    private org.firstinspires.ftc.robotlib.hardware.gamepad.Button leftStickButton, rightStickButton;
+    private Button dpadUp, dpadDown, dpadLeft, dpadRight;
+    private Button A, B, X, Y;
+    private Button leftBumper, rightBumper;
+    private Button leftStickButton, rightStickButton;
+    private Button backB, guideB, startB;
 
     // FLOAT VALUES ADDED
     public float left_stick_x, left_stick_y, right_stick_x, right_stick_y;
@@ -23,20 +25,24 @@ public class RadicalGamepad {
 
     public RadicalGamepad(Gamepad gamepad) {
         this.gamepad = gamepad;
-        dpadUp = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.dpad_up);
-        dpadDown = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.dpad_down);
-        dpadLeft = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.dpad_left);
-        dpadRight = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.dpad_right);
+        dpadUp = new Button(gamepad, ButtonType.dpad_up);
+        dpadDown = new Button(gamepad, ButtonType.dpad_down);
+        dpadLeft = new Button(gamepad, ButtonType.dpad_left);
+        dpadRight = new Button(gamepad, ButtonType.dpad_right);
 
-        A = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.a);
-        B = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.b);
-        X = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.x);
-        Y = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.y);
+        A = new Button(gamepad, ButtonType.a);
+        B = new Button(gamepad, ButtonType.b);
+        X = new Button(gamepad, ButtonType.x);
+        Y = new Button(gamepad, ButtonType.y);
 
-        leftBumper = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.left_bumper);
-        rightBumper = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.right_bumper);
-        leftStickButton = new org.firstinspires.ftc.robotlib.hardware.gamepad.Button(gamepad, org.firstinspires.ftc.robotlib.hardware.gamepad.ButtonType.left_stick_button);
+        leftBumper = new Button(gamepad, ButtonType.left_bumper);
+        rightBumper = new Button(gamepad, ButtonType.right_bumper);
+        leftStickButton = new Button(gamepad, ButtonType.left_stick_button);
         rightStickButton = new Button(gamepad, ButtonType.right_stick_button);
+
+        backB = new Button(gamepad, ButtonType.back);
+        guideB = new Button(gamepad, ButtonType.guide);
+        startB = new  Button(gamepad, ButtonType.start);
     }
 
     public void update() {
@@ -54,6 +60,10 @@ public class RadicalGamepad {
         right_bumper = rightBumper.isPressed();
         left_stick_button = leftStickButton.isPressed();
         right_stick_button = rightStickButton.isPressed();
+
+        back = backB.isPressed();
+        guide = guideB.isPressed();
+        start = startB.isPressed();
 
         left_stick_x = gamepad.left_stick_x;
         left_stick_y = gamepad.left_stick_y;
