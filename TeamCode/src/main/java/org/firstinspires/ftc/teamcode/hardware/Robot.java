@@ -75,19 +75,16 @@ public class Robot implements RobotBase {
     public void init() {
         telemetry.setMsTransmissionInterval(50);
         subsystemManager.init();
-        updateTelemetry();
     }
 
     @Override
     public void initUpdate() {
         subsystemManager.initUpdate();
-        updateTelemetry();
     }
 
     @Override
     public void start() {
         subsystemManager.start();
-        updateTelemetry();
     }
 
     @Override
@@ -97,21 +94,25 @@ public class Robot implements RobotBase {
         updateShooting();
 
         subsystemManager.update();
-        updateTelemetry();
     }
 
     @Override
     public void stop() {
         subsystemManager.stop();
-        updateTelemetry();
     }
 
-    public Map<String, Object> updateTelemetry() {
+    @Override
+    public void updateTelemetry() {
         telemetryData.put("Alliance: ", alliance.toString());
-        telemetryData.put("Pose:     ", localizer.getPoseEstimate().toString());
-        telemetryData.put("Target:   ", target.toString());
+        telemetryData.put("Poses: ", localizer.getPoseEstimate().toString());
+        telemetryData.put("Target: ", target.toString());
+    }
+
+    @Override
+    public Map<String, Object> getTelemetry() {
         return telemetryData.getData();
     }
+
     public void updateLogging() {
 
     }
