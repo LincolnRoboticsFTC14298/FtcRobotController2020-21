@@ -13,7 +13,7 @@ public class ButtonTest extends OpMode {
     Button b;
     ToggleButton x, y;
     ButtonTrigger r, l;
-    int bt = 0, xt = 0, rt = 0, st = 0;
+    int bt = 0, xt1 = 0, xt2 = 0, rt = 0, st = 0;
 
 
     @Override
@@ -27,7 +27,8 @@ public class ButtonTest extends OpMode {
     @Override
     public void loop() {
         if (b.isPressed()) bt++;
-        if (x.changedToOn()) xt++;
+        //if (x.isPressed()) xt1++;
+        if (x.changedToOn()) xt2++;
         if (r.isPressed()) rt++;
         if (r.isPressed() && l.isPressed()) st++;
         telemetry.addData("Times b has been pressed", bt);
