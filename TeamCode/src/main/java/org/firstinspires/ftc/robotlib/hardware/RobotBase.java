@@ -9,6 +9,7 @@ public interface RobotBase {
     void update();
     void stop();
 
-    Map<String, Object> updateTelemetry();
+    void updateTelemetry();
+    Map<String, Object> getTelemetry();
     void updateLogging();
 }
