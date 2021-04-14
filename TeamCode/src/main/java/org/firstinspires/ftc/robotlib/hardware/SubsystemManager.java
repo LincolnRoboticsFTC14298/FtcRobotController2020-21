@@ -36,7 +36,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
-        robot.updateLogging();
+        updateRobotLoggingAndTelemetry();
         pushTelemetry();
     }
 
@@ -48,7 +48,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
-        robot.updateLogging();
+        updateRobotLoggingAndTelemetry();
         pushTelemetry();
     }
 
@@ -60,7 +60,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
-        robot.updateLogging();
+        updateRobotLoggingAndTelemetry();
         pushTelemetry();
     }
 
@@ -72,7 +72,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
-        robot.updateLogging();
+        updateRobotLoggingAndTelemetry();
         pushTelemetry();
     }
 
@@ -84,7 +84,7 @@ public class SubsystemManager {
             subsystem.updateTelemetry();
             subsystem.updateLogging();
         }
-        robot.updateLogging();
+        updateRobotLoggingAndTelemetry();
         pushTelemetry();
     }
 
@@ -93,7 +93,14 @@ public class SubsystemManager {
         for (Subsystem subsystem : subsystems) {
             packet.putAll(subsystem.getTelemetryData());
         }
-        packet.putAll(robot.updateTelemetry());
+        if (robot != null) packet.putAll(robot.getTelemetry());
         dashboard.sendTelemetryPacket(packet);
+    }
+
+    private void updateRobotLoggingAndTelemetry() {
+        if (robot != null) {
+            robot.updateTelemetry();
+            robot.updateLogging();
+        }
     }
 }
