@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import org.firstinspires.ftc.teamcode.util.VisionUtil;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -9,9 +10,9 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.normalizePoint;
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.pickPoints;
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.rectCenter;
+import static org.firstinspires.ftc.teamcode.util.VisionUtil.normalizePoint;
+import static org.firstinspires.ftc.teamcode.util.VisionUtil.pickPoints;
+import static org.firstinspires.ftc.teamcode.util.VisionUtil.rectCenter;
 
 public class RingData {
     private final MatOfPoint contour;

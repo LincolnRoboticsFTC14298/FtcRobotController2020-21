@@ -14,7 +14,7 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.generateColor;
+import static org.firstinspires.ftc.teamcode.util.VisionUtil.generateColor;
 
 
 @Config

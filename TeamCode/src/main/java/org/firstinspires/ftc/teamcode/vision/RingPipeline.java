@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionUtil.contains;
+import static org.firstinspires.ftc.teamcode.util.VisionUtil.contains;
 
 @Config
 public class RingPipeline extends OpenCvPipeline {
