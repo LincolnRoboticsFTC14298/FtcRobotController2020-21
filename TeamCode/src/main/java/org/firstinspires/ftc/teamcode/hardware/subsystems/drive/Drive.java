@@ -52,6 +52,7 @@ import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveCons
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.ROBOT_LENGTH;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.encoderTicksToInches;
@@ -108,7 +109,7 @@ public class Drive extends MecanumDrive {
     public static double LAUNCH_X = Field.LAUNCH_LINE_X - .75 * Field.TILE_WIDTH;
     public static double BEHIND_LINE_ERROR = .5; // inches
 
-    public static double WALL_X = -2.5 * Field.TILE_WIDTH;
+    public static double WALL_X = -3 * Field.TILE_WIDTH + 5 + ROBOT_LENGTH / 2.0;
     public static double WALL_ERROR = .5; // inches
 
     public Drive(HardwareMap hardwareMap, Localizer localizer) {
