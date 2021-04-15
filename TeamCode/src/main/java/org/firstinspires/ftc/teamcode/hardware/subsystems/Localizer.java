@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION;
+import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_MIDDLE_LOCATION_2d;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION;
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.SHOOTER_LOCATION_2d;
 
@@ -98,7 +99,7 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Can launch: ", canLaunch());
+        telemetry.put("Can launch", canLaunch());
     }
 
     @Override
@@ -170,6 +171,12 @@ public class Localizer extends ThreeTrackingWheelLocalizer {
 
     public boolean canLaunch() {
         return canLaunch;
+    }
+
+    public Vector2d getWobbleGoalDropOffPos() {
+        Pose2d pose = getPoseEstimate();
+        Vector2d local = ARM_MIDDLE_LOCATION_2d.rotated(pose.getHeading());
+        return local.plus(pose.vec());
     }
 
     // RoadRunner Methods //
