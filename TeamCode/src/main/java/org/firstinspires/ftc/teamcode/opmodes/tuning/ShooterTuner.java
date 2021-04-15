@@ -40,6 +40,8 @@ public class ShooterTuner extends OpMode {
     public void loop() {
         gamepad.update();
 
+        shooter.turnOnShooterMotor();
+
         shooter.aimAsync();
 
         if (gamepad.a) {
