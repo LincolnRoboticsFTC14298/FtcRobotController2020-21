@@ -22,9 +22,10 @@ public class Arm extends AbstractSubsystem {
     public static double CLAW_OPEN_POSITION = 0.40;
     public static double CLAW_CLOSE_POSITION = 0.58;
 
-    public static double ARM_LIFT_ANGLE = Math.PI/2;
-    public static double ARM_DEFAULT_ANGLE = ARM_LIFT_ANGLE;
-    public static double ARM_LOWER_ANGLE = Math.PI/3;
+    public static double ARM_DEFAULT_ANGLE = Math.toRadians(126);
+    public static double ARM_LIFT_ANGLE = ARM_DEFAULT_ANGLE; // to travel
+    public static double ARM_MIDDLE_ANGLE = Math.toRadians(57); // to drop off
+    public static double ARM_LOWER_ANGLE = Math.PI/3; // to pick up
 
     public static double speed = .5;
 
@@ -57,7 +58,7 @@ public class Arm extends AbstractSubsystem {
     @Override
     public void init() {
         closeClaw(); // At the beginning of the round, the claw is closed with the wobble
-        lift();
+        defaultPos();
     }
 
 
@@ -93,8 +94,8 @@ public class Arm extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Claw position: ", clawServo.getPosition());
-        telemetry.put("Arm angle: ", getArmAngle());
+        telemetry.put("Claw position", clawServo.getPosition());
+        telemetry.put("Arm angle", getArmAngle());
     }
 
     @Override
@@ -120,6 +121,9 @@ public class Arm extends AbstractSubsystem {
     }
     public void defaultPos() {
         setArmAngle(ARM_DEFAULT_ANGLE);
+    }
+    public void middle() {
+        setArmAngle(ARM_MIDDLE_ANGLE);
     }
     public void lower() {
         setArmAngle(ARM_LOWER_ANGLE);
@@ -147,6 +151,10 @@ public class Arm extends AbstractSubsystem {
     }
 
     // Getters //
+    public double getTargetArmAngle() {
+        return armAngle;
+    }
+
     public double getArmAngle() {
         return 2 * Math.PI * GEAR_RATIO * armMotor.getCurrentPosition() / TICKS_PER_REV + ARM_DEFAULT_ANGLE;
     }
