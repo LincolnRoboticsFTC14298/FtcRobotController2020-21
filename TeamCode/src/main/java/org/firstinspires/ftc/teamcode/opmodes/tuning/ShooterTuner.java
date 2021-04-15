@@ -46,6 +46,10 @@ public class ShooterTuner extends OpMode {
 
         if (gamepad.a) {
             shooter.launch();
+        } else if (gamepad.x) {
+            shooter.setFlapAngle(shooter.FLAP_MIN_ANGLE);
+        } else if (gamepad.y) {
+            shooter.setFlapAngle(shooter.FLAP_MAX_ANGLE);
         }
 
         subsystemManager.update();
