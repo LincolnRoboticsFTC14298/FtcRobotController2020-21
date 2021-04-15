@@ -384,7 +384,7 @@ public class Drive extends MecanumDrive {
         }
     }
     public void goToWobbleGoal() {
-        goToRingAsync();
+        goToWobbleGoalAsync();
         waitForIdle();
     }
     public boolean isAtWobbleGoal() {
