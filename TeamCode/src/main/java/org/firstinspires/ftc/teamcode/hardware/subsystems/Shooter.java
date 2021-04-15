@@ -104,10 +104,10 @@ public class Shooter extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Aiming mode: ", aimingMode);
-        telemetry.put("Launch status: ", launchStatus);
-        telemetry.put("Shooter power: ", shooterMotor.getPower());
-        telemetry.put("Flap angle: ", Math.toDegrees(posToAngle(flapServo.getPosition())));
+        telemetry.put("Aiming mode", aimingMode);
+        telemetry.put("Launch status", launchStatus);
+        telemetry.put("Shooter power", shooterMotor.getPower());
+        telemetry.put("Flap angle", Math.toDegrees(posToAngle(flapServo.getPosition())));
     }
 
     @Override

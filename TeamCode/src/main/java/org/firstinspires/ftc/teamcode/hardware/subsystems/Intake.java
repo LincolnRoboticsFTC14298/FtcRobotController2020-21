@@ -67,7 +67,7 @@ public class Intake extends AbstractSubsystem {
 
     @Override
     public void updateTelemetry() {
-        telemetry.put("Intake motor power: ", intakeMotor.getPower());
+        telemetry.put("Intake motor power", intakeMotor.getPower());
     }
 
     @Override
