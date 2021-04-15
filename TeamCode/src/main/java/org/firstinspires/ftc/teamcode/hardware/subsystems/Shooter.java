@@ -76,7 +76,7 @@ public class Shooter extends AbstractSubsystem {
 
     @Override
     public void start() {
-        setFlapAngle(Math.toRadians(45));
+        setFlapAngle(Math.toRadians(22));
         retractLaunchFlap();
     }
 
