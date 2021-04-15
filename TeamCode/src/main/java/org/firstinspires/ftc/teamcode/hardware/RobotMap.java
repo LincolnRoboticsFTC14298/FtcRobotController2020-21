@@ -20,4 +20,6 @@ public class RobotMap {
 
     public static Vector3D ARM_DOWN_LOCATION = new Vector3D(0,0,0);
     public static Vector2d ARM_DOWN_LOCATION_2d = MathUtil.vector3DToVector2d(ARM_DOWN_LOCATION);
+    public static Vector3D ARM_MIDDLE_LOCATION = new Vector3D(0,0,0);
+    public static Vector2d ARM_MIDDLE_LOCATION_2d = MathUtil.vector3DToVector2d(ARM_MIDDLE_LOCATION);
 }
