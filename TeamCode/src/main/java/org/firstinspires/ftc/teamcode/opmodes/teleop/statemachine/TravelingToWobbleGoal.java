@@ -12,6 +12,10 @@ public class TravelingToWobbleGoal extends AbstractNavigationState {
 
     @Override
     public void start() {
+        getRobot().intake.turnOff();
+
+        getRobot().arm.lower();
+        getRobot().arm.openClaw();
         getRobot().drive.goToWobbleGoalAsync();
     }
 
@@ -20,7 +24,7 @@ public class TravelingToWobbleGoal extends AbstractNavigationState {
         if (getTeleOp().getControlMode() == MainTeleOp.ControlMode.FULLY_MANUAL) {
             return new Manual(getTeleOp());
         } else if (!getRobot().drive.isBusy() && getRobot().drive.isAtWobbleGoal()) {
-            Field.wobbleGoalProvider.update(getRobot().localizer.getPoseEstimate());
+            Field.wobbleGoalProvider.update(getRobot().localizer.getPoseEstimate()); // Remove closest wobble goal
             return new TravelingToDropOffWobbleGoal(getTeleOp());
         }
         return this;
