@@ -13,6 +13,8 @@ public class Collecting extends AbstractNavigationState {
     @Override
     public void start() {
         getRobot().intake.turnOn();
+        getRobot().arm.defaultPos();
+        getRobot().arm.closeClaw();
     }
 
     @Override
