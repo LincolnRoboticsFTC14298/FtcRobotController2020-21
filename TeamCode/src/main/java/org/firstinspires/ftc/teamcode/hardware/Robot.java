@@ -184,13 +184,15 @@ public class Robot implements RobotBase {
                     shootingStatus = ShootingStatus.TRAVELING;
 
                     setTarget(shootingQueue.peek());
-                    drive.pointAtTargetAsync();
-                    shooter.turnOnShooterMotor();
                 }
                 break;
             case TRAVELING:
                 if (!drive.isBusy() && drive.isBehindLine()) {
                     shootingStatus = ShootingStatus.AIMING;
+                    drive.pointAtTargetAsync();
+                    shooter.turnOnShooterMotor();
+                } else if (!drive.isBusy()) {
+                    drive.goBehindLineAsync();
                 }
                 break;
             case AIMING:
@@ -206,7 +208,7 @@ public class Robot implements RobotBase {
                     ringCounter.removeRingFromCartridge();
                     shootingQueue.remove();
                     shootingStatus = ShootingStatus.IDLE;
-                    setTarget(Target.HIGH_GOAL); // default target TODO: check if needed
+                    setTarget(Target.HIGH_GOAL); // default target, check if needed
                 }
                 break;
         }
