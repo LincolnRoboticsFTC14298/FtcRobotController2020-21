@@ -11,7 +11,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 @Config
 public class Field {
-    // TODO: FIND THE VERTICAL POSITION OF THE TARGETS
     // X IS FROM BACK TO FRONT AND Y IS FROM LEFT TO RIGHT
     public static final double FIELD_WIDTH = 141.0;
     public static final int NUM_OF_TILES = 6;
@@ -33,15 +32,13 @@ public class Field {
 
     public enum Target {
         // Power shot from left to right
-        // TODO: FIND Y AND Z
-        OUTWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,30.5)),
-        MIDDLE_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,30.5)),
-        INWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,0,30.5)),
+        OUTWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,19.5,31.5)),
+        MIDDLE_POWER_SHOT(new Vector3D(3*TILE_WIDTH,12,31.5)),
+        INWARD_POWER_SHOT(new Vector3D(3*TILE_WIDTH,4.5,31.5)),
 
-        // TODO: FIND Z
-        HIGH_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,0)),
-        MIDDLE_GOAL(new Vector3D(3*TILE_WIDTH,-1.5*TILE_WIDTH,0)), // Blue goal on red side
-        LOW_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,0));
+        HIGH_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,35.5)),
+        MIDDLE_GOAL(new Vector3D(3*TILE_WIDTH,-1.5*TILE_WIDTH,27.5)), // Blue goal on red side
+        LOW_GOAL(new Vector3D(3*TILE_WIDTH,1.5*TILE_WIDTH,17.5));
 
         private final Vector3D location;
 

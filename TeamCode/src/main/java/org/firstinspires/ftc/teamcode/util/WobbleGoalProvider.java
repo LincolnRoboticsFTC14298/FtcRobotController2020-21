@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.hardware.RobotMap.ARM_DOWN_LOCATION_2d;
 
-@Config
+//@Config
 public class WobbleGoalProvider {
     public static double DISTANCE_TILL_DESPAWN_WOBBLE_GOALS = 4; // inches
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.testing.pixel2xl;
 import android.util.Log;
 
 import com.google.common.flogger.FluentLogger;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.util.Ring.RING_DIAMETER;
 
+@Disabled
 public class Vision extends AbstractSubsystem {
     public static int WIDTH = 1280;
     public static int HEIGHT = 720;
@@ -116,7 +118,7 @@ public class Vision extends AbstractSubsystem {
     }
 
     public int getCenterStackSize() {
-        // TODO: Center stack may not be considered a stack
+        // Center stack may not be considered a stack
         RingData centerRing = ringData.get(0);
         if (centerRing != null) {
             double height = centerRing.getBoxSize().height;
@@ -149,7 +151,7 @@ public class Vision extends AbstractSubsystem {
     }
     public void saveOutput() {
         RingPipeline.Viewport lastViewport = getViewport();
-        setViewport(RingPipeline.Viewport.RAW_IMAGE); // TODO: test
+        setViewport(RingPipeline.Viewport.RAW_IMAGE); // test
 //        try {
 //            Thread.sleep(100);
 //        } catch (InterruptedException e) {

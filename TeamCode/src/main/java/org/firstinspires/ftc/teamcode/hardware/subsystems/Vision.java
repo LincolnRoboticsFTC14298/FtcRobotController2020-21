@@ -160,7 +160,6 @@ public class Vision extends AbstractSubsystem {
     }
 
     public int getCenterStackSize() {
-        // TODO: Center stack may not be considered a stack
         analyze();
         if (ringData.size() > 0) {
             RingData centerRing = ringData.get(0);
@@ -197,7 +196,7 @@ public class Vision extends AbstractSubsystem {
     }
     public void saveOutput() {
         RingPipeline.Viewport lastViewport = getViewport();
-        setViewport(RingPipeline.Viewport.RAW_IMAGE); // TODO: test
+        setViewport(RingPipeline.Viewport.RAW_IMAGE); // test
 //        try {
 //            Thread.sleep(100);
 //        } catch (InterruptedException e) {

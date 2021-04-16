@@ -25,7 +25,6 @@ public class RingCounter extends AbstractSubsystem {
     private static final String DISTANCE_SENSOR_NAME = "distanceSensor";
     private static final String COLOR_SENSOR_NAME = "colorSensor";
 
-    //TODO: ADD FRONT AND CARTRIDGE SENSOR
     public static double WALL_DIST_MIN_ERROR = .2; // in
     public static double RING_DIST_MIN_ERROR = .5;
     public static double WALL_DIST = 4;
@@ -108,7 +107,7 @@ public class RingCounter extends AbstractSubsystem {
             totalRings++;
             rings.add(new ElapsedTime());
         } else if (reversed && (ringToRing() || ringToWall())) {
-            // TODO: check to see behavior if ring just left but still somewhat in the intake, mainly ring to ring
+            // check to see behavior if ring just left but still somewhat in the intake, mainly ring to ring
             totalRings--;
             rings.removeLast();
         }
@@ -124,7 +123,7 @@ public class RingCounter extends AbstractSubsystem {
             numOfRingsCartridge = 3;
         }
 
-        // TODO: Would break if forward -> reverse -> forward, may not be a problem
+        // Would break if forward -> reverse -> forward, may not be a problem
         while (rings.getFirst().milliseconds() >= TIME_FROM_FRONT_TO_CARTRIDGE) {
             rings.removeFirst();
             numOfRingsCartridge++;

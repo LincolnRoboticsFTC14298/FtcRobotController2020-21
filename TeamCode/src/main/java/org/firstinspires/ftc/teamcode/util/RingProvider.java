@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
@@ -9,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@Config
+//@Config
 public class RingProvider {
-    public static double DISTANCE_TILL_DESPAWN_RINGS = 20; // inches
+    public static double DISTANCE_TILL_DESPAWN_RINGS = 10; // inches
 
     private List<Ring> rings = new ArrayList<>();
 

@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.opmodes.testing.pixel2xl;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Pixel 2xl Vision", group="Tuner")
+@Disabled
 public class VisionTest extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 

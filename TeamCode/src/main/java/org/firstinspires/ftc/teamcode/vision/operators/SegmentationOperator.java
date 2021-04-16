@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.vision.operators;
 
-import com.acmerobotics.dashboard.config.Config;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -17,7 +15,6 @@ import java.util.List;
 import static org.firstinspires.ftc.teamcode.util.VisionUtil.generateColor;
 
 
-@Config
 @Deprecated
 public class SegmentationOperator {
     public static double binaryThresh = 40.0;
