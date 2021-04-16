@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.google.common.flogger.FluentLogger;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -15,13 +16,13 @@ public class Shooter extends AbstractSubsystem {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String SHOOTER_MOTOR_NAME = "shooter";
-    private static final String FLAP_NAME = "flap", LAUNCH_FLAP_NAME = "launchFlap";
+    private static final String FLAP_NAME = "flap", LAUNCH_FLAP_NAME = "launcher";
 
     public static double SHOOTER_MIN_ERROR = 0.1;
-    public static double SHOOTER_DEFAULT_POWER = .75;
+    public static double SHOOTER_DEFAULT_POWER = 1;
 
     // In radians
-    public static double FLAP_MIN_ERROR = .03;
+    public static double FLAP_MIN_ERROR = .1;
     public static double FLAP_MIN_ANGLE = 0;
     public static double FLAP_MAX_ANGLE = Math.PI/2.0;
 
@@ -57,14 +58,11 @@ public class Shooter extends AbstractSubsystem {
         super("Shooter");
         // Initialize motors and servos //
         shooterMotor = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
+        shooterMotor.setDirection(DcMotorEx.Direction.REVERSE);
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         flapServo = hardwareMap.get(Servo.class, FLAP_NAME);
         launchFlapServo = hardwareMap.get(Servo.class, LAUNCH_FLAP_NAME);
-
-        // Reverse direction
-//        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.localizer = localizer;
     }
