@@ -14,7 +14,6 @@ public class Collecting extends AbstractNavigationState {
     public void start() {
         getRobot().intake.turnOn();
         getRobot().arm.defaultPos();
-        getRobot().arm.closeClaw();
     }
 
     @Override
@@ -29,7 +28,7 @@ public class Collecting extends AbstractNavigationState {
                 if (!getRobot().drive.isBusy() && Field.ringProvider.getRings().size() > 0) {
                     getRobot().drive.goToRingAsync();
                 } else if (!getRobot().drive.isBusy()) {
-                    // TODO: rotate to find rings
+                    // rotate to find rings
                 }
                 break;
         }
