@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,7 +9,6 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.RingCounter;
 
 @TeleOp
-@Disabled
 public class RingCounterTuner extends OpMode {
     private SubsystemManager subsystemManager = new SubsystemManager();
     private RingCounter ringCounter;
