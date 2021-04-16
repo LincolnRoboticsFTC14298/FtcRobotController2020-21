@@ -38,8 +38,10 @@ public class Collecting extends AbstractNavigationState {
     public AbstractState getNextState() {
         if (getTeleOp().getControlMode() == MainTeleOp.ControlMode.FULLY_MANUAL) {
             return new Manual(getTeleOp());
-        } else if (getTeleOp().getRuntime() > 90 && Field.wobbleGoalProvider.amount() > 0) {
-            // Last 30 seconds of match
+        } else if (getTeleOp().getRuntime() > 90 &&
+                getRobot().ringCounter.getTotalRings() == 0 &&
+                Field.wobbleGoalProvider.amount() > 0) {
+            // Last 30 seconds of match and no rings in intake
             return new TravelingToWobbleGoal(getTeleOp());
         } else if (getRobot().ringCounter.getTotalRings() == 3) {
             return new Shoot(getTeleOp());
