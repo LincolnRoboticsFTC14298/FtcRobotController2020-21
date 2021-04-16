@@ -19,21 +19,22 @@ public class Arm extends AbstractSubsystem {
     public static final String ARM_MOTOR_NAME = "arm";
 
     // Position from 0 to 1
-    public static double CLAW_OPEN_POSITION = 0.40;
-    public static double CLAW_CLOSE_POSITION = 0.58;
+    public static double CLAW_OPEN_POSITION = .525;
+    public static double CLAW_CLOSE_POSITION = .7;
 
     public static double ARM_DEFAULT_ANGLE = Math.toRadians(126);
     public static double ARM_LIFT_ANGLE = ARM_DEFAULT_ANGLE; // to travel
     public static double ARM_MIDDLE_ANGLE = Math.toRadians(57); // to drop off
-    public static double ARM_LOWER_ANGLE = Math.PI/3; // to pick up
+    public static double ARM_LOWER_ANGLE = Math.toRadians(102); // to pick up
 
     public static double speed = .5;
 
     public static double GEAR_RATIO = 1; // output revs / input revs
 
-    public static PIDFCoefficients POS_PIDF = new PIDFCoefficients(0,0,0,0);
+    public static PIDFCoefficients PIDF_WITHOUT_WOBBLE = new PIDFCoefficients(10,0.06,0.11,0.03);
+    public static PIDFCoefficients PIDF_WITH_WOBBLE = new PIDFCoefficients(10,0.06,0.11,0.03);
 
-    public static double TICKS_PER_REV = 1425.1;
+    public static double TICKS_PER_REV = 751.8;
 
     private VoltageSensor batteryVoltageSensor;
 
@@ -51,21 +52,19 @@ public class Arm extends AbstractSubsystem {
         armMotor = hardwareMap.get(DcMotorEx.class, ARM_MOTOR_NAME);
         armMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
-        armMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, POS_PIDF);
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, PIDF_WITHOUT_WOBBLE);
     }
 
     @Override
     public void init() {
-        closeClaw(); // At the beginning of the round, the claw is closed with the wobble
         defaultPos();
     }
 
 
     @Override
     public void start() {
-        closeClaw();
-        //lower();
+
     }
 
     @Override
@@ -76,7 +75,7 @@ public class Arm extends AbstractSubsystem {
     @Override
     public void stop() {
         closeClaw();
-        lower();
+        defaultPos();
     }
 
     @Override
@@ -111,9 +110,11 @@ public class Arm extends AbstractSubsystem {
     // Commands //
     public void openClaw() {
         setClawPosition(CLAW_OPEN_POSITION);
+        setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, PIDF_WITHOUT_WOBBLE);
     }
     public void closeClaw() {
         setClawPosition(CLAW_CLOSE_POSITION);
+        setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, PIDF_WITH_WOBBLE);
     }
 
     public void lift() {
@@ -143,7 +144,6 @@ public class Arm extends AbstractSubsystem {
         angle -= ARM_DEFAULT_ANGLE;
         int ticks = (int) (angle / (2 * Math.PI * GEAR_RATIO) * TICKS_PER_REV);
         armMotor.setTargetPosition(ticks);
-        logger.atInfo().log("Ticks: %d", ticks);
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void setClawPosition(double position) {
@@ -166,10 +166,10 @@ public class Arm extends AbstractSubsystem {
     }
 
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
-        PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
+        PIDFCoefficients adjustedCoeff = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
                 coefficients.f * 12 / batteryVoltageSensor.getVoltage()
         );
-        armMotor.setPIDFCoefficients(runMode, compensatedCoefficients);
+        armMotor.setPIDFCoefficients(runMode, adjustedCoeff);
     }
 }
