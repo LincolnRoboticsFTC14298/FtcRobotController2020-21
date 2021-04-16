@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 
 @TeleOp(name="Radical Gamepad test", group="Test")
+@Disabled
 public class RadicalGamepadTest extends OpMode {
     private RadicalGamepad gamepad;
     private int at = 0, bt = 0, xt = 0, yt = 0;
