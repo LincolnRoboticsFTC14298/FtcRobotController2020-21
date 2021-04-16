@@ -34,6 +34,7 @@ public class MainTeleOp extends OpMode {
         robot.setPoseEstimate(DataWriterUtil.getLastPose());
 
         robot.init();
+        robot.arm.openClaw();
 
         navigationStateMachine = new StateMachine(new Collecting(this));
     }
