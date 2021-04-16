@@ -1,19 +1,21 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotlib.hardware.SubsystemManager;
 import org.firstinspires.ftc.robotlib.hardware.gamepad.RadicalGamepad;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Arm;
 
-import static org.firstinspires.ftc.teamcode.hardware.subsystems.drive.DriveConstants.MOTOR_VELO_PID;
-
 @TeleOp(name="Arm PID Tuner", group="Tuner")
+@Config
 public class ArmPIDTuner extends OpMode {
     private SubsystemManager subsystemManager = new SubsystemManager();
     private Arm arm;
@@ -25,18 +27,25 @@ public class ArmPIDTuner extends OpMode {
     private double loopTime = 5;
     private boolean nextLift = true;
 
+    public static PIDFCoefficients pidfCoefficients = Arm.PIDF_WITHOUT_WOBBLE;
+
+    private Telemetry telemetry1;
+
     @Override
     public void init() {
         arm = new Arm(hardwareMap);
         subsystemManager.add(arm);
         gamepad = new RadicalGamepad(gamepad1);
 
-        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+        //arm.init();
+        arm.resetDefaultAngle();
 
-        lastKp = arm.POS_PIDF.p;
-        lastKi = arm.POS_PIDF.i;
-        lastKd = arm.POS_PIDF.d;
-        lastKf = arm.POS_PIDF.f;
+        telemetry1 = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+
+        lastKp = pidfCoefficients.p;
+        lastKi = pidfCoefficients.i;
+        lastKd = pidfCoefficients.d;
+        lastKf = pidfCoefficients.f;
 
         elapsedTime = new ElapsedTime();
     }
@@ -60,31 +69,35 @@ public class ArmPIDTuner extends OpMode {
         // Arm goes back and forth
         if (nextLift && elapsedTime.seconds() > loopTime) {
             elapsedTime.reset();
-            arm.setArmAngle(Math.toRadians(100));
+            arm.setArmAngle(Math.toRadians(90));
             nextLift = false;
         } else if (elapsedTime.seconds() > loopTime) {
             elapsedTime.reset();
-            arm.setArmAngle(Math.toRadians(30));
+            arm.middle();
             nextLift = true;
         }
 
         updatePIDF();
-        telemetry.addData("PIDF coeff", arm.POS_PIDF.toString());
-        telemetry.addData("Target", arm.getTargetArmAngle());
-        telemetry.addData("Current", arm.getArmAngle());
-        telemetry.update();
-        subsystemManager.update();
+        arm.update();
+        arm.updateLogging();
+        arm.updateMotorAndServoValues();
+        telemetry1.addData("P", lastKp);
+        telemetry1.addData("PIDF coeff", pidfCoefficients.toString());
+        telemetry1.addData("Target", arm.getTargetArmAngle());
+        telemetry1.addData("Current", arm.getArmAngle());
+        telemetry1.update();
+        //subsystemManager.update();
     }
 
     public void updatePIDF() {
-        if (lastKp != MOTOR_VELO_PID.p || lastKd != MOTOR_VELO_PID.d
-                    || lastKi != MOTOR_VELO_PID.i || lastKf != MOTOR_VELO_PID.f) {
-            arm.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        if (lastKp != pidfCoefficients.p || lastKd != pidfCoefficients.d
+                    || lastKi != pidfCoefficients.i || lastKf != pidfCoefficients.f) {
+            arm.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-            lastKp = MOTOR_VELO_PID.p;
-            lastKi = MOTOR_VELO_PID.i;
-            lastKd = MOTOR_VELO_PID.d;
-            lastKf = MOTOR_VELO_PID.f;
+            lastKp = pidfCoefficients.p;
+            lastKi = pidfCoefficients.i;
+            lastKd = pidfCoefficients.d;
+            lastKf = pidfCoefficients.f;
         }
     }
 }
