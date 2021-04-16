@@ -34,6 +34,9 @@ public class Arm extends AbstractSubsystem {
     public static PIDFCoefficients PIDF_WITHOUT_WOBBLE = new PIDFCoefficients(10,0.06,0.11,0.03);
     public static PIDFCoefficients PIDF_WITH_WOBBLE = new PIDFCoefficients(10,0.06,0.11,0.03);
 
+    public static double P_WITHOUT_WOBBLE = 5;
+    public static double P_WITH_WOBBLE = P_WITHOUT_WOBBLE;
+
     public static double TICKS_PER_REV = 751.8;
 
     private VoltageSensor batteryVoltageSensor;
@@ -54,6 +57,7 @@ public class Arm extends AbstractSubsystem {
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, PIDF_WITHOUT_WOBBLE);
+        armMotor.setPositionPIDFCoefficients(P_WITHOUT_WOBBLE);
     }
 
     @Override
@@ -151,6 +155,10 @@ public class Arm extends AbstractSubsystem {
     }
 
     // Getters //
+    public double getMotorVelocity() {
+        return armMotor.getVelocity();
+    }
+
     public double getTargetArmAngle() {
         return armAngle;
     }
