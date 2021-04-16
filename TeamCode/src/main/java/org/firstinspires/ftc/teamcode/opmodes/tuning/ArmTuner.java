@@ -20,7 +20,7 @@ public class ArmTuner extends OpMode {
     public static double incrArm = 0.1;
 
     private double clawPos = .5;
-    private double armAngle = Math.PI/2;
+    private double armAngle = Arm.ARM_DEFAULT_ANGLE;
 
     @Override
     public void init() {
@@ -33,7 +33,6 @@ public class ArmTuner extends OpMode {
 
     @Override
     public void start() {
-        arm.defaultPos();
         arm.resetDefaultAngle();
     }
 
