@@ -15,7 +15,7 @@ public class LauncherPrototype1Motor extends LinearOpMode {
     public void runOpMode() {
         double mSpeed = 0;
 
-        DcMotor motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        DcMotor motor1 = hardwareMap.get(DcMotor.class, "shooter");
 
         // Uncomment one of these if you want to reverse one of the motors
         // May do this for the motors on opposite side
